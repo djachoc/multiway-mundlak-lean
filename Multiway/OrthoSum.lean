@@ -26,7 +26,7 @@ variable {ι : Type*}
 
 /-! ### Orthogonality and the vanishing composite -/
 
-/-- `P_UP_V = 0` exactly when `U` and `V` are orthogonal. Mathlib has the forward direction;
+/-- `P_UP_V = 0` if and only if `U` and `V` are orthogonal. Mathlib has the forward direction;
 the converse turns a projector identity such as `R_mR_ℓ = 0` into an orthogonality statement. -/
 theorem starProjection_comp_eq_zero_iff (U V : Submodule ℝ E) :
     (∀ x : E, U.starProjection (V.starProjection x) = 0) ↔ U ⟂ V := by
@@ -49,8 +49,8 @@ section Family
 variable [Fintype ι] {V : ι → Submodule ℝ E}
 
 omit [FiniteDimensional ℝ E] [Fintype ι] in
-/-- A pairwise-orthogonal family of submodules is an `OrthogonalFamily`, which is the shape
-Mathlib's results about such families take. -/
+/-- A pairwise-orthogonal family of submodules is an `OrthogonalFamily`, the form used by Mathlib's
+results on such families. -/
 theorem orthogonalFamily_of_isOrtho (h : ∀ i j, i ≠ j → V i ⟂ V j) :
     OrthogonalFamily ℝ (fun i => (V i : Type _)) fun i => (V i).subtypeₗᵢ := by
   intro i j hij v w

@@ -6,7 +6,7 @@ import Multiway.CrossProjector
 This file formalizes Proposition 2 of the paper (pairwise proportional-frequency
 characterization): for two index maps `f g : O → L`, the product of the marginal projectors
 equals the grand-mean projector if and only if the pairwise counts are proportional to the
-product of the marginal counts. The proof reads the identity entry by entry through
+product of the marginal counts. The proof compares the two sides entry by entry using
 `Multiway.entries_crossProjector_mul` (Lemma SM.B.3).
 
 ## Notation

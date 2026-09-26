@@ -11,8 +11,8 @@ every fixed-effect dimension `m`, `R Sh_{m} R = R Δ_m Δ_m' R = 0`, hence
 `∑_o x̃_o x̃_o'`, and `nS_n` has the stated plug-in form.
 
 The residual maker `R : Matrix O O ℝ` is abstract, with symmetry, idempotence and `RΔ_m = 0`
-as hypotheses (`Multiway.ResidualBridge.residualMatrix` satisfies them). The conditional
-covariance `Om` carries its interaction structure as the hypothesis `hOmega`. The statement
+as hypotheses (`Multiway.ResidualBridge.residualMatrix` satisfies them). The interaction
+structure of the conditional covariance `Om` is the hypothesis `hOmega`. The statement
 that the level-one variances do not enter `nS_n` is `Multiway.UnionMeat.nSn_levelOne_invariant`.
 
 ## Main results
@@ -32,7 +32,7 @@ open Finset
 
 variable {O D L K : Type*}
 
-/-! ### `Δ_eΔ_e'`, and the headline annihilation -/
+/-! ### `Δ_eΔ_e'` and the annihilation `R Sh_{m} R = 0` -/
 
 section Headline
 
@@ -102,7 +102,7 @@ theorem residual_moment (c : D → O → L) (dims : Finset D) (Esets : Finset (F
     rw [mul_smul_comm, smul_mul_assoc, residual_shMat_eq_zero c _ hsymm (hRD m hm), smul_zero]
   rw [hOmega, mul_add, add_mul, key, zero_add]
 
-/-- Using `R² = R`: `RΩR = s̄²R + ∑_{e ∈ 𝓔} σ_e² R Sh^off_e R`. -/
+/-- If `R² = R`, then `RΩR = s̄²R + ∑_{e ∈ 𝓔} σ_e² R Sh^off_e R`. -/
 theorem residual_moment_smul (c : D → O → L) (dims : Finset D) (Esets : Finset (Finset D))
     (sig1 : D → ℝ) (sige : Finset D → ℝ) (sbar : ℝ) {R Om : Matrix O O ℝ}
     (hsymm : R.IsSymm) (hidem : R * R = R)
@@ -149,7 +149,7 @@ def weightGram (c : D → O → L) (xt : O → K → ℝ) (e : Finset D) : Matri
 def obsGram (xt : O → K → ℝ) : Matrix K K ℝ :=
   Matrix.of fun a b => ∑ o : O, xt o a * xt o b
 
-/-- If `Sh^off_e = 0`, every realized sub-tuple of level `e` carries exactly one
+/-- If `Sh^off_e = 0`, every realized sub-tuple of level `e` contains exactly one
 observation. -/
 theorem cellOf_eq_singleton_of_shOff_eq_zero (c : D → O → L) {e : Finset D}
     (h : shOff c e = 0) (o : O) : cellOf c e o = {o} := by
@@ -219,7 +219,7 @@ theorem targetplug (c : D → O → L) (xt : O → K → ℝ) (levels Esets : Fi
 
 end TargetPlug
 
-/-! ### Non-vacuity
+/-! ### Examples
 
 A model with two observations and three dimensions (dimensions `0` and `1` constant,
 dimension `2` the identity) and `R = I - ιι'/2` satisfies every hypothesis of
@@ -228,10 +228,11 @@ degenerate. -/
 
 section Witness
 
-/-- The witness design: dimensions `0` and `1` are constant, dimension `2` is the identity. -/
+/-- The design of the example, in which dimensions `0` and `1` are constant and dimension `2` is
+the identity. -/
 def wc : Fin 3 → Fin 2 → Fin 2 := fun d o => if d = 2 then o else 0
 
-/-- The witness residual maker, the within transformation on two observations. -/
+/-- The residual maker of the example, the within transformation on two observations. -/
 noncomputable def wR : Matrix (Fin 2) (Fin 2) ℝ :=
   Matrix.of fun i j => if i = j then (1 / 2 : ℝ) else -(1 / 2)
 
@@ -269,15 +270,15 @@ theorem wR_cell_sum {e : Finset (Fin 3)} (he : (2 : Fin 3) ∉ e) :
   rw [mem_cells_eq_univ (wc_sameOn he) ht]
   exact wR_row_sum o
 
-/-- The witness covariance structure: level-one variances `3` on each of the two constant
-dimensions, `s̄² = 7`, and the single interaction level `{0,1} ∈ 𝓔` with `σ² = 2`. -/
+/-- The covariance structure of the example, with level-one variances `3` on each of the two
+constant dimensions, `s̄² = 7`, and the single interaction level `{0,1} ∈ 𝓔` with `σ² = 2`. -/
 noncomputable def wOm : Matrix (Fin 2) (Fin 2) ℝ :=
   (∑ m ∈ ({0, 1} : Finset (Fin 3)), (3 : ℝ) • shMat wc ({m} : Finset (Fin 3)))
     + ((7 : ℝ) • (1 : Matrix (Fin 2) (Fin 2) ℝ)
       + ∑ e ∈ ({({0, 1} : Finset (Fin 3))} : Finset (Finset (Fin 3))), (2 : ℝ) • shOff wc e)
 
-/-- `residual_moment_smul` on the witness model: the level-one variance `3` is annihilated,
-`R Sh^off_{0,1} R = -R`, and `7 - 2 = 5`. -/
+/-- `residual_moment_smul` on the example. The level-one variance `3` is annihilated and
+`R Sh^off_{0,1} R = -R`, so the coefficient is `7 - 2 = 5`. -/
 theorem identE2_witness : wR * wOm * wR = (5 : ℝ) • wR := by
   have hRD : ∀ m ∈ ({0, 1} : Finset (Fin 3)),
       ∀ t ∈ cells wc ({m} : Finset (Fin 3)), ∀ o : Fin 2, ∑ o' ∈ t, wR o o' = 0 := by
@@ -302,7 +303,7 @@ theorem identE2_witness : wR * wOm * wR = (5 : ℝ) • wR := by
     Finset.sum_singleton, hoff, smul_neg, ← sub_eq_add_neg, ← sub_smul]
   norm_num
 
-/-- `Sh^off = 0` at the level `{0,2}`, which is what puts it outside `𝓔`. -/
+/-- `Sh^off = 0` at the level `{0,2}`, so this level is degenerate and lies outside `𝓔`. -/
 theorem wc_shOff_zero : shOff wc ({0, 2} : Finset (Fin 3)) = 0 := by
   have hiff : ∀ i j : Fin 2, SameOn wc ({0, 2} : Finset (Fin 3)) i j ↔ i = j := by
     intro i j
@@ -318,7 +319,7 @@ theorem wc_shOff_zero : shOff wc ({0, 2} : Finset (Fin 3)) = 0 := by
   · have h2 : ¬ SameOn wc ({0, 2} : Finset (Fin 3)) i j := fun hc => h ((hiff i j).1 hc)
     simp [h, h2]
 
-/-- `targetplug` on the witness model, with `levels = {{0,1},{0,2}}`, `𝓔 = {{0,1}}`,
+/-- `targetplug` on the example, with `levels = {{0,1},{0,2}}`, `𝓔 = {{0,1}}`,
 `σ²_ε = 1` and every `σ_e² = 2`, so that `s̄² = 5`. -/
 theorem targetplug_witness :
     (1 : ℝ) • obsGram (fun (_ : Fin 2) (_ : Fin 1) => (1 : ℝ))

@@ -12,7 +12,7 @@ import Multiway.JansonCLT
 This file proves part (a) of Theorem 5 of the paper (asymptotic normality under multiway
 clustering) at a general number `J` of clustering dimensions, under the accumulation condition
 `δ_n := nD_n³/λ_min(Ω_n)² → 0`, together with the first sentence of Corollary SM.D.3
-(feasible inference under the cluster-shock model). The engine is the dependency-graph central
+(feasible inference under the cluster-shock model). The proof uses the dependency-graph central
 limit theorem of Janson (1988, Theorem 2), `Janson.tendsto_gaussPM_of_depGraph`.
 
 In a unit direction the array `X_{n,o} = (a_n'x̃_o)ν_o` has `|X_{n,o}| ≤ φ_n` and unit variance,
@@ -41,8 +41,8 @@ open Multiway.ClusterShock
 
 section Rate
 
-/-- Janson's `(1.5)` at `m = 4` follows from `n(D_n+1)³φ_n⁴ → 0`: the fourth power of the rate
-is `N_nM_n³u_n⁴`. -/
+/-- Janson's `(1.5)` at `m = 4` follows from `n(D_n+1)³φ_n⁴ → 0`, since the fourth power of the
+rate is `N_nM_n³u_n⁴`. -/
 theorem tendsto_janson15_of_first {Nr Md u : ℕ → ℝ}
     (hNr : ∀ n, 0 < Nr n) (hMd : ∀ n, 0 < Md n) (hu : ∀ n, 0 ≤ u n)
     (h1 : Tendsto (fun n => Nr n * Md n ^ 3 * u n ^ 4) atTop (𝓝 0)) :
@@ -117,8 +117,8 @@ section Array
 variable {O : ℕ → Type*} [∀ n, Fintype (O n)] [∀ n, DecidableEq (O n)]
 variable {Ω : ℕ → Type*} [∀ n, MeasurableSpace (Ω n)]
 
-/-- **Theorem 5(a)** on the array, in characteristic-function form: a dependency graph with
-closed-neighbourhood sizes at most `M_n + 1`, a uniform bound `φ_n`, mean zero and unit variance,
+/-- **Theorem 5(a)** on the array, in characteristic-function form, for a dependency graph with
+closed-neighbourhood sizes at most `M_n + 1`, a uniform bound `φ_n`, mean zero, unit variance
 and `n(M_n+1)³φ_n⁴ → 0` with `1 ≤ M_n ≤ n`. -/
 theorem cltcluster_a_general_janson_charFun
     (μ : ∀ n, Measure (Ω n)) [∀ n, IsProbabilityMeasure (μ n)]
@@ -251,7 +251,7 @@ variable {K : Type*} [Fintype K] [DecidableEq K]
 variable {r : Type*} [Fintype r] [DecidableEq r]
 
 /-- **Theorem 5(a)** for `β̂_JM`, conditionally on the design, under the accumulation condition
-`δ_n → 0`. The only rate lemma used is `SteinCluster.firstRate_le`, with constant
+`δ_n → 0`. The rate bound is `SteinCluster.firstRate_le`, with constant
 `8B⁴C_ν⁴δ_n`. -/
 theorem cltcluster_a_general_betaJM_janson
     {W : ℕ → Type*} [∀ n, MeasurableSpace (W n)]
@@ -360,7 +360,7 @@ theorem cltcluster_a_general_betaJM_janson_const
 
 end BetaJM
 
-/-! ### Section 4. Cramér--Wold, and removing the conditioning on `𝒟` -/
+/-! ### Section 4. Cramér–Wold, and removing the conditioning on `𝒟` -/
 
 section Deconditioning
 
@@ -372,7 +372,7 @@ open Multiway.CLTMartingale.CondD
 variable {O : ℕ → Type*} [∀ n, Fintype (O n)] [∀ n, DecidableEq (O n)]
 variable {K : Type*} [Fintype K] [DecidableEq K]
 
-/-- The vector statement conditionally on the design, by the Cramér--Wold device. -/
+/-- The vector statement conditionally on the design, by the Cramér–Wold device. -/
 theorem cltcluster_a_general_betaJM_janson_vector
     {rr : Type*} [Fintype rr] [DecidableEq rr]
     {W : Type*} [mW : MeasurableSpace W] (μ : Measure W) [IsProbabilityMeasure μ]
@@ -1507,8 +1507,8 @@ theorem cltcluster_a_general_betaJM_janson_unconditional_vector_of_jm
 end UnconditionalScoreDischarge
 /-! ### Section 9. Random `𝒟`-measurable restriction matrices
 
-Here `𝓡_n` is a sequence of `𝒟`-measurable `r × K` matrices. The conditional argument is applied
-at `𝓡_n(ω)`, freezing `𝓡_n` alongside `X̃_n` and `Ω_n`. -/
+In this section `𝓡_n` is a sequence of `𝒟`-measurable `r × K` matrices, and the conditional
+argument is applied at `𝓡_n(ω)` with `𝓡_n`, `X̃_n` and `Ω_n` held fixed. -/
 
 section RandomRestriction
 
@@ -1736,8 +1736,8 @@ theorem cltcluster_a_general_betaJM_janson_unconditional_vector_randomR
 end RandomRestrictionCLT
 /-! ### Section 10. Theorem 5(a)
 
-Sections 8 and 9 combined: `𝓡_n` random and `𝒟`-measurable, and the score representation and
-`hA` derived from the model and Theorem 3. -/
+In this section `𝓡_n` is random and `𝒟`-measurable, and the score representation and `hA` are
+derived from the model and Theorem 3, combining Sections 8 and 9. -/
 
 section PrintedA
 
@@ -1778,11 +1778,11 @@ and the accumulation condition, with `𝓡_n` a sequence of `𝒟`-measurable `r
 row rank almost surely and `sup_o|ν_o| ≤ C_ν` almost surely,
 `𝒱_n^{-1/2}𝓡_n(β̂_JM − β) ⟶ᵈ N(0, I_r)`.
 
-`hmodel`/`hJM`: the model and the normal equations defining `β̂_JM`; `hwithin`/`hid`:
-`X̃ := Q_[Δ]X` and identification; `hOmeq`/`hOmD`: `Ω_n := Var(ν ∣ 𝒟)` and its
-`𝒟`-measurability; `hdep`: the dependency structure; `hfloor`/`hlmin`: the variance floor;
-`hnu`: the uniform bound; `hrate`: the accumulation condition; `hR`/`hRD`: full row rank of
-`𝓡_n` and its `𝒟`-measurability. -/
+`hmodel` and `hJM` are the model and the normal equations defining `β̂_JM`; `hwithin` and `hid`
+are `X̃ := Q_[Δ]X` and identification; `hOmeq` and `hOmD` are `Ω_n := Var(ν ∣ 𝒟)` and its
+`𝒟`-measurability; `hdep` is the dependency structure; `hfloor` and `hlmin` are the variance
+floor; `hnu` is the uniform bound; `hrate` is the accumulation condition; `hR` and `hRD` are full
+row rank of `𝓡_n` and its `𝒟`-measurability. -/
 theorem cltcluster_a_general_betaJM_janson_printed
     {rr : Type*} [Fintype rr] [DecidableEq rr]
     (h𝒟 : 𝒟 ≤ mΩ) (P : Measure Ω) [IsProbabilityMeasure P]

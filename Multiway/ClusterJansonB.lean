@@ -11,7 +11,8 @@ This file formalizes Theorem 5(b) of the paper (asymptotic normality under multi
 clustering, unbounded disturbances) and the second sentence of Corollary SM.D.3, for an
 arbitrary `ε > 0`. The proof truncates `ν_o` at a level `τ_n`, bounds the tail variance, and
 applies Janson (1988), Theorem 2, at the moment index `m := max{3, ⌈2/ε⌉}` to the truncated
-array standardized by its own `σ_n`; `ε` enters only through `(n/D_n)^{2/m} ≤ (n/D_n)^ε`.
+array standardized by its standard deviation `σ_n`; `ε` enters only through
+`(n/D_n)^{2/m} ≤ (n/D_n)^ε`.
 
 The truncation level is `τ_n² := ψ_n²(1 + 128n(D_n+1)ψ_n²) + n(D_n+1)ψ_n⁴/√(e_n)` with
 `e_n := (n/D_n)^ε·n(D_n+1)³ψ_n⁴`; the first summand gives `Var(S^>_n) ≤ 1/16` at every `n`, the
@@ -82,9 +83,9 @@ section TruncArith
 
 /-- **The truncation level at a single `n`.** With `Nr = n`, `Mr = D_n`, `P = D_n + 1`,
 `p = ψ_n`, `w = n(D_n+1)³ψ_n⁴`, `e = (n/D_n)^ε w`, `T = τ_n²` and `mr = 2/m` subject to
-`mr ≤ 1` and `mr ≤ ε`: the truncation is above the moment scale; the tail variance is at most
-`1/16`; the tail variance is at most `8√e`; and Janson's `(1.5)`, squared with `σ_n ≥ 1/2`
-absorbed, is at most `2(3√e + 128e)`. -/
+`mr ≤ 1` and `mr ≤ ε`, the truncation level is above the moment scale, the tail variance is at
+most `1/16` and at most `8√e`, and Janson's `(1.5)`, squared with `σ_n ≥ 1/2` absorbed, is at
+most `2(3√e + 128e)`. -/
 theorem truncSq_facts {Nr Mr p ε mr : ℝ} (hN1 : 1 ≤ Nr) (hM1 : 1 ≤ Mr) (hMN : Mr ≤ Nr)
     (hp : 0 < p) (hmr0 : 0 < mr) (hmr1 : mr ≤ 1) (hmrε : mr ≤ ε) :
     p ^ 2 ≤ p ^ 2 * (1 + 128 * Nr * (Mr + 1) * p ^ 2)
@@ -372,11 +373,11 @@ section PartBArray
 variable {O : ℕ → Type*} [∀ n, Fintype (O n)] [∀ n, DecidableEq (O n)]
 variable {Ω : ℕ → Type*} [∀ n, MeasurableSpace (Ω n)]
 
-/-- **Theorem 5(b) on the array, in test-function form.** The only moment hypothesis is
+/-- **Theorem 5(b) on the array, in test-function form.** The moment hypothesis is
 `∫X_{n,o}⁴ ≤ ψ_n⁴`, the rate hypothesis is `(n/D_n)^ε δ_n → 0` for the given `ε > 0`, and
-`1 ≤ D_n ≤ n`. The proof truncates, bounds the tail variance, standardizes by the truncated
-array's own `σ_n`, applies Janson's Theorem 2 at `m = max{3, ⌈2/ε⌉}`, and transfers by
-Slutsky. -/
+`1 ≤ D_n ≤ n`. The proof truncates, bounds the tail variance, standardizes by the standard
+deviation `σ_n` of the truncated array, applies Janson's Theorem 2 at `m = max{3, ⌈2/ε⌉}`, and
+transfers by Slutsky. -/
 theorem cltcluster_b_general_janson_expect
     (μ : ∀ n, Measure (Ω n)) [∀ n, IsProbabilityMeasure (μ n)]
     (X : ∀ n, O n → Ω n → ℝ) (D : ∀ n, DepGraph (X n) (μ n))
@@ -1249,7 +1250,7 @@ theorem clustershock_b_general_janson
 
 end PartBClustershock
 
-/-! ### Witness with an unbounded disturbance and `ε = 1/4` -/
+/-! ### Example with an unbounded disturbance and `ε = 1/4` -/
 
 section PartBWitness
 
@@ -1298,7 +1299,8 @@ theorem ubIdx_injective (n : ℕ) (o : Fin (n + 3)) : Function.Injective (ubIdx 
   fun k k' h => ((ubIdx_eq_iff n o o k k').mp h).2
 
 /-- The disturbance `ν_{n,o} = (n+1)^{-1/2}∑_{k≤n}s_{o,k}`, a standardized sum of `n+1`
-private fair signs: `E[ν_o⁴] ≤ 3` for every `n`, while `sup_ω|ν_{n,o}(ω)| = √(n+1)`. -/
+fair signs read by no other observation. Then `E[ν_o⁴] ≤ 3` for every `n` and
+`sup_ω|ν_{n,o}(ω)| = √(n+1)`. -/
 noncomputable def ubNu (n : ℕ) (o : Fin (n + 3)) (ω : Fin ((n + 3) * (n + 1)) → Bool) : ℝ :=
   shockSum (ubIdx n) o ω / Real.sqrt ((n : ℝ) + 1)
 
@@ -1457,7 +1459,7 @@ theorem ubNu_unbounded (C : ℝ) :
     _ = Real.sqrt (C ^ 2) := (Real.sqrt_sq_eq_abs C).symm
     _ < Real.sqrt ((n : ℝ) + 1) := h2
 
-/-- The witness rate at `ε = 1/4`: `δ^{(1/4)}_n = ((n+3)/2)^{1/4}·8/(n+3) → 0`. -/
+/-- The rate of the example at `ε = 1/4`: `δ^{(1/4)}_n = ((n+3)/2)^{1/4}·8/(n+3) → 0`. -/
 theorem tendsto_epsRate_witness :
     Tendsto (fun n : ℕ => epsRate (n + 3) 2 ((n : ℝ) + 3) ((1 : ℝ) / 4)) atTop (𝓝 0) := by
   have hf0 : ∀ n : ℕ, 0 ≤ epsRate (n + 3) 2 ((n : ℝ) + 3) ((1 : ℝ) / 4) :=
@@ -1512,8 +1514,8 @@ end UnboundedWitness
 open UnboundedWitness
 
 /-- The hypotheses of `cltcluster_b_general_betaJM_janson` are jointly satisfiable with an
-unbounded disturbance at `ε = 1/4`: `n+3` observations, one regressor `x̃_o = 1`, `𝓡_n = I_1`,
-`Ω_n = I`, and the non-transitive `J = 2` sharing relation `|o − o'| ≤ 1`. -/
+unbounded disturbance at `ε = 1/4`, on `n+3` observations with one regressor `x̃_o = 1`,
+`𝓡_n = I_1`, `Ω_n = I` and the non-transitive `J = 2` sharing relation `|o − o'| ≤ 1`. -/
 theorem cltcluster_b_general_betaJM_janson_witness (s : ℝ) :
     Tendsto (fun n => ((coins ((n + 3) * (n + 1))).map (fun ω =>
         (fun _ : Fin 1 => (1 : ℝ)) ⬝ᵥ
@@ -1553,7 +1555,7 @@ theorem cltcluster_b_general_betaJM_janson_witness (s : ℝ) :
   · simpa only [Fintype.card_fin] using tendsto_epsRate_witness
   · simp [dotProduct]
 
-/-- The cluster-shock witness rate at `ε = 1/4`: `Ḡ_n^{3−ε}/n^{1−ε} = 2^{11/4}/(n+3)^{3/4}`,
+/-- The rate of the cluster-shock example at `ε = 1/4`: `Ḡ_n^{3−ε}/n^{1−ε} = 2^{11/4}/(n+3)^{3/4}`,
 bounded by `8/√(n+3)`. -/
 theorem gc_hGrate_eps :
     Tendsto (fun n : ℕ => (((2 : ℕ) : ℝ)) ^ ((3 : ℝ) - (1 : ℝ) / 4)
@@ -2140,7 +2142,7 @@ theorem clustershock_b_general_janson_nonneg
     (fun n => min_le_left _ _) hGrate
 
 end PartBClustershockNonneg
-/-! ### Part (b) with the measurability, score and rank hypotheses discharged
+/-! ### Part (b) with the measurability, score and rank hypotheses proved
 
 The measurability results of `Multiway/ClusterJanson.lean` (`meas_of_ae_depGraph`,
 `measurable_score_of_hscore`, `measurable_standardized_comp`, `measurable_restrictedStat_comp`)
@@ -2157,7 +2159,7 @@ variable {O : ℕ → Type*} [∀ n, Fintype (O n)] [∀ n, DecidableEq (O n)]
 variable {K : Type*} [Fintype K] [DecidableEq K]
 variable {Ω : Type*} {𝒟 : MeasurableSpace Ω} [mΩ : MeasurableSpace Ω] [StandardBorelSpace Ω]
 
-/-- **Theorem 5(b) under `P`**, with `hWm` discharged, at `0 ≤ B`, `0 ≤ C₄`. -/
+/-- **Theorem 5(b) under `P`**, with `hWm` proved, at `0 ≤ B`, `0 ≤ C₄`. -/
 theorem cltcluster_b_general_betaJM_janson_unconditional_of_dep
     {r : Type*} [Fintype r] [DecidableEq r]
     (h𝒟 : 𝒟 ≤ mΩ) (P : Measure Ω) [IsProbabilityMeasure P]
@@ -2199,7 +2201,7 @@ theorem cltcluster_b_general_betaJM_janson_unconditional_of_dep
     (fun n => measurable_standardized_comp (Rn n) (hXtm n) (hOmm n) (hdm n) b)
     hdep hA hlmin hfloor hOmeq hmean hB hint4 hfour hDn1 hDnN ε hε hrate
 
-/-- **Theorem 5(b), vector form**, with `hWm` and `hWvm` discharged. -/
+/-- **Theorem 5(b), vector form**, with `hWm` and `hWvm` proved. -/
 theorem cltcluster_b_general_betaJM_janson_unconditional_vector_of_dep
     {rr : Type*} [Fintype rr] [DecidableEq rr]
     (h𝒟 : 𝒟 ≤ mΩ) (P : Measure Ω) [IsProbabilityMeasure P]
@@ -2254,7 +2256,7 @@ variable {r : Type*} [Fintype r] [DecidableEq r]
 variable {W : ℕ → Type*} [∀ n, MeasurableSpace (W n)]
 variable {Dm : Type*} [Fintype Dm]
 
-/-- **Theorem 5(b)** with `hscore`, `hA` and `hOm` discharged, via
+/-- **Theorem 5(b)** with `hscore`, `hA` and `hOm` proved, via
 `SteinCluster.score_and_rank_of_jm` and `Ω_n := SteinCluster.secondMoment (μ n) (ν n)`. -/
 theorem cltcluster_b_general_betaJM_janson_of_jm
     (μ : ∀ n, Measure (W n)) [∀ n, IsProbabilityMeasure (μ n)]

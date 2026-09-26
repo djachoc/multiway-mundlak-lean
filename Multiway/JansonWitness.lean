@@ -6,11 +6,11 @@ import Multiway.JansonCLT
 import Mathlib.Probability.Moments.Variance
 
 /-!
-# Witnesses for Janson's Theorem 1 and Theorem 2
+# Examples for Janson's Theorem 1 and Theorem 2
 
-This file applies the two main theorems of `Multiway/JansonCLT.lean` (Janson (1988)) to explicit,
-non-degenerate sequences: both witnesses use `m = 4`, a skewed summand law with nonzero third
-semiinvariant, and a nondegenerate limit variance.
+This file applies the two main theorems of `Multiway/JansonCLT.lean` (Janson (1988)) to explicit
+non-degenerate sequences. Both examples take `m = 4`, a skewed summand law with nonzero third
+semiinvariant and a nondegenerate limit variance.
 
 ## Main results
 
@@ -34,13 +34,13 @@ lemma variance_eq_cumulant_two {Ω : Type*} [MeasurableSpace Ω] {μ : Measure �
   rw [Cumulant.cumulant_two, variance_eq_sub hX]
   rfl
 
-/-! ### Witness A: Theorem 1 on a skewed law plus independent Gaussian noise -/
+/-! ### Theorem 1 on a skewed law plus independent Gaussian noise -/
 
 namespace Theorem1Witness
 
 open Cumulant Cumulant.SkewWitness
 
-/-- Coordinate `0` carries the skewed law `1/4 δ_4 + 3/4 δ_0`; coordinate `1` carries
+/-- Coordinate `0` has the skewed law `1/4 δ_4 + 3/4 δ_0` and coordinate `1` has law
 `N (0, 1)`. -/
 noncomputable def mixFactor (i : Fin 2) : Measure ℝ :=
   if i = 0 then skewLaw else gaussianReal 0 1
@@ -49,7 +49,7 @@ instance instMixFactor (i : Fin 2) : IsProbabilityMeasure (mixFactor i) := by
   unfold mixFactor
   split <;> infer_instance
 
-/-- The product of the two. -/
+/-- The product of the two coordinate laws. -/
 noncomputable def mixLaw : Measure (Fin 2 → ℝ) := Measure.pi mixFactor
 
 instance instMixLawProb : IsProbabilityMeasure mixLaw := by
@@ -100,7 +100,7 @@ theorem mcoord_zero_bdd : ∀ᵐ ω ∂mixLaw, |mcoord 0 ω| ≤ 4 := by
     (measurableSet_le measurable_id.abs measurable_const)] at h
   exact h
 
-/-- The sequence: `Z / (n+1) + G`. -/
+/-- The sequence `X_n = Z / (n+1) + G`. -/
 noncomputable def wX (n : ℕ) : (Fin 2 → ℝ) → ℝ :=
   fun ω => (1 / ((n : ℝ) + 1)) * mcoord 0 ω + mcoord 1 ω
 
@@ -153,7 +153,7 @@ theorem wPM_integrable (n p : ℕ) : Integrable (fun x : ℝ => x ^ p) (wPM n : 
       (measurable_wX n).aemeasurable]
   simpa only [Function.comp_def] using integrable_pow_wX n p
 
-/-- The semiinvariants of the witness sequence, by `(2.2)` and `(2.3)`:
+/-- By `(2.2)` and `(2.3)`, the semiinvariants of the sequence are
 `kappa_j (X_n) = (n+1)^(-j) kappa_j (Z) + kappa_j (G)`. -/
 theorem wPM_cumulant (n : ℕ) {j : ℕ} (hj : 0 < j) :
     cumulant id j (wPM n : Measure ℝ)
@@ -235,7 +235,7 @@ every `n`, with limit variance `sigma ^ 2 = 1`. -/
 theorem theorem1_witness : Tendsto wPM atTop (𝓝 (gaussPM 0 1)) :=
   tendsto_gaussPM wPM_integrable (m := 4) wPM_h1 wPM_h2 wPM_h3
 
-/-- …and all moments converge, at order `3`. -/
+/-- For the same sequence, the third moment of `X_n` converges to that of `N (0, 1)`. -/
 theorem theorem1_moment_witness :
     Tendsto (fun n => ∫ x, x ^ 3 ∂(wPM n : Measure ℝ)) atTop
       (𝓝 (∫ x, x ^ 3 ∂(gaussPM 0 1 : Measure ℝ))) :=
@@ -243,7 +243,7 @@ theorem theorem1_moment_witness :
 
 end Theorem1Witness
 
-/-! ### Witness B: Theorem 2 on a paired i.i.d. array -/
+/-! ### Theorem 2 on a paired i.i.d. array -/
 
 namespace Theorem2Witness
 
@@ -292,7 +292,7 @@ theorem acoord_bdd (n : ℕ) (i : Fin (2 * n + 2)) :
     (measurableSet_le measurable_id.abs measurable_const)] at h
   exact h
 
-/-- The dependency relation: `i` and `k` are adjacent exactly when they belong to the same pair
+/-- The dependency relation: `i` and `k` are adjacent if and only if they belong to the same pair
 `{2 q, 2 q + 1}`. Adding edges preserves the separation property, so this is a dependency graph,
 with maximal degree `M_n = 1`. -/
 def aG (n : ℕ) (i k : Fin (2 * n + 2)) : Prop := (i : ℕ) / 2 = (k : ℕ) / 2
@@ -364,7 +364,7 @@ theorem aDep_degree_attained (n : ℕ) :
     #(((aDep n).nbhd ⟨0, by omega⟩).erase ⟨0, by omega⟩) = 1 :=
   le_antisymm (aDep_degree n _) (aDep_degree_pos n)
 
-/-! #### The exact variance -/
+/-! #### The variance -/
 
 theorem memLp_acoord (n : ℕ) (i : Fin (2 * n + 2)) : MemLp (acoord n i) 2 (arrLaw n) :=
   (memLp_two_iff_integrable_sq (measurable_acoord n i).aestronglyMeasurable).2
@@ -480,7 +480,7 @@ theorem theorem2_witness :
 
 end Theorem2Witness
 
-/-! ### Witness C: the rate arithmetic of `(1.5)` -/
+/-! ### The rate arithmetic of `(1.5)` -/
 
 namespace RateWitness
 

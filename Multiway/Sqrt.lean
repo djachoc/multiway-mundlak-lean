@@ -104,7 +104,7 @@ end Algebra
 /-! ### The Loewner order -/
 
 omit [Fintype n] [DecidableEq n] in
-/-- Positive definiteness travels up the Loewner order. -/
+/-- If `A` is positive definite and `A ⪯ B`, then `B` is positive definite. -/
 theorem posDef_of_le {A B : Matrix n n ℝ} (hA : A.PosDef) (hAB : A ≤ B) : B.PosDef := by
   have h := Matrix.le_iff.mp hAB
   have e : B = A + (B - A) := by abel
@@ -121,9 +121,7 @@ theorem loewner_smul_le_smul {A B : Matrix n n ℝ} {a : ℝ} (ha : 0 ≤ a) (h 
   rw [e]
   exact h.smul ha
 
-/-! #### Congruence by rectangular matrices
-
-Both shapes `SᴴAS` and `S A Sᵀ` are provided. -/
+/-! #### Congruence by rectangular matrices -/
 
 omit [DecidableEq n] in
 /-- Congruence preserves the Loewner order, with `S` rectangular: `A ⪯ B` gives
@@ -150,8 +148,8 @@ theorem mul_mul_transpose_le {m : Type*} [Fintype m] [DecidableEq m]
 
 /-- If `a I ⪯ M` with `a > 0` and `M` positive definite, then `M^{-1} ⪯ a^{-1} I`. The proof
 is the identity `a^{-1}I - M^{-1} = a^{-1} M^{-1/2}(M - aI)M^{-1/2}`, whose right-hand side is
-a congruence of a positive semidefinite matrix. Mathlib's `CStarAlgebra.inv_le_inv` says this,
-but only for a `ℂ`-algebra. -/
+a congruence of a positive semidefinite matrix. Mathlib's `CStarAlgebra.inv_le_inv` states this
+for `ℂ`-algebras. -/
 theorem inv_le_of_smul_one_le {M : Matrix n n ℝ} (hM : M.PosDef) {a : ℝ} (ha : 0 < a)
     (h : a • (1 : Matrix n n ℝ) ≤ M) : M⁻¹ ≤ a⁻¹ • (1 : Matrix n n ℝ) := by
   set S := (sqrtPD M)⁻¹ with hSdef
@@ -195,7 +193,7 @@ theorem smul_one_le_inv_of_le_smul_one {M : Matrix n n ℝ} (hM : M.PosDef) {a :
   rw [e2]
   exact key.smul (le_of_lt (inv_pos.mpr ha))
 
-/-- Operator arithmetic--geometric mean inequality: `(2c) I ⪯ A + c² A^{-1}` for every real
+/-- Operator arithmetic–geometric mean inequality: `(2c) I ⪯ A + c² A^{-1}` for every real
 `c`. The proof is `A + c²A^{-1} - (2c)I = A^{-1/2}(A - cI)'(A - cI)A^{-1/2}`. -/
 theorem two_mul_smul_one_le {A : Matrix n n ℝ} (hA : A.PosDef) (c : ℝ) :
     (2 * c) • (1 : Matrix n n ℝ) ≤ A + c ^ 2 • A⁻¹ := by
@@ -275,8 +273,7 @@ theorem eigenvectorBasis_ne_zero {H : Matrix n n ℝ} (hH : H.IsHermitian) (i : 
     (⇑(hH.eigenvectorBasis i) : n → ℝ) ≠ 0 := by
   simpa using hH.eigenvectorBasis.orthonormal.ne_zero i
 
-/-- Reading an upper Loewner bound off as a bound on every eigenvalue: `H ⪯ b I` gives
-`λ_i(H) ≤ b`. -/
+/-- If `H ⪯ b I`, then every eigenvalue satisfies `λ_i(H) ≤ b`. -/
 theorem eigenvalues_le_of_le_smul_one {H : Matrix n n ℝ} (hH : H.IsHermitian) {b : ℝ}
     (h : H ≤ b • (1 : Matrix n n ℝ)) (i : n) : hH.eigenvalues i ≤ b := by
   set v : n → ℝ := ⇑(hH.eigenvectorBasis i) with hvdef
@@ -336,7 +333,7 @@ theorem trace_mul_self_le_frobSq (N : Matrix n n ℝ) : (N * N).trace ≤ frobSq
   ring
 
 omit [DecidableEq n] in
-/-- Cauchy--Schwarz on the diagonal: `tr(M)² ≤ r ‖M‖_F²`. -/
+/-- Cauchy–Schwarz on the diagonal: `tr(M)² ≤ r ‖M‖_F²`. -/
 theorem sq_trace_le (M : Matrix n n ℝ) : M.trace ^ 2 ≤ Fintype.card n * frobSq M := by
   have h1 : M.trace ^ 2 ≤ (Fintype.card n : ℝ) * ∑ i, M i i ^ 2 := by
     have := sq_sum_le_card_mul_sum_sq (s := (Finset.univ : Finset n)) (f := fun i => M i i)
@@ -377,7 +374,7 @@ theorem dot_self_eq (x : n → ℝ) : x ⬝ᵥ x = ‖(EuclideanSpace.equiv n �
   rw [← real_inner_self_eq_norm_sq, EuclideanSpace.inner_eq_star_dotProduct]
   simp
 
-/-- Cauchy--Schwarz against the spectral norm: `x'Hx ≤ ‖H‖ ‖x‖²`. -/
+/-- Cauchy–Schwarz for the spectral norm: `x'Hx ≤ ‖H‖ ‖x‖²`. -/
 theorem dot_mulVec_le (H : Matrix n n ℝ) (x : n → ℝ) :
     x ⬝ᵥ (H *ᵥ x) ≤ ‖H‖ * ‖(EuclideanSpace.equiv n ℝ).symm x‖ ^ 2 := by
   set y : EuclideanSpace ℝ n := (EuclideanSpace.equiv n ℝ).symm x with hy

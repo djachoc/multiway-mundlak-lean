@@ -10,7 +10,7 @@ cluster-robust estimator under absorbed clustering): `‖Ξ_n‖/n → 0` whenev
 `(d_[Δ] - N_m + K) G^{(m)}_max = o(n)` and `d_[Δ]/n → 0`.
 
 The finite-sample bound `Cgm.xiMat_opNorm_le`, read at sample size `k`, is an inequality between
-real numbers, so the limit statement is proved for arbitrary real sequences satisfying it:
+real numbers, so the limit statement is proved for arbitrary real sequences satisfying it, with
 `Xi k = ‖Ξ_k‖`, `dA k = d_[Δ] - N_m`, `dL k = K`, `tPi k = d_[Δ] + K`, `Gmax k = G^{(m)}_max`
 and `card k = n`. The key step is the identity `√(d·(G·n))/n = √(d·G/n)`.
 
@@ -92,14 +92,14 @@ theorem xi_div_card_tendsto_zero {B : ℝ} {Xi dA dL tPi Gmax card : ℕ → ℝ
     simpa using h
   exact squeeze_zero (fun k => div_nonneg (hXi0 k) (hcard k).le) hdivbound hlim
 
-/-! ### Non-vacuity
+/-! ### Examples
 
 The sequences below satisfy `hbound` with equality, with `Xi k = 2√(k+1) + 2 → ∞` while
 `Xi k / (k+1) → 0`. -/
 
 section Witness
 
-/-- The witness sequences: `tr A = tr Λ = 1`, `G = 1`, `tr Π = 2` and `n = k+1`. -/
+/-- Example sequences with `tr A = tr Λ = 1`, `G = 1`, `tr Π = 2` and `n = k+1`. -/
 noncomputable def xiW (k : ℕ) : ℝ := 2 * Real.sqrt ((k : ℝ) + 1) + 2
 
 theorem xiW_tendsto_atTop : Tendsto xiW atTop atTop := by
@@ -112,7 +112,7 @@ theorem xiW_tendsto_atTop : Tendsto xiW atTop atTop := by
   exact h2.atTop_add (tendsto_const_nhds (x := (2 : ℝ)))
 
 /-- The hypotheses of `xi_div_card_tendsto_zero` hold jointly on one sequence with
-`Xi k` unbounded, so the conclusion is not the trivial statement for a bounded sequence. -/
+`Xi k` unbounded. -/
 theorem xi_div_card_tendsto_zero_witness :
     Tendsto (fun k : ℕ => xiW k / ((k : ℝ) + 1)) atTop (𝓝 0)
     ∧ Tendsto xiW atTop atTop := by

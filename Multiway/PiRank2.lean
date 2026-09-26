@@ -544,8 +544,8 @@ theorem meas_qpih (n : ℕ) : Measurable (qpih n) := by
 
 /-! ### The remaining hypotheses
 
-The hypotheses of `pi_clt_unconditional_of_design_closed` that do not concern the matrices, used
-by both results below. -/
+The lemmas below prove the hypotheses of `pi_clt_unconditional_of_design_closed` that do not
+concern the matrices. Both results below use them. -/
 
 theorem qkernel_prob (ω : Aw) : IsProbabilityMeasure (condExpKernel Pw Dw ω) := inferInstance
 

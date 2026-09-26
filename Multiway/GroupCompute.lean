@@ -9,7 +9,7 @@ This file formalizes Proposition SM.E.2 of the paper (Grouped computation of the
 system): the superset aggregates `T_F(·)` over pairs of observations sharing the dimensions `F`
 reduce to sums over the level-`F` cells (part (a)), the exact-pattern aggregates follow by
 Möbius inversion on the Boolean lattice (part (b)), and the residual-maker quantities reduce to
-cell sums and Frobenius norms (part (c)). This is finite combinatorics and matrix algebra.
+cell sums and Frobenius norms (part (c)). The proofs use finite combinatorics and matrix algebra.
 
 ## Notation
 
@@ -62,7 +62,7 @@ theorem sum_over_cells (c : D → O → L) (F : Finset D) (f : O → ℝ) :
   rw [← Finset.sum_fiberwise_of_maps_to hmaps f]
   exact Finset.sum_congr rfl fun g hg => by rw [filter_cellOf_eq hg]
 
-/-- `F ⊆ E(o,o')` if and only if `o` and `o'` lie in the same level-`F` cell: the double sum
+/-- `F ⊆ E(o,o')` if and only if `o` and `o'` lie in the same level-`F` cell. Hence the double sum
 over a cell, summed over the cells, is the double sum over the `∼_F`-linked pairs. -/
 theorem sum_cells_pair (c : D → O → L) (F : Finset D) (w : O → O → ℝ) :
     ∑ t ∈ cells c F, ∑ o ∈ t, ∑ o' ∈ t, w o o'
@@ -174,7 +174,7 @@ section PartB
 
 variable [Fintype O] [DecidableEq O] [DecidableEq D] [DecidableEq L]
 
-/-- The Möbius step itself: on the Boolean lattice, `∑_{F ⊆ G ⊆ E}(-1)^{|G|-|F|}` is `1` when
+/-- On the Boolean lattice, `∑_{F ⊆ G ⊆ E}(-1)^{|G|-|F|}` is `1` when
 `E = F` and `0` otherwise. -/
 theorem alternating_interval (F E : Finset D) :
     ∑ G ∈ E.powerset.filter (fun G => F ⊆ G), (-1 : ℝ) ^ (G.card - F.card)
@@ -299,7 +299,7 @@ def frobSqRDelta (c : D → O → L) (R : Matrix O O ℝ) (e : Finset D) : ℝ :
 def frobSqCross (c : D → O → L) (R : Matrix O O ℝ) (e F : Finset D) : ℝ :=
   ∑ s ∈ cells c e, ∑ t ∈ cells c F, cellCross R s t ^ 2
 
-/-- `Δ_FΔ_F' = Sh_F` entrywise: exactly one cell of level `F` contains a given
+/-- `Δ_FΔ_F' = Sh_F` entrywise, since exactly one cell of level `F` contains a given
 observation. -/
 theorem shMat_apply_eq_sum_cells (c : D → O → L) (e : Finset D) (o o' : O) :
     shMat c e o o'
@@ -332,8 +332,8 @@ theorem sum_indicator (s : Finset O) (f : O → ℝ) :
   classical
   rw [← Finset.sum_filter, Finset.filter_univ_mem]
 
-/-- `tr(A Sh_F) = ∑_{t ∈ 𝒯_F} ι_{F,t}'A ι_{F,t}`: the partition identity, read on the
-diagonal of a product. -/
+/-- `tr(A Sh_F) = ∑_{t ∈ 𝒯_F} ι_{F,t}'A ι_{F,t}`, the partition identity applied to
+the diagonal of a product. -/
 theorem trace_mul_shMat (c : D → O → L) (F : Finset D) (A : Matrix O O ℝ) :
     (A * shMat c F).trace = ∑ t ∈ cells c F, cellQuad A t := by
   classical

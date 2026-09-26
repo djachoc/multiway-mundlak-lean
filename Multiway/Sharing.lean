@@ -146,13 +146,13 @@ section ClauseC
 variable [Fintype O] [DecidableEq O] [DecidableEq D] [DecidableEq L]
 variable (c : D → O → L) (dims : Finset D)
 
-/-- The rooted three-chains: a vertex `q.1`, two of its neighbours `q.2.1` and `q.2.2.1`, and a
-neighbour `q.2.2.2` of the latter. -/
+/-- The set of rooted three-chains, formed from a vertex `q.1`, two of its neighbours `q.2.1` and
+`q.2.2.1`, and a neighbour `q.2.2.2` of the latter. -/
 def chainQuads : Finset (O × O × O × O) :=
   Finset.univ.filter (fun q =>
     Linked c dims q.1 q.2.1 ∧ Linked c dims q.1 q.2.2.1 ∧ Linked c dims q.2.2.1 q.2.2.2)
 
-/-- `𝓛_n`: the quadruples `(o₁,o₂,o₃,o₄)` with `o₁ ∼ o₂`, `o₃ ∼ o₄`, and `o_a ∼ o_b` for some
+/-- `𝓛_n` is the set of quadruples `(o₁,o₂,o₃,o₄)` with `o₁ ∼ o₂`, `o₃ ∼ o₄`, and `o_a ∼ o_b` for some
 `a ∈ {1,2}` and `b ∈ {3,4}`. -/
 def linkedQuads : Finset (O × O × O × O) :=
   Finset.univ.filter (fun q =>
@@ -324,7 +324,7 @@ end ClauseC
 /-! ### Sums over linked pairs
 
 A kernel vanishing off the sharing graph may be summed over linked pairs alone. The vanishing
-hypothesis is discharged for conditional covariances by `condCov_eq_zero_of_not_linked`. -/
+hypothesis is proved for conditional covariances in `condCov_eq_zero_of_not_linked`. -/
 
 section Support
 
@@ -366,7 +366,7 @@ theorem eigenvalue_le_of_graphSupported (A : Matrix O O ℝ) (κ : ℝ)
   obtain ⟨k, hk⟩ := eigenvalue_mem_ball hμ
   rw [Metric.mem_closedBall, Real.dist_eq] at hk
   have hκ : 0 ≤ κ := le_trans (abs_nonneg _) (hb k k)
-  -- only the linked entries of row `k` survive
+  -- only the linked entries of row `k` are nonzero
   have hsplit : ∑ j ∈ Finset.univ.erase k, ‖A k j‖
       = ∑ j ∈ (Finset.univ.erase k).filter (fun j => Linked c dims k j), ‖A k j‖ := by
     refine (Finset.sum_filter_of_ne ?_).symm
@@ -455,8 +455,8 @@ section ClauseE
 noncomputable def deltaSeq (nR Dn lmin : ℝ) : ℝ := nR * Dn ^ 3 / lmin ^ 2
 
 /-- **Lemma SM.B.11(e)**, as arithmetic on real numbers: given the second bound of clause (d)
-as the hypothesis `hd` and `D_n ≥ 1`, `D_n²/λ_min(Ω_n) ≤ 2B²C^{1/2}δ_n`. See
-`sharing_e_of_graphSupported` for the version with `hd` discharged. -/
+as the hypothesis `hd` and `D_n ≥ 1`, `D_n²/λ_min(Ω_n) ≤ 2B²C^{1/2}δ_n`. In
+`sharing_e_of_graphSupported` the hypothesis `hd` is proved. -/
 theorem sharing_e {B Csqrt nR Dn lmin : ℝ} (hB : 0 < B) (hC : 0 < Csqrt)
     (hD : 1 ≤ Dn) (hlmin : 0 < lmin)
     (hd : lmin ≤ B ^ 2 * Csqrt * nR * (Dn + 1)) :
@@ -576,8 +576,8 @@ end ThreeSeq
 
 /-! ### Clause (d), second bound: the rectangular Loewner conjugation
 
-The bound `λ_max(Ω_n) ≤ C^{1/2}(D_n+1)nB²` is proved in the Loewner order: `Ω ⪯ C^{1/2}(D_n+1)I`
-is conjugated by `X̃` with `Multiway.mul_mul_transpose_le` and combined with `X̃'X̃ ⪯ nB²I`. -/
+The bound `λ_max(Ω_n) ≤ C^{1/2}(D_n+1)nB²` is proved in the Loewner order. The bound
+`Ω ⪯ C^{1/2}(D_n+1)I` is conjugated by `X̃` with `Multiway.mul_mul_transpose_le` and combined with `X̃'X̃ ⪯ nB²I`. -/
 
 section ClauseD2
 
@@ -773,8 +773,8 @@ theorem eigenvalues_conj_le_of_graphSupported {Om : Matrix O O ℝ} (hOm : Om.Is
     (conj_le_smul_one_of_graphSupported c dims hOm hκ hb hz hB) i
 
 omit [DecidableEq D] in
-/-- **Lemma SM.B.11(e)** for an actual `Ω` and `X̃`, at every eigenvalue of `Ω_n = X̃'ΩX̃`, with
-the second bound of clause (d) discharged. -/
+/-- **Lemma SM.B.11(e)** at every eigenvalue of `Ω_n = X̃'ΩX̃`, with the second bound of clause (d)
+proved from the hypotheses on `Ω` and `X̃`. -/
 theorem sharing_e_of_graphSupported {Om : Matrix O O ℝ} (hOm : Om.IsHermitian)
     {κ : ℝ} (hκ : 0 < κ) (hb : ∀ o o', |Om o o'| ≤ κ)
     (hz : ∀ o o', ¬ Linked c dims o o' → Om o o' = 0)
@@ -932,7 +932,7 @@ end ThreeSeqA
 /-! ### Proposition SM.D.3(a): the eigenvalue bound
 
 The bound `λ_min(Ω_n) ≥ σ²n(λ_min(H) - ε)` on the event `{‖n⁻¹X̃'X̃ - H‖ ≤ ε}` is proved in the
-Loewner order: `‖A - H‖ ≤ ε` implies `(λ_min(H) - ε)I ⪯ A`. -/
+Loewner order, since `‖A - H‖ ≤ ε` implies `(λ_min(H) - ε)I ⪯ A`. -/
 
 section ThreeSeqAEigen
 
@@ -1076,7 +1076,7 @@ theorem event_compl_tendsto_zero_of_tendstoInProb {W : ℕ → Ω → ℝ} {E : 
   rw [Real.dist_eq, sub_zero] at hcon
   exact hω (hgood n ω hcon)
 
-/-- `δ_n = O_p(Ḡ_n³/n)` with an explicit constant: `P(δ_n > J³/(σ⁴λ²)·Ḡ_n³/n) → 0`. -/
+/-- `δ_n = O_p(Ḡ_n³/n)` with an explicit constant, in the form `P(δ_n > J³/(σ⁴λ²)·Ḡ_n³/n) → 0`. -/
 theorem threeseq_a_bigO {nR Dn G : ℕ → ℝ} {J s2 lam : ℝ} {lmin : ℕ → Ω → ℝ}
     (hnR : ∀ n, 0 < nR n) (hJ : 0 ≤ J) (hG : ∀ n, 0 ≤ G n) (hs2 : 0 < s2) (hlam : 0 < lam)
     (hD0 : ∀ n, 0 ≤ Dn n) (hD : ∀ n, Dn n ≤ J * G n)
@@ -1152,7 +1152,8 @@ theorem event_floor_of_design {Oseq Kseq : ℕ → Type*} [∀ n, Fintype (Oseq 
 
 /-- **Proposition SM.D.3(a)** over a sequence of designs: the design conditions and the variance
 floor `Ω ⪰ σ²I_n` give `δ_n ⟶ᵖ 0` at `mlt ≡ 1` and `δ_nd_{[Δ]} ⟶ᵖ 0` at `mlt = d_{[Δ]}`,
-whenever the corresponding `Ḡ_n³/n → 0` or `Ḡ_n³d_{[Δ]}/n → 0` holds. Here `0 < λ_0 - ε`. -/
+whenever the corresponding `Ḡ_n³/n → 0` or `Ḡ_n³d_{[Δ]}/n → 0` holds. The hypothesis `hlam` is
+`0 < λ_0 - ε`. -/
 theorem threeseq_a_of_design {Oseq Kseq : ℕ → Type*} [∀ n, Fintype (Oseq n)]
     [∀ n, DecidableEq (Oseq n)] [∀ n, Fintype (Kseq n)] [∀ n, DecidableEq (Kseq n)]
     {Xt : ∀ n, Ω → Matrix (Oseq n) (Kseq n) ℝ} {Om : ∀ n, Ω → Matrix (Oseq n) (Oseq n) ℝ}
@@ -1213,7 +1214,7 @@ theorem shMat_posSemidef (c : D → O → L) (e : Finset D) : (Multiway.shMat c 
   exact Matrix.posSemidef_conjTranspose_mul_self _
 
 /-- **Proposition SM.D.3(c)(iii)**: `Ω = ∑_j σ²_{c,j}Sh^{(j)} + diag(Var(ε_o ∣ 𝒟))`. That this is
-the conditional covariance matrix is `condOmega_eq_clusterOmega`. -/
+the conditional covariance matrix is proved in `condOmega_eq_clusterOmega`. -/
 def clusterOmega (c : D → O → L) (dims : Finset D) (sc : D → ℝ) (ve : O → ℝ) :
     Matrix O O ℝ :=
   (∑ j ∈ dims, sc j • Multiway.shMat c {j}) + Matrix.diagonal ve
@@ -1263,7 +1264,7 @@ theorem smul_one_le_of_clusterDecomposition {c : D → O → L} {dims : Finset D
 
 omit [Fintype O] [DecidableEq D] in
 /-- In the cluster-shock model, `Ω_{oo'} = 0` whenever `o ≁ o'`. The hypothesis
-`dims.Nonempty` (`J ≥ 1`) is needed: at `J = 0` nothing is linked, not even `o` to itself. -/
+`dims.Nonempty` (`J ≥ 1`) is needed, since at `J = 0` no pair is linked, including `(o, o)`. -/
 theorem clusterOmega_eq_zero_of_not_linked {c : D → O → L} {dims : Finset D}
     (hdims : dims.Nonempty) {sc : D → ℝ} {ve : O → ℝ} {o o' : O}
     (h : ¬ Linked c dims o o') : clusterOmega c dims sc ve o o' = 0 := by
@@ -1277,8 +1278,8 @@ theorem clusterOmega_eq_zero_of_not_linked {c : D → O → L} {dims : Finset D}
   refine ite_eq_right fun hs => ?_
   exact h ⟨j, hj, hs j (Finset.mem_singleton_self j)⟩
 
-/-- The indices of the cluster shocks the observations in `S` depend on:
-`{(j, g^{(j)}(o)) : j ≤ J, o ∈ S}`. -/
+/-- The set `{(j, g^{(j)}(o)) : j ≤ J, o ∈ S}` of indices of the cluster shocks on which the
+observations in `S` depend. -/
 def shockIdx (c : D → O → L) (dims : Finset D) (S : Finset O) : Finset (D × L) :=
   dims.biUnion fun j => S.image fun o => (j, c j o)
 
@@ -1344,9 +1345,9 @@ theorem nuVal_pow_four_le {c : D → O → L} {dims : Finset D} {cs : D × L →
 
 end ClusterShock
 
-/-! ### Non-vacuity witnesses
+/-! ### Examples
 
-Each witness applies the theorem it witnesses to a concrete model. The first graph model has two
+Each example applies the named theorem to a concrete model. The first graph model has two
 observations, one maintained dimension, and a single cluster containing both, so every pair is
 linked. -/
 
@@ -1358,7 +1359,7 @@ abbrev WitO := Fin 2
 /-- One maintained dimension. -/
 abbrev WitD := Fin 1
 
-/-- One cluster label: everything shares. -/
+/-- One cluster label, shared by every observation. -/
 def witC : WitD → WitO → Fin 1 := fun _ _ => 0
 
 /-- The maintained dimension is kept. -/
@@ -1371,7 +1372,8 @@ lemma witLinked (o o' : WitO) : Linked witC witDims o o' :=
 lemma witness_graph_nonempty : (linkedPairs witC witDims).Nonempty :=
   ⟨(0, 0), by simp [linkedPairs, witLinked]⟩
 
-/-- Witness for `eigenvalues_le_of_graphSupported`: the identity on two observations, `κ = 1`. -/
+/-- An example for `eigenvalues_le_of_graphSupported`, with the identity on two observations and
+`κ = 1`. -/
 theorem witness_eigenvalues_le (i : WitO) :
     (Matrix.isHermitian_one (n := WitO) (α := ℝ)).eigenvalues i
       ≤ (1 : ℝ) * ((maxDegree witC witDims : ℝ) + 1) := by
@@ -1381,14 +1383,14 @@ theorem witness_eigenvalues_le (i : WitO) :
   · intro o o' h
     exact absurd (witLinked o o') h
 
-/-- Witness for `sharing_e`, at `B = Csqrt = nR = Dn = lmin = 1`. -/
+/-- An example for `sharing_e`, at `B = Csqrt = nR = Dn = lmin = 1`. -/
 theorem witness_sharing_e :
     (1 : ℝ) ^ 2 / 1 ≤ 2 * (1 : ℝ) ^ 2 * 1 * deltaSeq 1 1 1 := by
   refine sharing_e (B := 1) (Csqrt := 1) (nR := 1) (Dn := 1) (lmin := 1)
     one_pos one_pos le_rfl one_pos ?_
   norm_num
 
-/-- Witness for `threeseq_b`, at `ε = 1/2`, `η = 1`, `C = K = 1`, `n = G = Dn = 1`, `δ = 1`. -/
+/-- An example for `threeseq_b`, at `ε = 1/2`, `η = 1`, `C = K = 1`, `n = G = Dn = 1`, `δ = 1`. -/
 theorem witness_threeseq_b :
     ((1 : ℝ) / 1) ^ ((1 : ℝ) / 2) * 1
       ≤ 2 ^ ((1 : ℝ) / 2) * 1 *
@@ -1399,7 +1401,7 @@ theorem witness_threeseq_b :
   · norm_num
   · rw [Real.one_rpow]; norm_num
 
-/-- Witness for `deltaSeq_le_of_cluster_bound`, at `n = 4`, `D_n = 2`, `J = Ḡ_n = 2`,
+/-- An example for `deltaSeq_le_of_cluster_bound`, at `n = 4`, `D_n = 2`, `J = Ḡ_n = 2`,
 `σ² = λ = 1` and `λ_min(Ω_n) = 4`, where the inequality `2 ≤ 16` is strict. -/
 theorem witness_deltaSeq_le_of_cluster_bound :
     deltaSeq 4 2 4 ≤ (2 : ℝ) ^ 3 / ((1 : ℝ) ^ 2 * (1 : ℝ) ^ 2) * ((2 : ℝ) ^ 3 / 4) :=
@@ -1407,7 +1409,7 @@ theorem witness_deltaSeq_le_of_cluster_bound :
     (lmin := 4) (by norm_num) (by norm_num) (by norm_num) one_pos one_pos (by norm_num)
     (by norm_num) (by norm_num)
 
-/-- Witness for `threeseq_b_tendsto`, at `ε = 1/2`, `η = 1`. -/
+/-- An example for `threeseq_b_tendsto`, at `ε = 1/2`, `η = 1`. -/
 theorem witness_threeseq_b_tendsto :
     Filter.Tendsto
       (fun x : ℝ => x ^ (-(3 * (1 : ℝ)) + (1 / 2) * (2 / 3 + 1))) Filter.atTop (nhds 0) := by
@@ -1416,18 +1418,18 @@ theorem witness_threeseq_b_tendsto :
 
 end Witness
 
-/-! ### Witnesses for clause (d)'s second bound and for Proposition SM.D.3
+/-! ### Examples for the second bound of clause (d) and for Proposition SM.D.3
 
-A second model, `witC2`, puts each observation in its own cluster, so that it has a non-adjacent
-pair. -/
+In the second model, `witC2`, each observation forms a separate cluster, so the model has a
+non-adjacent pair. -/
 
 section Witness2
 
 open scoped MatrixOrder
 open Matrix
 
-/-- The second model: one maintained dimension, each observation in its own cluster, so that
-`o ∼ o'` exactly when `o = o'`. -/
+/-- The second model has one maintained dimension and one cluster per observation, so `o ∼ o'` if
+and only if `o = o'`. -/
 def witC2 : WitD → WitO → WitO := fun _ o => o
 
 /-- The second model has a non-adjacent pair. -/
@@ -1435,7 +1437,8 @@ lemma witNotLinked : ¬ Linked witC2 witDims (0 : WitO) 1 := by
   rintro ⟨j, -, h⟩
   simp [witC2] at h
 
-/-- Witness for `le_smul_one_of_graphSupported`: the identity on two observations, `κ = 1`. -/
+/-- An example for `le_smul_one_of_graphSupported`, with the identity on two observations and
+`κ = 1`. -/
 theorem witness_le_smul_one :
     (1 : Matrix WitO WitO ℝ)
       ≤ ((1 : ℝ) * ((maxDegree witC witDims : ℝ) + 1)) • (1 : Matrix WitO WitO ℝ) := by
@@ -1445,7 +1448,7 @@ theorem witness_le_smul_one :
   · intro o o' h
     exact absurd (witLinked o o') h
 
-/-- Witness for `transpose_mul_self_le_smul_one`, at `X̃ = I₂` and `B² = 1`. -/
+/-- An example for `transpose_mul_self_le_smul_one`, at `X̃ = I₂` and `B² = 1`. -/
 theorem witness_transpose_mul_self_le :
     (1 : Matrix WitO WitO ℝ)ᵀ * (1 : Matrix WitO WitO ℝ)
       ≤ ((Fintype.card WitO : ℝ) * 1) • (1 : Matrix WitO WitO ℝ) := by
@@ -1457,7 +1460,7 @@ theorem witness_transpose_mul_self_le :
   rw [Finset.sum_congr rfl (fun k _ => e k), Finset.sum_ite_eq]
   simp
 
-/-- Witness for `conj_le_smul_one_of_graphSupported`, at `Ω = I₂`, `X̃ = I₂`, `κ = B² = 1`. -/
+/-- An example for `conj_le_smul_one_of_graphSupported`, at `Ω = I₂`, `X̃ = I₂`, `κ = B² = 1`. -/
 theorem witness_conj_le_smul_one :
     (1 : Matrix WitO WitO ℝ)ᵀ * (1 : Matrix WitO WitO ℝ) * (1 : Matrix WitO WitO ℝ)
       ≤ ((1 : ℝ) * ((maxDegree witC witDims : ℝ) + 1) * ((Fintype.card WitO : ℝ) * 1))
@@ -1475,13 +1478,13 @@ theorem witness_conj_le_smul_one :
     rw [Finset.sum_congr rfl (fun k _ => e k), Finset.sum_ite_eq]
     simp
 
-/-- The symmetry of `Ω_n` in the witness model. -/
+/-- The symmetry of `Ω_n` in this model. -/
 theorem witOnHerm :
     ((1 : Matrix WitO WitO ℝ)ᵀ * (1 : Matrix WitO WitO ℝ)
       * (1 : Matrix WitO WitO ℝ)).IsHermitian := by
   simp
 
-/-- Witness for `eigenvalues_conj_le_of_graphSupported`. -/
+/-- An example for `eigenvalues_conj_le_of_graphSupported`. -/
 theorem witness_eigenvalues_conj_le (i : WitO) :
     witOnHerm.eigenvalues i
       ≤ (1 : ℝ) * ((maxDegree witC witDims : ℝ) + 1) * ((Fintype.card WitO : ℝ) * 1) := by
@@ -1498,7 +1501,7 @@ theorem witness_eigenvalues_conj_le (i : WitO) :
     rw [Finset.sum_congr rfl (fun k _ => e k), Finset.sum_ite_eq]
     simp
 
-/-- Witness for `posDef_conj_of_floor`, at `Ω = X̃ = I₂` and `σ² = 1`. -/
+/-- An example for `posDef_conj_of_floor`, at `Ω = X̃ = I₂` and `σ² = 1`. -/
 theorem witness_posDef_conj_of_floor :
     ((1 : Matrix WitO WitO ℝ)ᵀ * (1 : Matrix WitO WitO ℝ)
       * (1 : Matrix WitO WitO ℝ)).PosDef := by
@@ -1506,7 +1509,7 @@ theorem witness_posDef_conj_of_floor :
   · simp
   · simpa using (Matrix.PosDef.one : (1 : Matrix WitO WitO ℝ).PosDef)
 
-/-- Witness for `sharing_e_of_graphSupported`. -/
+/-- An example for `sharing_e_of_graphSupported`. -/
 theorem witness_sharing_e_of_graphSupported (i : WitO) :
     (maxDegree witC witDims : ℝ) ^ 2 / witOnHerm.eigenvalues i
       ≤ 2 * (1 : ℝ) ^ 2 * 1 *
@@ -1525,8 +1528,8 @@ theorem witness_sharing_e_of_graphSupported (i : WitO) :
     rw [Finset.sum_congr rfl (fun k _ => e k), Finset.sum_ite_eq]
     simp
 
-/-- Witness for `sharing_e_lambdaMin_of_graphSupported`. Here the spectrum of `Ω_n` is
-constant; `witness_lambdaMin_lt_eigenvalues` covers a non-constant spectrum. -/
+/-- An example for `sharing_e_lambdaMin_of_graphSupported`, in which the spectrum of `Ω_n` is
+constant. `witness_lambdaMin_lt_eigenvalues` treats a non-constant spectrum. -/
 theorem witness_sharing_e_lambdaMin :
     (maxDegree witC witDims : ℝ) ^ 2 / lambdaMin witness_posDef_conj_of_floor.1
       ≤ 2 * (1 : ℝ) ^ 2 * 1 *
@@ -1553,7 +1556,7 @@ lemma witOmSpreadHerm : witOmSpread.IsHermitian := Matrix.isHermitian_diagonal _
 lemma witOmSpread_eq : witOmSpread = Matrix.diagonal ![(1 : ℝ), 4] := rfl
 
 /-- On `diag(1, 4)`, `λ_min(Ω)` is strictly below some eigenvalue. The proof uses
-`tr Ω = 5` and `det Ω = 4` rather than computing the eigenvalues. -/
+`tr Ω = 5` and `det Ω = 4`. -/
 theorem witness_lambdaMin_lt_eigenvalues :
     ∃ i : WitO, lambdaMin witOmSpreadHerm < witOmSpreadHerm.eigenvalues i := by
   by_contra hcon
@@ -1577,22 +1580,22 @@ theorem witness_lambdaMin_lt_eigenvalues :
   rw [h0, h1] at htr hdet
   nlinarith [htr, hdet]
 
-/-- Witness for `maxDegree_le_card_mul_maxCluster`, with `D_n = 1`, `J = 1` and `Ḡ_n = 2`. -/
+/-- An example for `maxDegree_le_card_mul_maxCluster`, with `D_n = 1`, `J = 1` and `Ḡ_n = 2`. -/
 theorem witness_maxDegree_le_card_mul_maxCluster :
     maxDegree witC witDims ≤ witDims.card * maxCluster witC witDims :=
   maxDegree_le_card_mul_maxCluster witC witDims ⟨0, Finset.mem_univ 0⟩
 
-/-- Witness for `shMat_posSemidef`. -/
+/-- An example for `shMat_posSemidef`. -/
 theorem witness_shMat_posSemidef : (Multiway.shMat witC witDims).PosSemidef :=
   shMat_posSemidef witC witDims
 
-/-- Witness for `smul_one_le_clusterOmega`, at `σ²_{c,1} = Var(ε_o ∣ 𝒟) = σ² = 1`. -/
+/-- An example for `smul_one_le_clusterOmega`, at `σ²_{c,1} = Var(ε_o ∣ 𝒟) = σ² = 1`. -/
 theorem witness_clusterOmega_floor :
     (1 : ℝ) • (1 : Matrix WitO WitO ℝ)
       ≤ clusterOmega witC witDims (fun _ => 1) (fun _ => 1) :=
   smul_one_le_clusterOmega (fun _ _ => zero_le_one) (fun _ => le_refl 1)
 
-/-- Witness for `smul_one_le_of_clusterDecomposition`. -/
+/-- An example for `smul_one_le_of_clusterDecomposition`. -/
 theorem witness_clusterDecomposition_floor :
     (1 : ℝ) • (1 : Matrix WitO WitO ℝ)
       ≤ clusterOmega witC witDims (fun _ => 1) (fun _ => 1) :=
@@ -1600,12 +1603,12 @@ theorem witness_clusterDecomposition_floor :
     (fun o o' => clusterOmega_apply witC witDims (fun _ => 1) (fun _ => 1) o o')
     (fun _ _ => zero_le_one) (fun _ => le_refl 1)
 
-/-- Witness for `clusterOmega_eq_zero_of_not_linked`, in the second model, where `0 ≁ 1`. -/
+/-- An example for `clusterOmega_eq_zero_of_not_linked`, in the second model, where `0 ≁ 1`. -/
 theorem witness_clusterOmega_eq_zero :
     clusterOmega witC2 witDims (fun _ => 1) (fun _ => 1) (0 : WitO) 1 = 0 :=
   clusterOmega_eq_zero_of_not_linked ⟨0, Finset.mem_univ 0⟩ witNotLinked
 
-/-- Witness for `shockIdx_disjoint`, at `S₁ = {0}`, `S₂ = {1}` in the second model. -/
+/-- An example for `shockIdx_disjoint`, at `S₁ = {0}`, `S₂ = {1}` in the second model. -/
 theorem witness_shockIdx_disjoint :
     Disjoint (shockIdx witC2 witDims {(0 : WitO)}) (shockIdx witC2 witDims {(1 : WitO)}) := by
   refine shockIdx_disjoint ?_
@@ -1618,12 +1621,12 @@ theorem witness_shockIdx_disjoint :
 /-- A shock configuration. -/
 def witCs : WitD × WitO → ℝ := fun _ => 1
 
-/-- The same configuration, changed at the cluster `1` of dimension `0`, which `ν_0` does not
-see. -/
+/-- The same configuration, changed at the cluster `1` of dimension `0`, on which `ν_0` does not
+depend. -/
 def witCs' : WitD × WitO → ℝ := fun p => if p.2 = 1 then 2 else 1
 
-/-- Witness for `nuVal_congr`: the two configurations differ, yet agree on `shockIdx {0}`, so
-`ν_0` is unchanged. -/
+/-- An example for `nuVal_congr`. The two configurations differ but agree on `shockIdx {0}`, so
+`ν_0` takes the same value under both. -/
 theorem witness_nuVal_congr :
     nuVal witC2 witDims witCs (fun _ => 0) (0 : WitO)
       = nuVal witC2 witDims witCs' (fun _ => 0) (0 : WitO) := by
@@ -1645,7 +1648,7 @@ end Witness2
 
 /-! ### The Regime 3 assumption
 
-Regime 3: conditionally on `𝒟`, for any two disjoint sets `S₁, S₂ ⊆ 𝒪` with `o ≁ o'` for every
+Under Regime 3, conditionally on `𝒟`, for any two disjoint sets `S₁, S₂ ⊆ 𝒪` with `o ≁ o'` for every
 `o ∈ S₁` and `o' ∈ S₂`, the families `{ν_o}_{o∈S₁}` and `{ν_{o'}}_{o'∈S₂}` are independent. It is
 expressed with `ProbabilityTheory.CondIndep` between the σ-algebras the two blocks generate. -/
 
@@ -1665,7 +1668,8 @@ def Regime3 {Ω : Type*} (𝒟 : MeasurableSpace Ω) {mΩ : MeasurableSpace Ω}
       (⨆ o ∈ (S₂ : Set O), MeasurableSpace.comap (ν o) inferInstance) h𝒟 P
 
 /-- Mutual conditional independence of the `ν_o` gives Regime 3, by `condIndep_iSup_of_disjoint`.
-The separation hypothesis is not used, so this reading is strictly stronger than Regime 3. -/
+The separation hypothesis is not used, so mutual conditional independence is strictly stronger
+than Regime 3. -/
 theorem regime3_of_iCondIndepFun {Ω : Type*} (𝒟 : MeasurableSpace Ω) {mΩ : MeasurableSpace Ω}
     [StandardBorelSpace Ω] (h𝒟 : 𝒟 ≤ mΩ) (c : D → O → L) (dims : Finset D)
     {ν : O → Ω → ℝ} {P : Measure Ω} [IsFiniteMeasure P]
@@ -1697,8 +1701,8 @@ end Regime3
 
 /-! ### Clause (a) of Lemma SM.B.11
 
-The conditional product rule is proved pointwise: `condIndepFun_iff_map_prod_eq_prod_map_map`
-gives, for almost every `ω`, ordinary independence under `condExpKernel P 𝒟 ω`, where
+The conditional product rule is proved pointwise. For almost every `ω`,
+`condIndepFun_iff_map_prod_eq_prod_map_map` gives ordinary independence under `condExpKernel P 𝒟 ω`, where
 `IndepFun.integral_mul_eq_mul_integral` applies. -/
 
 section ClauseA
@@ -1709,8 +1713,8 @@ open Matrix
 variable {Ω : Type*} {𝒟 mΩ : MeasurableSpace Ω} [StandardBorelSpace Ω] {h𝒟 : 𝒟 ≤ mΩ}
   {P : Measure Ω} [IsFiniteMeasure P]
 
-/-- The conditional product rule: for conditionally independent real random variables,
-`𝔼[XY ∣ 𝒟] = 𝔼[X ∣ 𝒟]𝔼[Y ∣ 𝒟]`. The integrability hypotheses are needed only to read the
+/-- The conditional product rule `𝔼[XY ∣ 𝒟] = 𝔼[X ∣ 𝒟]𝔼[Y ∣ 𝒟]` for conditionally independent
+real random variables. The integrability hypotheses are needed only to read the
 conditional expectations as integrals against `condExpKernel`. -/
 theorem condExp_mul_of_condIndepFun {X Y : Ω → ℝ} (hX : Measurable X) (hY : Measurable Y)
     (hXi : Integrable X P) (hYi : Integrable Y P) (hXYi : Integrable (X * Y) P)
@@ -1755,8 +1759,8 @@ variable {c : D → O → L} {dims : Finset D} {ν : O → Ω → ℝ}
 
 omit [Fintype O] [DecidableEq D] [DecidableEq L] in
 /-- **Lemma SM.B.11(a), first part.** Under Regime 3 (`hreg`), conditional mean zero (`hexog`)
-and square integrability (`hL2`), `Ω_{oo'} = 𝔼[ν_oν_{o'} ∣ 𝒟] = 0` for `o ≁ o'`. Here `hdims`
-is `J ≥ 1`. -/
+and square integrability (`hL2`), `Ω_{oo'} = 𝔼[ν_oν_{o'} ∣ 𝒟] = 0` for `o ≁ o'`. The hypothesis
+`hdims` is `J ≥ 1`. -/
 theorem condCov_eq_zero_of_not_linked (hdims : dims.Nonempty) (hreg : Regime3 𝒟 h𝒟 c dims ν P)
     (hmeas : ∀ o, Measurable (ν o)) (hL2 : ∀ o, MemLp (ν o) 2 P)
     (hexog : ∀ o, P[ν o | 𝒟] =ᵐ[P] 0) {o o' : O} (hsep : ¬ Linked c dims o o') :
@@ -1839,8 +1843,8 @@ open MeasureTheory ProbabilityTheory MeasurableSpace
 
 variable [DecidableEq D] [DecidableEq L]
 
-/-- The shocks that the block `S` depends on, as indices in one family: `Sum.inl (j,g)` is the
-cluster shock `c^{(j)}_g`, and `Sum.inr o` is `ε_o`. -/
+/-- The shocks on which the block `S` depends, indexed in one family, where `Sum.inl (j,g)` is the
+cluster shock `c^{(j)}_g` and `Sum.inr o` is `ε_o`. -/
 def shockSet (c : D → O → L) (dims : Finset D) (S : Finset O) : Set ((D × L) ⊕ O) :=
   Sum.inl '' (shockIdx c dims S : Set (D × L)) ∪ Sum.inr '' (S : Set O)
 
@@ -1953,7 +1957,7 @@ end ClusterShockRegime3
 
 The conditional covariance matrix of the cluster-shock model is `clusterOmega`. The product
 `ν_oν_{o'}` expands over pairs of shocks; pairs of distinct shocks have zero conditional mean
-(`condExp_shock_mul_eq_zero`), and the surviving terms give `Sh^{(j)}` and the diagonal. -/
+(`condExp_shock_mul_eq_zero`), and the remaining terms give `Sh^{(j)}` and the diagonal. -/
 
 section ClusterShockOmega
 
@@ -2095,7 +2099,7 @@ theorem condExp_nuRV_mul_nuRV [DecidableEq O] {c : D → O → L} {dims : Finset
   rw [e1, Pi.add_apply, eA, e2, Pi.add_apply, eB, e3, Pi.add_apply, eC, eD]
   simp
 
-/-- **Proposition SM.D.3(c)**, the covariance identification as a matrix: almost surely, the
+/-- **Proposition SM.D.3(c)**, the covariance identification as a matrix. Almost surely, the
 conditional covariance matrix of the cluster-shock model is
 `Ω = ∑_j σ²_{c,j}Sh^{(j)} + diag(Var(ε_o ∣ 𝒟))`, given `Var(c^{(j)}_g ∣ 𝒟) = σ²_{c,j}` (`hsc`). -/
 theorem condOmega_eq_clusterOmega [Fintype O] [DecidableEq O] {c : D → O → L} {dims : Finset D}
@@ -2190,7 +2194,7 @@ theorem condOmega_eq_zero_of_not_linked [Fintype O] [DecidableEq O] {c : D → O
 
 end ClusterShockOmega
 
-/-! ### Witnesses for Regime 3
+/-! ### Examples for Regime 3
 
 These use the second model `witC2`, which has a non-adjacent pair, and the point-mass model
 `Multiway.CondFactor.iCondIndepFun_bot_dirac`. -/
@@ -2199,15 +2203,15 @@ section Witness3
 
 open MeasureTheory ProbabilityTheory MeasurableSpace
 
-/-- The witness shock family on `ℝ`: every shock is the identity. -/
+/-- A shock family on `ℝ` in which every shock is the identity. -/
 def witZ : ((WitD × WitO) ⊕ WitO) → ℝ → ℝ := fun _ ω => ω
 
-/-- In the witness model, `ν_o = 2ω`. -/
+/-- In this model, `ν_o = 2ω`. -/
 theorem witZ_nuRV_apply (ω : ℝ) (o : WitO) : nuRV witC2 witDims witZ o ω = ω + ω := by
   rw [nuRV_apply]
   simp [witZ, witDims]
 
-/-- Witness for `regime3_of_clusterShock`. -/
+/-- An example for `regime3_of_clusterShock`. -/
 theorem witness_regime3_clusterShock (ω₀ : ℝ) :
     Regime3 (⊥ : MeasurableSpace ℝ) bot_le witC2 witDims
       (nuRV witC2 witDims witZ) (Measure.dirac ω₀) :=
@@ -2224,10 +2228,10 @@ theorem witness_regime3_separated (ω₀ : ℝ) :
 
 end Witness3
 
-/-! ### Witnesses for clause (a) on a Gaussian model
+/-! ### Examples for clause (a) on a Gaussian model
 
 Two observations under a product of two standard Gaussians, with `ν_o` the `o`-th coordinate and
-`witC2` giving each observation its own cluster. The diagonal entry `𝔼[ν_0ν_0 ∣ 𝒟] = 1` is
+`witC2` as the cluster structure (one cluster per observation). The diagonal entry `𝔼[ν_0ν_0 ∣ 𝒟] = 1` is
 nonzero. -/
 
 section WitnessGaussian
@@ -2297,7 +2301,7 @@ theorem witG_regime3 :
 theorem witG_integrable (o o' : WitO) : Integrable (witGNu o * witGNu o') witGP :=
   (witGNu_memLp o).integrable_mul (witGNu_memLp o')
 
-/-- Witness for `condCov_eq_zero_of_not_linked`, at the non-adjacent pair `0 ≁ 1`. -/
+/-- An example for `condCov_eq_zero_of_not_linked`, at the non-adjacent pair `0 ≁ 1`. -/
 theorem witness_condCov_eq_zero :
     witGP[witGNu 0 * witGNu 1 | (⊥ : MeasurableSpace WitGΩ)] =ᵐ[witGP] 0 :=
   condCov_eq_zero_of_not_linked Finset.univ_nonempty witG_regime3 witGNu_measurable
@@ -2308,11 +2312,11 @@ theorem witG_zero (o o' : WitO) (h : ¬ Linked witC2 witDims o o') :
   condCov_eq_zero_of_not_linked Finset.univ_nonempty witG_regime3 witGNu_measurable
     witGNu_memLp witG_exog h
 
-/-- A non-constant within-regressor array for the witness. -/
+/-- A non-constant within-regressor array for the examples. -/
 noncomputable def witGXt : WitO → Fin 1 → WitGΩ → ℝ :=
   fun o _ _ => if o = (0 : WitO) then 2 else 3
 
-/-- Witness for `condExp_meat_eq_scoreVar`. In `witC2` the linked pairs are the two diagonal
+/-- An example for `condExp_meat_eq_scoreVar`. In `witC2` the linked pairs are the two diagonal
 ones, so the left-hand side is `4𝔼[ν_0ν_0] + 9𝔼[ν_1ν_1] = 13`. -/
 theorem witness_condExp_meat_eq_scoreVar :
     witGP[fun ω => ∑ p ∈ linkedPairs witC2 witDims,
@@ -2338,7 +2342,7 @@ coordinate `o`. -/
 def witGZ : ((WitD × WitO) ⊕ WitO) → WitGΩ → ℝ :=
   fun s => witGNu (Sum.elim (fun p => p.2) id s)
 
-/-- Witness for `condExp_nuRV_eq_zero`. -/
+/-- An example for `condExp_nuRV_eq_zero`. -/
 theorem witness_condExp_nuRV_eq_zero (o : WitO) :
     witGP[nuRV witC2 witDims witGZ o | (⊥ : MeasurableSpace WitGΩ)] =ᵐ[witGP] 0 :=
   condExp_nuRV_eq_zero (Z := witGZ) (P := witGP) ⊥ witC2 witDims
@@ -2347,7 +2351,7 @@ theorem witness_condExp_nuRV_eq_zero (o : WitO) :
 
 end WitnessGaussian
 
-/-! ### Witnesses for the covariance identification
+/-! ### Examples for the covariance identification
 
 These use one independent standard Gaussian coordinate per shock (`witSZ`). -/
 
@@ -2423,7 +2427,7 @@ theorem witS_sc : ∀ j ∈ witDims, ∀ g : WitO,
       =ᵐ[witSP] fun _ => (1 : ℝ) :=
   fun j _ g => witS_sq (Sum.inl (j, g))
 
-/-- Witness for `condOmega_eq_clusterOmega`. -/
+/-- An example for `condOmega_eq_clusterOmega`. -/
 theorem witness_condOmega_eq_clusterOmega :
     ∀ᵐ ω ∂witSP, (Matrix.of fun o o' =>
         (witSP[nuRV witC2 witDims witSZ o * nuRV witC2 witDims witSZ o'
@@ -2451,14 +2455,14 @@ theorem witness_condOmega_diag_eq_two :
   rw [hsum, ite_eq_left rfl, h3]
   norm_num
 
-/-- `𝔼[ε_o² ∣ 𝒟] ≥ 1` in the witness model. -/
+/-- `𝔼[ε_o² ∣ 𝒟] ≥ 1` in this model. -/
 theorem witS_ve (o : WitO) :
     ∀ᵐ ω ∂witSP, (1 : ℝ) ≤ (witSP[witSZ (Sum.inr o) * witSZ (Sum.inr o)
       | (⊥ : MeasurableSpace WitSΩ)]) ω := by
   filter_upwards [witS_sq (Sum.inr o)] with ω hω
   rw [hω]
 
-/-- Witness for `smul_one_le_condOmega`, at `σ² = 1`. -/
+/-- An example for `smul_one_le_condOmega`, at `σ² = 1`. -/
 theorem witness_smul_one_le_condOmega :
     ∀ᵐ ω ∂witSP, (1 : ℝ) • (1 : Matrix WitO WitO ℝ)
       ≤ (Matrix.of fun o o' => (witSP[nuRV witC2 witDims witSZ o * nuRV witC2 witDims witSZ o'
@@ -2468,7 +2472,7 @@ theorem witness_smul_one_le_condOmega :
 
 end WitnessShocks
 
-/-! ### Witnesses for Proposition SM.D.3(a) -/
+/-! ### Examples for Proposition SM.D.3(a) -/
 
 section WitnessThreeSeqA
 
@@ -2481,7 +2485,7 @@ theorem witDesign_herm : (((1 : Matrix (Fin 1) (Fin 1) ℝ))ᵀ * (1 : Matrix (F
     * (1 : Matrix (Fin 1) (Fin 1) ℝ)).IsHermitian := by
   simp [Matrix.IsHermitian]
 
-/-- Witness for `eigenvalues_conj_ge_of_design`, at `σ² = 1`, `n = 1`, `λ_0 = 1`, `ε = 1/2`,
+/-- An example for `eigenvalues_conj_ge_of_design`, at `σ² = 1`, `n = 1`, `λ_0 = 1`, `ε = 1/2`,
 giving the lower bound `1/2`. -/
 theorem witness_eigenvalues_conj_ge_of_design (i : Fin 1) :
     (1 : ℝ) / 2 ≤ witDesign_herm.eigenvalues i := by
@@ -2493,7 +2497,7 @@ theorem witness_eigenvalues_conj_ge_of_design (i : Fin 1) :
     (by norm_num) witDesign_herm i
   linarith
 
-/-- A design sequence on `ℝ` under a point mass at `0`: `λ_min(Ω_n) = n+1` at the atom and `1`
+/-- A design sequence on `ℝ` under a point mass at `0`, with `λ_min(Ω_n) = n+1` at the atom and `1`
 off it. -/
 noncomputable def witLmin (n : ℕ) (ω : ℝ) : ℝ := if ω = 0 then (n : ℝ) + 1 else 1
 
@@ -2503,8 +2507,8 @@ theorem witLmin_good (n : ℕ) : {ω : ℝ | (1 : ℝ) * ((n : ℝ) + 1) * 1 ≤
   rw [Set.mem_singleton_iff] at h0
   exact hω (by simp [witLmin, h0])
 
-/-- Witness for `threeseq_a_accum_i`. Off the atom `δ_n = n+1` diverges, so the convergence in
-probability is not pointwise. -/
+/-- An example for `threeseq_a_accum_i`. Off the atom, `δ_n = n+1` diverges, so the convergence
+in probability does not hold pointwise. -/
 theorem witness_threeseq_a_accum_i :
     TendstoInMeasure (Measure.dirac (0 : ℝ))
       (fun (n : ℕ) (ω : ℝ) => deltaSeq ((n : ℝ) + 1) 1 (witLmin n ω)) atTop

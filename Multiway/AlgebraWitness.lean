@@ -4,14 +4,12 @@ import Multiway.JointProjection
 import Mathlib.Analysis.InnerProductSpace.PiL2
 
 /-!
-# Nonvacuity witnesses for the algebraic results
+# Examples for the algebraic results
 
-A theorem whose hypotheses cannot hold simultaneously is vacuously true. This file exhibits
-concrete models in which the hypotheses of four algebraic results hold jointly and the
-conclusions are non-trivial: Lemma SM.C.1 (parallel images), Lemma SM.B.1 (incremental
-projector), Lemma SM.B.2 (global spanning implies local spanning) and the minimality part of
-Theorem 3. Each witness applies the theorem to its model and then proves that the model is not
-degenerate.
+The hypotheses of Lemma SM.C.1 (parallel images), Lemma SM.B.1 (incremental projector),
+Lemma SM.B.2 (global spanning implies local spanning) and the minimality part of Theorem 3 hold
+jointly on the concrete models below, and the conclusions are non-trivial there. Each example
+applies the result to its model and proves that the model is not degenerate.
 
 The inner-product models live in `EuclideanSpace ℝ (Fin 2)` and `EuclideanSpace ℝ (Fin 3)`,
 and every geometric step reduces to `⟪e_i, e_j⟫ = 𝟙{i = j}`. The parallel-images model lives
@@ -37,7 +35,7 @@ section ParallelWitness
 /-- `B = I` on `ℝ²`. -/
 def parB : (Fin 2 → ℝ) →ₗ[ℝ] (Fin 2 → ℝ) := LinearMap.id
 
-/-- `A = 3I`, so that the scalar the lemma produces is `3` and not `0`. -/
+/-- `A = 3I`, so that the scalar given by the lemma is `3`. -/
 def parA : (Fin 2 → ℝ) →ₗ[ℝ] (Fin 2 → ℝ) := (3 : ℝ) • LinearMap.id
 
 theorem parA_apply (x : Fin 2 → ℝ) : parA x = (3 : ℝ) • x := rfl
@@ -63,8 +61,8 @@ theorem parB_ne_zero : parB ≠ 0 := by
   rw [parB_apply] at h2
   norm_num at h2
 
-/-- **Nonvacuity witness for `Multiway.parallel_images`.** The scalar the lemma produces is
-`3`, and no other scalar works. -/
+/-- An example for `Multiway.parallel_images`. The scalar given by the lemma is `3`, and no
+other scalar satisfies its conclusion. -/
 theorem parallel_images_witness :
     (∃ lam : ℝ, parA = lam • parB)
       ∧ parA = (3 : ℝ) • parB
@@ -83,7 +81,7 @@ end ParallelWitness
 
 /-! ## 2. Coordinate vectors
 
-Basic facts about the standard coordinate vectors used by the witnesses below. -/
+Basic facts about the standard coordinate vectors used in the examples below. -/
 
 section Coords
 
@@ -106,7 +104,7 @@ theorem ev_ne_zero {n : ℕ} (i : Fin n) : (ev i : EuclideanSpace ℝ (Fin n)) �
   rw [h, inner_zero_right] at h1
   norm_num at h1
 
-/-- `e_j ≠ e_i + e_j` for `i ≠ j`, read off the inner product with `e_i`. -/
+/-- `e_j ≠ e_i + e_j` for `i ≠ j`, since their inner products with `e_i` differ. -/
 theorem ev_ne_add {n : ℕ} {i j : Fin n} (h : i ≠ j) :
     (ev j : EuclideanSpace ℝ (Fin n)) ≠ ev i + ev j := by
   intro hEq
@@ -125,8 +123,8 @@ theorem ev_mem_orthogonal_singleton {n : ℕ} {i j : Fin n} (h : i ≠ j) :
   rw [← hc, inner_smul_left, inner_ev_ne h]
   simp
 
-/-- `e_j ∉ span{e_i}` for `i ≠ j`: a member of that span is orthogonal to `e_j`, so `⟪e_j,e_j⟫`
-would be `0`. -/
+/-- `e_j ∉ span{e_i}` for `i ≠ j`, since every member of that span is orthogonal to `e_j` and
+`⟪e_j,e_j⟫ = 1`. -/
 theorem ev_notMem_span_singleton {n : ℕ} {i j : Fin n} (h : i ≠ j) :
     (ev j : EuclideanSpace ℝ (Fin n))
       ∉ Submodule.span ℝ {(ev i : EuclideanSpace ℝ (Fin n))} := by
@@ -146,7 +144,7 @@ theorem ev2_mem_orthogonal_pair :
     inner_ev_ne (by decide : (0 : Fin 3) ≠ 2), inner_ev_ne (by decide : (1 : Fin 3) ≠ 2)]
   simp
 
-/-- `⊤.map P_V = V`: the image of the whole space under an orthogonal projector is the
+/-- `⊤.map P_V = V`. The image of the whole space under an orthogonal projector is the
 subspace it projects onto. -/
 theorem top_map_starProjection {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     [FiniteDimensional ℝ E] (V : Submodule ℝ E) :
@@ -160,7 +158,7 @@ end Coords
 
 /-! ## 3. Lemma SM.B.1: the incremental projector
 
-The model: `𝒮_{-m} = span{e_0}`, `𝒮_m = span{e_0 + e_1}` and `𝒮 = 𝒮_{-m} + 𝒮_m` in `ℝ²`. Neither
+Consider `𝒮_{-m} = span{e_0}`, `𝒮_m = span{e_0 + e_1}` and `𝒮 = 𝒮_{-m} + 𝒮_m` in `ℝ²`. Neither
 subspace is trivial and they are not orthogonal, so `A_m`, the projector onto
 `Q_{-m}𝒮_m = span{e_1}`, is non-zero and differs from `P_{𝒮_m}`. -/
 
@@ -169,7 +167,7 @@ section IncrementalWitness
 /-- `𝒮_{-m}`, the span of the other dimensions' dummies. -/
 noncomputable def incT : Submodule ℝ E2 := Submodule.span ℝ {(ev 0 : E2)}
 
-/-- `𝒮_m`, dimension `m`'s own span, not orthogonal to `incT`. -/
+/-- `𝒮_m`, the span of the dummies of dimension `m`, which is not orthogonal to `incT`. -/
 noncomputable def incU : Submodule ℝ E2 := Submodule.span ℝ {(ev 0 : E2) + ev 1}
 
 /-- `𝒮 = 𝒮_{-m} + 𝒮_m`. -/
@@ -203,7 +201,7 @@ theorem starProjection_incT_ev1 : incT.starProjection (ev 1 : E2) = 0 :=
   (Submodule.starProjection_apply_eq_zero_iff incT).mpr
     (ev_mem_orthogonal_singleton (by decide : (0 : Fin 2) ≠ 1))
 
-/-- `A_m e_1 = e_1`: `e_1 ∈ 𝒮` and `e_1 ⟂ 𝒮_{-m}`. -/
+/-- `A_m e_1 = e_1`, since `e_1 ∈ 𝒮` and `e_1 ⟂ 𝒮_{-m}`. -/
 theorem inc_projector_ev1 :
     incrementalProjector incS incT (ev 1 : E2) = ev 1 := by
   rw [incrementalProjector_apply, starProjection_incT_ev1,
@@ -225,7 +223,7 @@ theorem inc_projector_sum :
     starProjection_incT_ev0, starProjection_incT_ev1, add_zero]
   abel
 
-/-- `A_m ≠ P_{𝒮_m}`: the incremental projector differs from dimension `m`'s own projector. -/
+/-- The incremental projector `A_m` differs from the projector `P_{𝒮_m}`. -/
 theorem inc_projector_ne_starProjection_U :
     incrementalProjector incS incT ≠ ((incU.starProjection : E2 →L[ℝ] E2) : E2 →ₗ[ℝ] E2) := by
   intro h
@@ -234,9 +232,9 @@ theorem inc_projector_ne_starProjection_U :
     Submodule.starProjection_eq_self_iff.mpr inc_sum_mem_incU] at h1
   exact ev_ne_add (by decide : (0 : Fin 2) ≠ 1) h1
 
-/-- **Nonvacuity witness for `Multiway.incremental_projector`**, on a model where `𝒮_{-m}`
-and `𝒮_m` are non-trivial and non-orthogonal. The first clause is used through
-`inc_projector_ne_starProjection_U`; the remaining clauses are stated in full. -/
+/-- An example for `Multiway.incremental_projector`, on a model where `𝒮_{-m}` and `𝒮_m` are
+non-trivial and non-orthogonal. The statement gives the last four clauses of the lemma, together
+with `A_m ≠ 0` and `A_m ≠ P_{𝒮_m}`. -/
 theorem incremental_projector_witness :
     LinearMap.range (incrementalMundlak incT incU)
         = LinearMap.range (incrementalProjector incS incT)
@@ -256,14 +254,14 @@ end IncrementalWitness
 
 /-! ## 4. Lemma SM.B.2: global spanning implies local spanning
 
-The model has `M = 2`: `D = Fin 2`, `m = 0`, `𝒮_0 = span{e_0, e_1}`, `𝒮_1 = span{e_0}` and
+Consider `M = 2`, with `D = Fin 2`, `m = 0`, `𝒮_0 = span{e_0, e_1}`, `𝒮_1 = span{e_0}` and
 `ι_n = e_0`, so `C₀ = span{e_0} ≤ 𝒮_ℓ` for both `ℓ`. The hypothesis `hM : ∃ ℓ, ℓ ≠ m` is used to
 obtain `C₀ ≤ 𝒮_{-m}`; `local_boundary_at_one_dimension` shows that this containment fails at
 `M = 1` whenever `C₀ ≠ ⊥`. -/
 
 section LocalWitness
 
-/-- The two fixed-effect dimensions: `𝒮_0` carries `e_0` and `e_1`, `𝒮_1` only `e_0`. -/
+/-- The two fixed-effect dimensions, with `𝒮_0 = span{e_0, e_1}` and `𝒮_1 = span{e_0}`. -/
 noncomputable def locP : Fin 2 → Submodule ℝ E2 := fun k =>
   if k = 0 then Submodule.span ℝ {(ev 0 : E2), ev 1} else Submodule.span ℝ {(ev 0 : E2)}
 
@@ -293,8 +291,8 @@ theorem loc_hC : ∀ ℓ : Fin 2, locC ≤ locP ℓ := by
     exact Submodule.span_mono (Set.singleton_subset_iff.mpr (by simp))
   · rw [locP_of_ne h]
 
-/-- Global spanning, at `W = col(X) = ⊤`: every column of `P_[Δ]X` lies in
-`span(ι_n) + ∑_ℓ col(P_ℓX)` because the whole joint span does. -/
+/-- Global spanning holds at `W = col(X) = ⊤`, since the whole joint span, and hence every
+column of `P_[Δ]X`, lies in `span(ι_n) + ∑_ℓ col(P_ℓX)`. -/
 theorem loc_hglobal :
     (⊤ : Submodule ℝ E2).map (((⨆ ℓ, locP ℓ).starProjection : E2 →ₗ[ℝ] E2))
       ≤ locC ⊔ ⨆ ℓ, (⊤ : Submodule ℝ E2).map (((locP ℓ).starProjection : E2 →ₗ[ℝ] E2)) := by
@@ -305,14 +303,14 @@ theorem loc_hglobal :
   exact le_iSup
     (fun ℓ => (⊤ : Submodule ℝ E2).map (((locP ℓ).starProjection : E2 →ₗ[ℝ] E2))) ℓ
 
-/-- `𝒮_{-m} ≤ span{e_0}`: the only dimension other than `m = 0` is `1`, whose span is
+/-- `𝒮_{-m} ≤ span{e_0}`, since the only dimension other than `m = 0` is `1`, whose span is
 `span{e_0}`. -/
 theorem loc_rest_le :
     (⨆ ℓ : Fin 2, ⨆ (_ : ℓ ≠ (0 : Fin 2)), locP ℓ) ≤ Submodule.span ℝ {(ev 0 : E2)} := by
   refine iSup_le fun ℓ => iSup_le fun h => ?_
   rw [locP_of_ne h]
 
-/-- `A_m e_1 = e_1` on this model: `e_1 ∈ 𝒮` because it is in `𝒮_0`, and `e_1 ⟂ 𝒮_{-m}`. -/
+/-- `A_m e_1 = e_1` on this model, since `e_1 ∈ 𝒮_0 ≤ 𝒮` and `e_1 ⟂ 𝒮_{-m}`. -/
 theorem loc_projector_ev1 :
     incrementalProjector (⨆ ℓ : Fin 2, locP ℓ)
         (⨆ ℓ : Fin 2, ⨆ (_ : ℓ ≠ (0 : Fin 2)), locP ℓ) (ev 1 : E2) = ev 1 := by
@@ -326,8 +324,8 @@ theorem loc_projector_ev1 :
   rw [incrementalProjector_apply, Submodule.starProjection_eq_self_iff.mpr hmemS,
     (Submodule.starProjection_apply_eq_zero_iff _).mpr hperp, sub_zero]
 
-/-- **Nonvacuity witness for `Multiway.local_spanning_of_two_dimensions`** at `M = 2`. The
-second conjunct shows the containment is not `⊥ ≤ ⊥`. -/
+/-- An example for `Multiway.local_spanning_of_two_dimensions` at `M = 2`. The second conjunct
+shows that the containment is not `⊥ ≤ ⊥`. -/
 theorem local_spanning_witness :
     ((⊤ : Submodule ℝ E2).map
         (incrementalProjector (⨆ ℓ : Fin 2, locP ℓ)
@@ -364,7 +362,7 @@ end LocalWitness
 
 /-! ## 5. Theorem 3: minimality
 
-The model: `ℝ³` with `𝒮 = span{e_0, e_1}`, `K = 1` and `X a = a(e_0 + e_2)`. Then
+Consider `ℝ³` with `𝒮 = span{e_0, e_1}`, `K = 1` and `X a = a(e_0 + e_2)`. Then
 `X'Q_[Δ]X ≻ 0` because `e_0 + e_2 ∉ 𝒮`, and `col(P_[Δ]X) = span{e_0}`. The least element lies
 strictly between `⊥` and `𝒮`, and `𝒮` itself belongs to the set, so the minimality claim is
 non-trivial. -/
@@ -374,7 +372,7 @@ section JmWitness
 /-- `𝒮 = span{e_0, e_1}`, the joint fixed-effects space, two-dimensional inside `ℝ³`. -/
 noncomputable def jmS : Submodule ℝ E3 := Submodule.span ℝ {(ev 0 : E3), ev 1}
 
-/-- `X : ℝ → ℝ³`, `X a = a(e_0 + e_2)`: one regressor, with a component inside `𝒮` and a
+/-- `X : ℝ → ℝ³`, `X a = a(e_0 + e_2)`, one regressor with a component inside `𝒮` and a
 component orthogonal to it. -/
 noncomputable def jmX : ℝ →ₗ[ℝ] E3 :=
   LinearMap.toSpanSingleton ℝ E3 ((ev 0 : E3) + ev 2)
@@ -430,13 +428,13 @@ theorem jm_jointProjControls_ne_bot : jointProjControls jmS jmX ≠ ⊥ := by
   rw [Submodule.mem_bot] at h0
   exact ev_ne_zero 0 h0
 
-/-- `col(P_[Δ]X) ≠ 𝒮`: `e_1 ∈ 𝒮` is not in it. -/
+/-- `col(P_[Δ]X) ≠ 𝒮`, since `e_1 ∈ 𝒮` does not lie in `col(P_[Δ]X)`. -/
 theorem jm_jointProjControls_ne_S : jointProjControls jmS jmX ≠ jmS := by
   rw [jm_jointProjControls]
   intro h
   exact ev_notMem_span_singleton (by decide : (0 : Fin 3) ≠ 1) (h ▸ ev1_mem_jmS)
 
-/-- **Nonvacuity witness for `Multiway.jm_isLeast`** (Theorem 3, minimality). The least
+/-- An example for `Multiway.jm_isLeast` (Theorem 3, minimality). The least
 element is neither `⊥` nor `𝒮`, and `𝒮` itself belongs to the set. -/
 theorem jm_isLeast_witness :
     IsLeast {W : Submodule ℝ E3 |

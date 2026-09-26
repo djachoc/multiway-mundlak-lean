@@ -43,7 +43,7 @@ variable {Gp : Type*} [Fintype Gp] [DecidableEq Gp]
 variable {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
 
 /-- The cluster (fibre) of `γ` under the single maintained clustering map `g`.  At `J = 1` this
-is the whole of the dependence neighbourhood of any of its members. -/
+is the dependence neighbourhood of each of its members. -/
 def cluster (g : O → Gp) (γ : Gp) : Finset O :=
   Finset.univ.filter (fun o => g o = γ)
 
@@ -66,12 +66,12 @@ theorem sum_clusterSum (X : O → Ω → ℝ) (g : O → Gp) (ω : Ω) :
     ∑ γ, clusterSum X g γ ω = ∑ o, X o ω :=
   Finset.sum_fiberwise (Finset.univ : Finset O) g (fun o => X o ω)
 
-/-- `Finset.sum_fiberwise` phrased with `cluster`, so that it rewrites. -/
+/-- `Finset.sum_fiberwise` stated in terms of `cluster`. -/
 theorem sum_fiberwise_cluster {M : Type*} [AddCommMonoid M] (g : O → Gp) (f : O → M) :
     ∑ γ, ∑ o ∈ cluster g γ, f o = ∑ o, f o :=
   Finset.sum_fiberwise (Finset.univ : Finset O) g f
 
-/-- `Finset.sum_fiberwise'` phrased with `cluster`, so that it rewrites. -/
+/-- `Finset.sum_fiberwise'` stated in terms of `cluster`. -/
 theorem sum_fiberwise_cluster' {M : Type*} [AddCommMonoid M] (g : O → Gp) (f : Gp → M) :
     ∑ γ, ∑ _o ∈ cluster g γ, f γ = ∑ o, f (g o) :=
   Finset.sum_fiberwise' (Finset.univ : Finset O) g f
@@ -93,7 +93,7 @@ theorem abs_clusterSum_le' {X : O → Ω → ℝ} {g : O → Gp} {φ : ℝ} (hφ
     (mul_le_mul_of_nonneg_right (by exact_mod_cast hGb γ) hφ0)
 
 omit [Fintype Gp] in
-/-- At `J = 1` the closed dependence neighbourhood of `o` is exactly its cluster. -/
+/-- At `J = 1` the closed dependence neighbourhood of `o` is its cluster. -/
 theorem nbhd_eq_cluster {X : O → Ω → ℝ} {g : O → Gp} (D : DepGraph X μ)
     (hshare : ∀ o o', D.G o o' ↔ g o = g o') (o : O) : D.nbhd o = cluster g (g o) := by
   ext j
@@ -107,7 +107,7 @@ theorem nbhdSum_eq_clusterSum {X : O → Ω → ℝ} {g : O → Gp} (D : DepGrap
   simp only [nbhdSum, clusterSum, nbhd_eq_cluster D hshare o]
 
 omit [Fintype Gp] in
-/-- Distinct clusters carry independent sums. -/
+/-- The sums over distinct clusters are independent. -/
 theorem indepFun_clusterSum {X : O → Ω → ℝ} {g : O → Gp} (D : DepGraph X μ)
     (hshare : ∀ o o', D.G o o' ↔ g o = g o') {γ γ' : Gp} (hne : γ ≠ γ') :
     IndepFun (clusterSum X g γ) (clusterSum X g γ') μ := by
@@ -139,13 +139,13 @@ variable {O : Type*} [Fintype O]
 variable {Gp : Type*} [Fintype Gp] [DecidableEq Gp]
 variable {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
 
-/-- Bounded and measurable is integrable, on a probability measure. -/
+/-- A bounded measurable function is integrable under a probability measure. -/
 private theorem integrable_of_bdd {f : Ω → ℝ} (hf : Measurable f) {C : ℝ}
     (h : ∀ ω, |f ω| ≤ C) : Integrable f μ :=
   Integrable.of_bound hf.aestronglyMeasurable C
     (Filter.Eventually.of_forall (fun ω => by rw [Real.norm_eq_abs]; exact h ω))
 
-/-- Bounded and measurable is `L²`, on a probability measure. -/
+/-- A bounded measurable function is in `L²` under a probability measure. -/
 private theorem memLp_two_of_bdd {f : Ω → ℝ} (hf : Measurable f) {C : ℝ}
     (h : ∀ ω, |f ω| ≤ C) : MemLp f 2 μ :=
   MemLp.of_bound hf.aestronglyMeasurable C
@@ -168,8 +168,8 @@ theorem variance_clusterSum_eq {φ : ℝ} (hX : ∀ o, Measurable (X o))
   variance_of_integral_eq_zero (measurable_clusterSum hX g γ).aemeasurable
     (integral_clusterSum_eq_zero hX hφ hmean γ)
 
-/-- The cluster variances add to the standardized total: distinct clusters are independent,
-hence uncorrelated, and the total is `1` by standardization. -/
+/-- The cluster variances sum to `1`, since distinct clusters are independent and the total
+variance is standardized to `1`. -/
 theorem sum_integral_clusterSum_sq (D : DepGraph X μ)
     (hshare : ∀ o o', D.G o o' ↔ g o = g o') {φ : ℝ} (hφ0 : 0 ≤ φ)
     (hφ : ∀ o ω, |X o ω| ≤ φ) {Gb : ℕ} (hGb : ∀ γ, (cluster g γ).card ≤ Gb)
@@ -264,8 +264,8 @@ theorem secondError_le (D : DepGraph X μ) (hshare : ∀ o o', D.G o o' ↔ g o 
     _ = (Gb : ℝ) * φ := mul_comm _ _
 
 omit [IsProbabilityMeasure μ] in
-/-- At `J = 1`, `∑_o X_o T_o = ∑_γ S_γ²`: since the neighbourhood is closed, the localized
-double sum is `∑_{o ∼ o'} X_o X_{o'}`, which collapses to the sum of squared cluster sums. -/
+/-- At `J = 1`, `∑_o X_o T_o = ∑_γ S_γ²`. Since the neighbourhood is closed, the localized
+double sum is `∑_{o ∼ o'} X_o X_{o'}`, and this equals the sum of squared cluster sums. -/
 theorem sum_mul_nbhdSum_eq (D : DepGraph X μ) (hshare : ∀ o o', D.G o o' ↔ g o = g o')
     (ω : Ω) : ∑ o, X o ω * nbhdSum X D.nbhd o ω = ∑ γ, (clusterSum X g γ ω) ^ 2 := by
   have h1 : ∀ o : O, X o ω * nbhdSum X D.nbhd o ω = X o ω * clusterSum X g (g o) ω := by
@@ -404,7 +404,7 @@ theorem firstError_tendsto_zero
   refine squeeze_zero (fun n => variance_nonneg _ _) (fun n => ?_) hsq
   exact firstError_le (D n) (hshare n) (hφ0 n) (hφ n) (hGb n) (hmean n) (hvar n)
 
-/-- **Theorem 5(a), at `J = 1`.** Let `{X_{n,o}}` be a standardized array with one clustering
+/-- **Theorem 5(a), at `J = 1`.** Consider a standardized array `{X_{n,o}}` with one clustering
 dimension given by the cluster map `g n` (`hshare`), mean-zero summands bounded by `φ n`, clusters
 of size at most `Ḡ n` and `Var(∑_o X_{n,o}) = 1`. If `Ḡ_n φ_n → 0`, the CDF of `∑_o X_{n,o}`
 converges to the standard normal CDF at every threshold. -/
@@ -497,14 +497,14 @@ theorem steinStd_eq (Xt : Matrix O K ℝ) (Om : Matrix O O ℝ) (Rn : Matrix r K
 noncomputable def steinWeight (Xt : Matrix O K ℝ) (Om : Matrix O O ℝ) (Rn : Matrix r K ℝ)
     (b : r → ℝ) : K → ℝ := steinStd Xt Om Rn *ᵥ b
 
-/-- `X_{n,o} := (a_n'x̃_o)ν_o`, the array the scalar theorem is about. -/
+/-- `X_{n,o} := (a_n'x̃_o)ν_o`, the array to which the scalar theorem is applied. -/
 def scoreArray (Xt : Matrix O K ℝ) (a : K → ℝ) (v : O → W → ℝ) : O → W → ℝ :=
   fun o ω => (Xt *ᵥ a) o * v o ω
 
 /-! #### The identity `b'𝒱_n^{-1/2}𝓡_n(β̂_JM − β) = ∑_o X_{n,o}` -/
 
 omit [DecidableEq O] [DecidableEq K] in
-/-- The adjoint move `(Ma)'w = a'(M'w)`, used three times below. -/
+/-- The adjoint identity `(Ma)'w = a'(M'w)`. -/
 theorem dotProduct_mulVec_adjoint (M : Matrix O K ℝ) (a : K → ℝ) (w : O → ℝ) :
     (M *ᵥ a) ⬝ᵥ w = a ⬝ᵥ (Mᵀ *ᵥ w) := by
   rw [dotProduct_comm, Matrix.dotProduct_mulVec, ← Matrix.mulVec_transpose, dotProduct_comm]
@@ -516,10 +516,10 @@ theorem depSum_scoreArray (Xt : Matrix O K ℝ) (a : K → ℝ) (v : O → W →
   rw [h, dotProduct_mulVec_adjoint]
 
 omit [DecidableEq O] [MeasurableSpace W] in
-/-- **The reduction identity.** With `A_n := (X̃'X̃)^{-1}𝓡_n'`, `𝒱_n := A_n'Ω_nA_n`,
+/-- The reduction identity. With `A_n := (X̃'X̃)^{-1}𝓡_n'`, `𝒱_n := A_n'Ω_nA_n`,
 `G_n := A_n𝒱_n^{-1/2}` and `a_n := G_nb`, the score representation `β̂_JM − β = (X̃'X̃)^{-1}X̃'ν`
-turns `b'𝒱_n^{-1/2}𝓡_n(β̂_JM − β)` into `∑_o (a_n'x̃_o)ν_o`. The identity is unconditional: it
-uses only the symmetry of `sqrtPD`. -/
+turns `b'𝒱_n^{-1/2}𝓡_n(β̂_JM − β)` into `∑_o (a_n'x̃_o)ν_o`. The identity requires only the
+symmetry of `sqrtPD`. -/
 theorem dotProduct_standardized_eq_depSum (Xt : Matrix O K ℝ) (Om : Matrix O O ℝ)
     (Rn : Matrix r K ℝ) (b : r → ℝ) (v : O → W → ℝ) (ω : W) :
     b ⬝ᵥ ((sqrtPD (restrictedVar Xt Om Rn))⁻¹ *ᵥ
@@ -546,10 +546,10 @@ theorem dotProduct_standardized_eq_depSum (Xt : Matrix O K ℝ) (Om : Matrix O O
         (dotProduct_mulVec_adjoint (scoreMap Xt Rn) (S⁻¹ *ᵥ b) u).symm
     _ = steinWeight Xt Om Rn b ⬝ᵥ u := by rw [hW]
 
-/-! #### Discharging the array theorem's hypotheses from the design -/
+/-! #### The hypotheses of the array theorem, verified from the design -/
 
 omit [DecidableEq K] in
-/-- Cauchy--Schwarz for the dot product, in the `√` form the bound below needs. -/
+/-- Cauchy–Schwarz for the dot product, in `√` form. -/
 theorem abs_dotProduct_le (x y : K → ℝ) :
     |x ⬝ᵥ y| ≤ Real.sqrt (x ⬝ᵥ x) * Real.sqrt (y ⬝ᵥ y) := by
   have hx : Real.sqrt (x ⬝ᵥ x) = ‖(EuclideanSpace.equiv K ℝ).symm x‖ := by
@@ -574,7 +574,8 @@ theorem sqrt_dot_mulVec_le (G : Matrix K r ℝ) (b : r → ℝ) :
 
 omit [DecidableEq O] [MeasurableSpace W] in
 /-- The bound `|X_{n,o}| ≤ φ_n := BC_ν λ_min(Ω_n)^{-1/2}`, from `sup_o|ν_o| ≤ C_ν`,
-`sup_o‖x̃_o‖ ≤ B` and Lemma SM.B.12. `λ_min(Ω_n)` is rendered as any `c > 0` with `cI ⪯ Ω_n`. -/
+`sup_o‖x̃_o‖ ≤ B` and Lemma SM.B.12. For `λ_min(Ω_n)` the statement uses any `c > 0` with
+`cI ⪯ Ω_n`. -/
 theorem abs_scoreArray_le {Xt : Matrix O K ℝ} {Om : Matrix O O ℝ} {Rn : Matrix r K ℝ}
     (hPD : (scoreVar Xt Om).PosDef) (hA : Function.Injective (scoreMap Xt Rn).mulVec)
     {c : ℝ} (hc : 0 < c) (hcOm : c • (1 : Matrix K K ℝ) ≤ scoreVar Xt Om)
@@ -610,7 +611,7 @@ theorem abs_scoreArray_le {Xt : Matrix O K ℝ} {Om : Matrix O O ℝ} {Rn : Matr
         rw [Real.sqrt_inv, div_eq_mul_inv]; ring
 
 omit [Fintype O] [DecidableEq O] [DecidableEq K] in
-/-- Mean zero, from exogeneity. -/
+/-- The array has mean zero, by exogeneity. -/
 theorem integral_scoreArray {v : O → W → ℝ} (hmean : ∀ o, ∫ ω, v o ω ∂μ = 0)
     (Xt : Matrix O K ℝ) (a : K → ℝ) (o : O) :
     ∫ ω, scoreArray Xt a v o ω ∂μ = 0 := by
@@ -620,8 +621,8 @@ theorem integral_scoreArray {v : O → W → ℝ} (hmean : ∀ o, ∫ ω, v o ω
 variable [IsProbabilityMeasure μ]
 
 omit [DecidableEq O] [DecidableEq K] in
-/-- The total variance is the quadratic form of `Ω_n`: `∫(∑_oX_{n,o})² = a'Ω_na`, with `Ω`
-entering through its second moments (`hOm`). -/
+/-- The total variance is `∫(∑_oX_{n,o})² = a'Ω_na`, where `Ω_n` is the second-moment matrix
+of `ν` (`hOm`). -/
 theorem integral_depSum_scoreArray_sq {v : O → W → ℝ} {Om : Matrix O O ℝ} {C : ℝ}
     (hmeas : ∀ o, Measurable (v o)) (hbd : ∀ o ω, |v o ω| ≤ C)
     (hOm : ∀ o o', ∫ ω, v o ω * v o' ω ∂μ = Om o o')
@@ -707,8 +708,8 @@ section Witness
 
 open Multiway.Multilinear
 
-/-- The witness design: at sample size `n` there are `n+1` observations, each its own cluster
-(`g = id`, so `Ḡ = 1`), carrying one fair sign scaled by `(n+1)^{-1/2}`. -/
+/-- An example design. At sample size `n` there are `n+1` observations in singleton clusters
+(`g = id`, so `Ḡ = 1`), each a fair sign scaled by `(n+1)^{-1/2}`. -/
 noncomputable def witX (n : ℕ) (o : Fin (n + 1)) (ω : Fin (n + 1) → Bool) : ℝ :=
   sign2 o ω / Real.sqrt ((n : ℝ) + 1)
 
@@ -719,7 +720,7 @@ theorem witX_iIndepFun (n : ℕ) : iIndepFun (witX n) (coins (n + 1)) :=
   (iIndepFun_sign2 (n + 1)).comp (fun _ x => x / Real.sqrt ((n : ℝ) + 1))
     (fun _ => measurable_id.div_const _)
 
-/-- The sharing graph of the witness design: equality of indices. -/
+/-- The sharing graph of the example design is equality of indices. -/
 noncomputable def witDep (n : ℕ) : DepGraph (witX n) (coins (n + 1)) where
   G := fun o o' => o = o'
   decG := fun _ _ => inferInstance
@@ -794,9 +795,9 @@ theorem witX_cluster_card (n : ℕ) (γ : Fin (n + 1)) :
   rw [mem_cluster] at ha hb
   simpa using ha.trans hb.symm
 
-/-- **Vacuity witness.** The hypotheses of `cltcluster_a_oneDimension` hold on a sequence of
-designs varying with `n`: `n+1` singleton clusters of one fair sign each, scaled by
-`(n+1)^{-1/2}`, so `Ḡ_n = 1` and `φ_n = (n+1)^{-1/2} → 0` while the total variance is `1`. -/
+/-- The hypotheses of `cltcluster_a_oneDimension` hold on `n+1` singleton clusters of one fair
+sign each, scaled by `(n+1)^{-1/2}`. Then `Ḡ_n = 1`, `φ_n = (n+1)^{-1/2} → 0` and the total
+variance is `1`. -/
 theorem cltcluster_a_oneDimension_witness (s : ℝ) :
     Tendsto (fun n => ((coins (n + 1)).map (depSum (witX n))).real (Set.Iic s)) atTop
       (𝓝 ((gaussianReal 0 1).real (Set.Iic s))) := by
@@ -818,10 +819,10 @@ section BetaJM
 open scoped MatrixOrder Matrix.Norms.L2Operator
 open Matrix
 
-/-- **Theorem 5(a) for `β̂_JM`, at `J = 1`.** This is `cltcluster_a_oneDimension` with the
-array reduction carried out: `A_n`, `𝒱_n`, `G_n`, `a_n := G_nb`, `X_{n,o} := (a_n'x̃_o)ν_o`, and
-`b'𝒱_n^{-1/2}𝓡_n(β̂_JM − β) = ∑_oX_{n,o}` through the score representation. The direction `b`
-is fixed and the conclusion is CDF convergence of the scalar statistic. -/
+/-- **Theorem 5(a) for `β̂_JM`, at `J = 1`.** The theorem applies `cltcluster_a_oneDimension`
+to `X_{n,o} := (a_n'x̃_o)ν_o` with `a_n := G_nb`, and the score representation gives
+`b'𝒱_n^{-1/2}𝓡_n(β̂_JM − β) = ∑_oX_{n,o}`. For a fixed direction `b`, the CDF of this scalar
+statistic converges to the standard normal CDF. -/
 theorem cltcluster_a_oneDimension_betaJM
     {O : ℕ → Type*} [∀ n, Fintype (O n)] [∀ n, DecidableEq (O n)]
     {Gp : ℕ → Type*} [∀ n, Fintype (Gp n)] [∀ n, DecidableEq (Gp n)]
@@ -873,9 +874,9 @@ theorem cltcluster_a_oneDimension_betaJM
   · exact fun n => integral_depSum_scoreArray_sq_eq_one (hPD n) (hA n)
       (fun o => (Dv n).meas o) (hnu n) (hOm n) hb
 
-/-- The same, under the rate condition `δ_n → 0`, through
-`cltcluster_a_oneDimension_of_delta`: the rate enters as `Ḡ_nφ_n ≤ κ√δ_n` with `δ_n → 0`, the
-form Corollary SM.D.3 supplies. -/
+/-- The same theorem under the rate condition `δ_n → 0`, through
+`cltcluster_a_oneDimension_of_delta`. The rate enters as `Ḡ_nφ_n ≤ κ√δ_n` with `δ_n → 0`, as in
+Corollary SM.D.3. -/
 theorem cltcluster_a_oneDimension_betaJM_of_delta
     {O : ℕ → Type*} [∀ n, Fintype (O n)] [∀ n, DecidableEq (O n)]
     {Gp : ℕ → Type*} [∀ n, Fintype (Gp n)] [∀ n, DecidableEq (Gp n)]
@@ -938,12 +939,12 @@ open scoped MatrixOrder Matrix.Norms.L2Operator
 open Matrix
 open Multiway.Multilinear
 
-/-- The witness design for the array reduction: at sample size `n` there are `n+1`
-observations, each its own cluster, one regressor equal to `1` and `𝓡_n = I_1`, with
-disturbances one fair sign each. -/
+/-- An example design for the array reduction. At sample size `n` there are `n+1`
+observations in singleton clusters, one regressor equal to `1`, `𝓡_n = I_1`, and a fair sign as
+the disturbance of each observation. -/
 noncomputable def redXt (n : ℕ) : Matrix (Fin (n + 1)) (Fin 1) ℝ := fun _ _ => 1
 
-/-- The dependency graph of the witness disturbance: equality of indices. -/
+/-- The dependency graph of the example disturbances is equality of indices. -/
 noncomputable def redDep (n : ℕ) :
     DepGraph (fun o : Fin (n + 1) => sign2 o) (coins (n + 1)) where
   G := fun o o' => o = o'
@@ -1003,10 +1004,9 @@ theorem red_second_moment (n : ℕ) (o o' : Fin (n + 1)) :
       = (1 : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ) o o' := by
   rw [integral_sign2_mul, Matrix.one_apply]
 
-/-- **Vacuity witness for the array reduction**, through `cltcluster_a_oneDimension_betaJM`:
-`n+1` observations, one regressor `x̃_o = 1`, `𝓡_n = I_1`, `Ω_n = X̃'X̃ = n+1`, singleton
-clusters and one fair sign per observation. The total variance is `1` at every `n` while
-`φ_n = (n+1)^{-1/2} → 0`. -/
+/-- The hypotheses of `cltcluster_a_oneDimension_betaJM` hold with `n+1` observations, one
+regressor `x̃_o = 1`, `𝓡_n = I_1`, `Ω_n = X̃'X̃ = n+1`, singleton clusters and one fair sign per
+observation. The total variance is `1` at every `n` and `φ_n = (n+1)^{-1/2} → 0`. -/
 theorem cltcluster_a_oneDimension_betaJM_witness (s : ℝ) :
     Tendsto (fun n => ((coins (n + 1)).map (fun ω =>
         (fun _ : Fin 1 => (1 : ℝ)) ⬝ᵥ
@@ -1046,7 +1046,7 @@ section CharFun
 
 /-- The characteristic-function form of the Stein bound, with the two Stein error limits as
 inputs. It is derived from `stein_expect_tendsto` at the test functions `cos(t·)` and `sin(t·)`,
-and is shared by the `J = 1` and general-`J` routes. -/
+and is used for both the `J = 1` and the general-`J` results. -/
 theorem charFun_tendsto_of_errors
     {O : ℕ → Type*} [∀ n, Fintype (O n)] [∀ n, DecidableEq (O n)]
     {Ω : ℕ → Type*} [∀ n, MeasurableSpace (Ω n)]
@@ -1118,8 +1118,7 @@ theorem charFun_tendsto_of_errors
   · exact (Complex.continuous_ofReal.tendsto _).comp hsin_tendsto
 
 /-- **Theorem 5(a) at `J = 1`, in characteristic-function form.** The characteristic
-functions of `∑_o X_{n,o}` converge to `e^{-t²/2}`. This is the form the deconditioning step
-consumes. -/
+functions of `∑_o X_{n,o}` converge to `e^{-t²/2}`. -/
 theorem cltcluster_a_oneDimension_charFun
     {O : ℕ → Type*} [∀ n, Fintype (O n)] [∀ n, DecidableEq (O n)]
     {Gp : ℕ → Type*} [∀ n, Fintype (Gp n)] [∀ n, DecidableEq (Gp n)]
@@ -1171,11 +1170,11 @@ end CharFun
 
 /-! ## Removing the conditioning on `𝒟`
 
-The results above hold under a single measure `μ n`, read as the regular conditional law `ℙ_ω`
-given the design σ-field `𝒟`. This section passes to an unconditional limit law through
-`Multiway.CLTMartingale.CondD`: a subsequence chosen once for the vector of design convergences,
-dominated convergence on the conditional characteristic function, the tower property and Lévy's
-continuity theorem. -/
+The results above hold under a single measure `μ n`, interpreted as the regular conditional law
+`ℙ_ω` given the design σ-field `𝒟`. The unconditional limit law follows from
+`Multiway.CLTMartingale.CondD`, by a subsequence argument for the design convergences, dominated
+convergence of the conditional characteristic function, the tower property and Lévy's continuity
+theorem. -/
 
 section Deconditioning
 
@@ -1279,13 +1278,13 @@ section UnconditionalWitness
 
 open Multiway.Multilinear
 
-/-! ### A witness on one probability space
+/-! ### An example on one probability space
 
-An unconditional theorem carries a single `Ω`, `P` and `𝒟`, so the witness array must live on one
-space. `ProbabilityTheory.exists_iid` supplies an i.i.d. family of fair coins indexed by `ℕ × ℕ`,
-from which row `n` takes `n+1`. -/
+An unconditional theorem is stated on a single `Ω`, `P` and `𝒟`, so the example array is defined
+on one space. `ProbabilityTheory.exists_iid` gives an i.i.d. family of fair coins indexed by
+`ℕ × ℕ`, and row `n` uses `n+1` of them. -/
 
-/-- Row `n` of the witness array: `n+1` fair signs, each its own cluster, scaled by
+/-- Row `n` of the example array, `n+1` fair signs in singleton clusters scaled by
 `(n+1)^{-1/2}`, all on one probability space. -/
 noncomputable def iidSign {Ω : Type*} (ξ : ℕ × ℕ → Ω → Bool) (n : ℕ) (o : Fin (n + 1))
     (ω : Ω) : ℝ :=
@@ -1334,7 +1333,7 @@ theorem integral_iidSign_sq {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
   rw [hrw]
   simp
 
-/-- The sharing graph of the witness design: equality of indices, so every cluster is a
+/-- The sharing graph of the example design is equality of indices, so every cluster is a
 singleton and `Ḡ_n = 1`. -/
 noncomputable def iidDep {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
     [IsProbabilityMeasure P] {ξ : ℕ × ℕ → Ω → Bool} (hξ : ∀ i, Measurable (ξ i))
@@ -1352,7 +1351,7 @@ noncomputable def iidDep {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
       exact h a ha a hb rfl
     exact (iIndepFun_iidSign hindep n).indepFun_finset A B hdisj (measurable_iidSign hξ n)
 
-/-- The standardization: the total has variance `1` at every `n`. -/
+/-- The total has variance `1` at every `n`. -/
 theorem integral_depSum_iidSign_sq {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
     [IsProbabilityMeasure P] {ξ : ℕ × ℕ → Ω → Bool} (hξ : ∀ i, Measurable (ξ i))
     (hlaw : ∀ i, HasLaw (ξ i) coin P) (hindep : iIndepFun ξ P) (n : ℕ) :
@@ -1387,10 +1386,10 @@ theorem integral_depSum_iidSign_sq {Ω : Type*} [MeasurableSpace Ω] {P : Measur
   push_cast
   field_simp
 
-/-- **Vacuity witness for `cltcluster_a_unconditional_of_frozen`**, on `n+1` singleton
-clusters of one fair sign each, scaled by `(n+1)^{-1/2}`, at `𝒟 = ⊥`. `hfrozen` is discharged by
-`cltcluster_a_oneDimension_tendstoInDistribution` and `hfreeze` by `condExp_bot`. The conjuncts
-are the unit total variance, the limit law and its CDF form. -/
+/-- The hypotheses of `cltcluster_a_unconditional_of_frozen` hold on `n+1` singleton clusters
+of one fair sign each, scaled by `(n+1)^{-1/2}`, at `𝒟 = ⊥`. `hfrozen` is proved by
+`cltcluster_a_oneDimension_tendstoInDistribution` and `hfreeze` by `condExp_bot`. The statement
+gives the unit total variance, the limit law and its CDF form. -/
 theorem cltcluster_a_unconditional_witness :
     ∃ (Ω : Type) (_ : MeasurableSpace Ω) (P : Measure Ω) (_ : IsProbabilityMeasure P)
       (ξ : ℕ × ℕ → Ω → Bool),
@@ -1439,11 +1438,11 @@ end UnconditionalWitness
 
 /-! ## The unconditional limit law from the design's `𝒟`-measurability
 
-Here the defining property of `ℙ_ω` is proved rather than assumed, through
-`Multiway.CLTMartingale.CondD` and Mathlib's `condExpKernel`: the conditional characteristic
-function is the characteristic function under `condExpKernel P 𝒟 ω`, and a `𝒟`-measurable design
-is almost surely constant under it. This requires `[StandardBorelSpace Ω]`. The results apply to
-the `J = 1`, general-`J` and part (b) conditional limits alike. -/
+The defining property of `ℙ_ω` is proved from `Multiway.CLTMartingale.CondD` and Mathlib's
+`condExpKernel`. The conditional characteristic function is the characteristic function under
+`condExpKernel P 𝒟 ω`, and a `𝒟`-measurable design is almost surely constant under it. This
+requires `[StandardBorelSpace Ω]`. The results apply to the `J = 1`, general-`J` and part (b)
+conditional limits. -/
 
 section DesignDeconditioning
 
@@ -1493,23 +1492,23 @@ theorem cltcluster_a_unconditional_cdf_of_design
 
 end DesignDeconditioning
 
-/-! ### A witness with a nontrivial design σ-field
+/-! ### An example with a nontrivial design σ-field
 
-`Ω = Bool × ℝ` carries a fair design coin and an independent standard Gaussian disturbance, and
-`𝒟 = σ(coin)` is a proper sub-σ-field. The design at index `n` is `±(n+1)^{-1}` with its sign
+On `Ω = Bool × ℝ` the first coordinate is a fair design coin and the second an independent
+standard Gaussian disturbance, and `𝒟 = σ(coin)` is a proper sub-σ-field. The design at index `n` is `±(n+1)^{-1}` with its sign
 read off the coin, and the statistic depends on the design. The conditional law of the
 disturbance is identified as `N(0,1)` through independence (`map_snd_condExpKernel`). The frozen
-law is `N(0,1)` exactly at every `n`, so no asymptotics run in this witness. -/
+statistic has law `N(0,1)` at every `n`. -/
 
 namespace DesignWitness
 
 open Multiway.CLTMartingale.CondD
 open Multiway.CLTMartingale.CondD.FrozenWitness (coin coin_singleton)
 
-/-- The witness sample space: a design coin and a standard Gaussian disturbance. -/
+/-- The sample space of the example, a design coin and a standard Gaussian disturbance. -/
 abbrev DOmg : Type := Bool × ℝ
 
-/-- The witness law: the coin and the disturbance independent, the coin fair. -/
+/-- The law of the example, under which the coin is fair and independent of the disturbance. -/
 noncomputable def Pdes : Measure DOmg := coin.prod (gaussianReal 0 1)
 
 instance instIsProbabilityMeasurePdes : IsProbabilityMeasure Pdes := by
@@ -1518,7 +1517,7 @@ instance instIsProbabilityMeasurePdes : IsProbabilityMeasure Pdes := by
 example : StandardBorelSpace DOmg := inferInstance
 
 set_option warn.classDefReducibility false in
-/-- The design σ-field: what the coin reveals, and nothing else. -/
+/-- The design σ-field, generated by the coin. -/
 def Ddes : MeasurableSpace DOmg := MeasurableSpace.comap Prod.fst inferInstance
 
 theorem Ddes_le : Ddes ≤ (inferInstance : MeasurableSpace DOmg) :=
@@ -1598,7 +1597,7 @@ theorem map_snd_condExpKernel :
   rw [Measure.map_apply measurable_snd measurableSet_Iio, hq, ← map_snd_Pdes,
     Measure.map_apply measurable_snd measurableSet_Iio]
 
-/-- The sign the design carries: `+1` on one face of the coin, `-1` on the other. -/
+/-- The sign of the design, `+1` on one face of the coin and `-1` on the other. -/
 noncomputable def sgnDes (ω : DOmg) : ℝ := if ω.1 then (1 : ℝ) else -1
 
 theorem sgnDes_sq (ω : DOmg) : (sgnDes ω) ^ 2 = 1 := by
@@ -1636,7 +1635,7 @@ theorem Fdes_frozen (n : ℕ) (ω : DOmg) : Fdes n (ddes n ω) = fun y => sgnDes
 instance instIsProbabilityMeasure_condExpKernel_Pdes (ω : DOmg) :
     IsProbabilityMeasure (condExpKernel Pdes Ddes ω) := inferInstance
 
-/-- The frozen statistic has law exactly `N(0,1)` under `ℙ_ω`, by the neg-invariance of the
+/-- The frozen statistic has law `N(0,1)` under `ℙ_ω`, by the neg-invariance of the
 standard Gaussian. -/
 theorem map_Fdes_frozen {ω : DOmg}
     (hω : Measure.map (Prod.snd : DOmg → ℝ) (condExpKernel Pdes Ddes ω) = gaussianReal 0 1)
@@ -1653,7 +1652,7 @@ theorem map_Fdes_frozen {ω : DOmg}
     simpa using sgnDes_sq ω
 
 /-- `hfrozen` for this model: the frozen statistic converges in distribution to `N(0,1)` under
-`ℙ_ω` for almost every realization -- here by having that law exactly at every `n`. -/
+`ℙ_ω` for almost every realization, since it has that law at every `n`. -/
 theorem hfrozen_des : ∀ᵐ ω ∂Pdes,
     TendstoInDistribution (m := fun _ : ℕ => (inferInstance : MeasurableSpace DOmg))
       (fun (n : ℕ) (y : DOmg) => Fdes n (ddes n ω) y) atTop (id : ℝ → ℝ)
@@ -1689,14 +1688,11 @@ theorem condExpKernel_ne_Pdes : ¬ (∀ᵐ ω ∂Pdes, condExpKernel Pdes Ddes �
   rw [hset, Pdes_fst] at hz
   exact (ENNReal.inv_ne_zero.2 (by simp)) hz
 
-/-- **Vacuity witness for `cltcluster_a_unconditional_of_design`.** The conjuncts are:
-1. the design is `±(n+1)^{-1}`, with sign the coin;
-2. the statistic depends on the design;
-3. each face of the coin has probability `1/2`;
-4. `𝒟` is a proper sub-σ-field;
-5. `ℙ_ω` is not `P`;
-6. the unconditional limit law `N(0,1)`;
-7. the same in CDF form. -/
+/-- The hypotheses of `cltcluster_a_unconditional_of_design` hold on this model. In order, the
+conjuncts state that the design is `±(n+1)^{-1}` with the sign of the coin, that the statistic
+depends on the design, that each face of the coin has probability `1/2`, that `𝒟` is a proper
+sub-σ-field and that `ℙ_ω ≠ P`, followed by the unconditional limit law `N(0,1)` and its CDF
+form. -/
 theorem cltcluster_a_unconditional_design_witness :
     (∀ (n : ℕ) (ω : DOmg),
         ddes n ω = ((n : ℝ) + 1)⁻¹ * (if ω.1 then (1 : ℝ) else -1))
@@ -1725,8 +1721,8 @@ end DesignWitness
 The sharing relation is an arbitrary `DepGraph` with a bound `m n` on its neighbourhood
 cardinalities; no cluster map appears, so the number `J` of clustering dimensions plays no role.
 The rate condition is `(n/D_n)^{1/3}δ_n → 0`. The first Stein error term is bounded by counting
-edge products: `∑_oX_oT_o = ∑_{o∼o'}X_oX_{o'}`, two edge products are uncorrelated unless they
-share a neighbour, and each covariance is at most `2φ⁴`, which gives `E₁ ≤ 8nm³φ⁴`. -/
+the edge products in `∑_oX_oT_o = ∑_{o∼o'}X_oX_{o'}`. Two edge products are uncorrelated unless
+they share a neighbour, and each covariance is at most `2φ⁴`, which gives `E₁ ≤ 8nm³φ⁴`. -/
 
 section GeneralErrors
 
@@ -1766,8 +1762,8 @@ theorem abs_covariance_le_two_mul_sq {f g : Ω → ℝ} (hf : Measurable f) (hg 
         exact mul_le_mul hEf hEg (abs_nonneg _) hc
     _ = 2 * c ^ 2 := by ring
 
-/-- `X_oX_{o'}` on a sharing pair `o ∼ o'`, and `0` off it: the summands of the localized
-double sum indexed by ordered pairs. -/
+/-- The summands of the localized double sum, indexed by ordered pairs, are `X_oX_{o'}` on a
+sharing pair `o ∼ o'` and `0` otherwise. -/
 noncomputable def pairProd (X : O → Ω → ℝ) (N : O → Finset O) (p : O × O) : Ω → ℝ :=
   fun ω => if p.2 ∈ N p.1 then X p.1 ω * X p.2 ω else 0
 
@@ -1781,7 +1777,7 @@ theorem sum_pairProd (X : O → Ω → ℝ) (N : O → Finset O) (ω : Ω) :
   simp only [pairProd, nbhdSum]
   rw [Finset.mul_sum, Finset.sum_ite_mem, Finset.univ_inter]
 
-/-- **The first Stein error term at general `J`**: `Var(∑_oX_oT_o) ≤ 8nm³φ⁴`, where `m`
+/-- The first Stein error term at general `J`, `Var(∑_oX_oT_o) ≤ 8nm³φ⁴`, where `m`
 bounds the closed neighbourhood sizes and `|X_o| ≤ φ`. Two edge products are uncorrelated unless
 some vertex of one shares with some vertex of the other, which leaves at most `4m²` partners per
 edge; each covariance is at most `2φ⁴`, and there are at most `nm` edges. -/
@@ -1955,7 +1951,7 @@ theorem firstError_le_general (D : DepGraph X μ) {φ : ℝ} (hφ0 : 0 ≤ φ)
     _ = 8 * (Fintype.card O : ℝ) * (m : ℝ) ^ 3 * φ ^ 4 := by ring
 
 omit [DecidableEq O] in
-/-- **The second Stein error term at general `J`**: `∑_oE[|X_o|T_o²] ≤ nm²φ³`. -/
+/-- The second Stein error term at general `J`, `∑_oE[|X_o|T_o²] ≤ nm²φ³`. -/
 theorem secondError_le_general (D : DepGraph X μ) {φ : ℝ} (hφ0 : 0 ≤ φ)
     (hφ : ∀ o ω, |X o ω| ≤ φ) {m : ℕ} (hdeg : ∀ o, (D.nbhd o).card ≤ m) :
     ∑ o, ∫ ω, |X o ω| * (nbhdSum X D.nbhd o ω) ^ 2 ∂μ
@@ -2007,7 +2003,7 @@ theorem accumRate_le_steinRate {N Dn : ℕ} (hD1 : 1 ≤ Dn) (hDN : Dn ≤ N) (l
   nth_rewrite 1 [← one_mul (accumRate N Dn lmin)]
   exact mul_le_mul_of_nonneg_right hrp (accumRate_nonneg N Dn)
 
-/-- `(nD_n²/λ^{3/2})⁴ = ((n/D_n)^{1/3}δ_n)³`: both sides are `n⁴D_n⁸/λ⁶`. -/
+/-- `(nD_n²/λ^{3/2})⁴ = ((n/D_n)^{1/3}δ_n)³`, since both sides equal `n⁴D_n⁸/λ⁶`. -/
 theorem secondRate_pow_four {N Dn : ℕ} (hD1 : 1 ≤ Dn) {lmin : ℝ} (hl : 0 < lmin) :
     secondRate N Dn lmin ^ 4 = steinRate N Dn lmin ^ 3 := by
   have hDpos : (0 : ℝ) < (Dn : ℝ) := by exact_mod_cast hD1
@@ -2158,7 +2154,7 @@ theorem secondError_tendsto_zero_general
 
 /-- **Theorem 5(a) at general `J`, on the array.** The sharing relation is an arbitrary
 `DepGraph` with neighbourhoods of size at most `m n`, and there is one scalar rate hypothesis per
-Stein error term; `cltcluster_a_general_betaJM` supplies both from `(n/D_n)^{1/3}δ_n → 0`. -/
+Stein error term; `cltcluster_a_general_betaJM` derives both from `(n/D_n)^{1/3}δ_n → 0`. -/
 theorem cltcluster_a_general
     (μ : ∀ n, Measure (Ω n)) [∀ n, IsProbabilityMeasure (μ n)]
     (X : ∀ n, O n → Ω n → ℝ) (D : ∀ n, DepGraph (X n) (μ n))
@@ -2304,7 +2300,7 @@ end GeneralBetaJM
 
 section GeneralWitness
 
-/-! ### A witness with `J = 2`
+/-! ### An example with `J = 2`
 
 The design has `n+3` observations and the sharing relation `|o − o'| ≤ 1`, the union of the two
 clustering maps `g₁ o = ⌊o/2⌋` and `g₂ o = ⌊(o+1)/2⌋` (`pathG_iff_two_dimensions`). It is not
@@ -2315,27 +2311,27 @@ open scoped MatrixOrder Matrix.Norms.L2Operator
 open Matrix
 open Multiway.Multilinear
 
-/-- The witness sharing relation on `Fin N`: `|o − o'| ≤ 1`. -/
+/-- The sharing relation `|o − o'| ≤ 1` on `Fin N`. -/
 def pathG (N : ℕ) : Fin N → Fin N → Prop :=
   fun o o' => o'.val = o.val ∨ o'.val + 1 = o.val ∨ o.val + 1 = o'.val
 
 instance instDecidablePathG (N : ℕ) : DecidableRel (pathG N) :=
   fun _ _ => inferInstanceAs (Decidable (_ ∨ _ ∨ _))
 
-/-- The witness sharing relation is the union of the two clustering maps `g₁ o = ⌊o/2⌋` and
+/-- The relation `pathG` is the union of the two clustering maps `g₁ o = ⌊o/2⌋` and
 `g₂ o = ⌊(o+1)/2⌋`. -/
 theorem pathG_iff_two_dimensions {N : ℕ} (o o' : Fin N) :
     pathG N o o' ↔ (o.val / 2 = o'.val / 2 ∨ (o.val + 1) / 2 = (o'.val + 1) / 2) := by
   unfold pathG
   omega
 
-/-- The witness sharing relation is not transitive: `0 ∼ 1` and `1 ∼ 2` while `0 ≁ 2`. -/
+/-- The relation `pathG` is not transitive, since `0 ∼ 1` and `1 ∼ 2` while `0 ≁ 2`. -/
 theorem pathG_not_transitive (n : ℕ) :
     ∃ a b c : Fin (n + 3), pathG (n + 3) a b ∧ pathG (n + 3) b c ∧ ¬ pathG (n + 3) a c :=
   ⟨⟨0, by omega⟩, ⟨1, by omega⟩, ⟨2, by omega⟩, Or.inr (Or.inr rfl), Or.inr (Or.inr rfl),
     by simp [pathG]⟩
 
-/-- The witness dependency graph: `n+3` independent fair signs, sharing along `pathG`. -/
+/-- The example dependency graph, with `n+3` independent fair signs sharing along `pathG`. -/
 noncomputable def pathDep (n : ℕ) :
     DepGraph (fun o : Fin (n + 3) => sign2 o) (coins (n + 3)) where
   G := pathG (n + 3)
@@ -2383,7 +2379,7 @@ theorem pathDep_nbhd_card (n : ℕ) (o : Fin (n + 3)) : ((pathDep n).nbhd o).car
     (Finset.univ.filter (fun o' : Fin (n + 3) => o'.val + 1 = o.val)))
   omega
 
-/-- The witness rate: `δ_n = 8/(n+3)` and `(n/D_n)^{1/3}δ_n ≤ 8(n+3)^{-1/2} → 0`. -/
+/-- In the example `δ_n = 8/(n+3)` and `(n/D_n)^{1/3}δ_n ≤ 8(n+3)^{-1/2} → 0`. -/
 theorem tendsto_steinRate_witness :
     Tendsto (fun n : ℕ => steinRate (n + 3) 2 ((n : ℝ) + 3)) atTop (𝓝 0) := by
   have hbd : ∀ n : ℕ, steinRate (n + 3) 2 ((n : ℝ) + 3) ≤ 8 / Real.sqrt ((n : ℝ) + 3) := by
@@ -2425,9 +2421,9 @@ theorem tendsto_steinRate_witness :
     Real.tendsto_sqrt_atTop.comp (tendsto_natCast_atTop_atTop.atTop_add tendsto_const_nhds)
   simpa [div_eq_mul_inv] using (hsqrt.inv_tendsto_atTop.const_mul (8 : ℝ))
 
-/-- **Vacuity witness for `cltcluster_a_general_betaJM`**, on `n+3` observations with one
-regressor `x̃_o = 1`, `𝓡_n = I_1`, `Ω_n = X̃'X̃ = n+3`, one fair sign per observation and the
-`J = 2` sharing relation `|o − o'| ≤ 1`. The total variance is `1` at every `n`, while
+/-- The hypotheses of `cltcluster_a_general_betaJM` hold with `n+3` observations, one regressor
+`x̃_o = 1`, `𝓡_n = I_1`, `Ω_n = X̃'X̃ = n+3`, one fair sign per observation and the `J = 2`
+sharing relation `|o − o'| ≤ 1`. The total variance is `1` at every `n`,
 `φ_n = (n+3)^{-1/2} → 0` and `D_n = 2`. -/
 theorem cltcluster_a_general_betaJM_witness (s : ℝ) :
     Tendsto (fun n => ((coins (n + 3)).map (fun ω =>
@@ -2513,13 +2509,13 @@ section PartBIntegrability
 
 variable {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
 
-/-- Bounded and measurable is integrable, on a probability measure. -/
+/-- A bounded measurable function is integrable under a probability measure. -/
 theorem integrable_of_abs_le {f : Ω → ℝ} (hf : Measurable f) {C : ℝ}
     (h : ∀ ω, |f ω| ≤ C) : Integrable f μ :=
   Integrable.of_bound hf.aestronglyMeasurable C
     (Filter.Eventually.of_forall (fun ω => by rw [Real.norm_eq_abs]; exact h ω))
 
-/-- Bounded and measurable is `L²`, on a probability measure. -/
+/-- A bounded measurable function is in `L²` under a probability measure. -/
 theorem memLp_two_of_abs_le {f : Ω → ℝ} (hf : Measurable f) {C : ℝ}
     (h : ∀ ω, |f ω| ≤ C) : MemLp f 2 μ :=
   MemLp.of_bound hf.aestronglyMeasurable C
@@ -2604,8 +2600,8 @@ theorem sq_pairProd_le (X : O → Ω → ℝ) (N : O → Finset O) (p : O × O) 
   · rw [show ((0 : ℝ)) ^ 2 = 0 from by norm_num]
     linarith
 
-/-- **The first Stein error term from fourth moments**: `Var(∑_oX_oT_o) ≤ 8nm³ψ⁴` whenever
-`∫X_o⁴ ≤ ψ⁴`, with no uniform bound on the array. -/
+/-- The first Stein error term from fourth moments, `Var(∑_oX_oT_o) ≤ 8nm³ψ⁴` whenever
+`∫X_o⁴ ≤ ψ⁴`. No uniform bound on the array is assumed. -/
 theorem firstError_le_moment (D : DepGraph X μ) {ψ : ℝ}
     (hint4 : ∀ o, Integrable (fun ω => (X o ω) ^ 4) μ)
     (hfour : ∀ o, ∫ ω, (X o ω) ^ 4 ∂μ ≤ ψ ^ 4)
@@ -2788,7 +2784,7 @@ theorem firstError_le_moment (D : DepGraph X μ) {ψ : ℝ}
         rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
     _ = 8 * (Fintype.card O : ℝ) * (m : ℝ) ^ 3 * ψ ^ 4 := by ring
 
-/-- **The second Stein error term from fourth moments**: `∑_oE[|X_o|T_o²] ≤ nm²ψ³` whenever
+/-- The second Stein error term from fourth moments, `∑_oE[|X_o|T_o²] ≤ nm²ψ³` whenever
 `∫X_o⁴ ≤ ψ⁴`. Each triple product `|X_oX_kX_l|` is bounded by `(X_o⁴+X_k⁴+X_l⁴+ψ⁴)/(4ψ)`. -/
 theorem secondError_le_moment (D : DepGraph X μ) {ψ : ℝ} (hψ : 0 < ψ)
     (hint4 : ∀ o, Integrable (fun ω => (X o ω) ^ 4) μ)
@@ -3545,7 +3541,7 @@ variable {Ω : ℕ → Type*} [∀ n, MeasurableSpace (Ω n)]
 
 /-- **Theorem 5(b) on the array, in test-function form.** The only moment hypothesis is
 `∫X_{n,o}⁴ ≤ ψ_n⁴`, and the rate hypotheses are those of part (a) with `φ_n` replaced by `ψ_n`.
-The truncation level enters only the uniform bound of the Stein engine; the two error terms are
+The truncation level enters only the uniform bound in the Stein estimate; the two error terms are
 controlled by `firstError_le_moment` and `secondError_le_moment`. -/
 theorem cltcluster_b_expect
     (μ : ∀ n, Measure (Ω n)) [∀ n, IsProbabilityMeasure (μ n)]
@@ -4117,8 +4113,8 @@ open Matrix
 
 /-- **Theorem 5(b) at general `J`, for `β̂_JM`, under `(n/D_n)^{1/3}δ_n → 0`.** The bound
 `sup_o|ν_o| ≤ C_ν` of part (a) is replaced by the fourth-moment bound `∫ν_o⁴ ≤ C`, written
-`C = C₄⁴`. The truncation enters no rate: both Stein error terms are controlled by the fourth
-moment of the truncated array, `≤ (2ψ_n)⁴` with `ψ_n = BC₄λ_min(Ω_n)^{-1/2}`. The conditions
+`C = C₄⁴`. The truncation does not enter the rate, since both Stein error terms are controlled by
+the fourth moment of the truncated array, which is at most `(2ψ_n)⁴` with `ψ_n = BC₄λ_min(Ω_n)^{-1/2}`. The conditions
 `0 < B` and `0 < C₄` make `ψ_n > 0`. -/
 theorem cltcluster_b_general_betaJM
     {O : ℕ → Type*} [∀ n, Fintype (O n)] [∀ n, DecidableEq (O n)]
@@ -4192,10 +4188,10 @@ open scoped MatrixOrder Matrix.Norms.L2Operator
 open Matrix
 open Multiway.Multilinear
 
-/-- **Vacuity witness for `cltcluster_b_general_betaJM`**, on the `J = 2` design of
-`cltcluster_a_general_betaJM_witness`. The total variance is `1` at every `n`, through the
-fourth-moment standardization, while `ψ_n = (n+3)^{-1/2} → 0` and `D_n = 2`. The disturbance is
-bounded, as every variable on a finite probability space is. -/
+/-- The hypotheses of `cltcluster_b_general_betaJM` hold on the `J = 2` design of
+`cltcluster_a_general_betaJM_witness`. The total variance is `1` at every `n` by the
+fourth-moment standardization, `ψ_n = (n+3)^{-1/2} → 0` and `D_n = 2`. The disturbance is
+bounded, as is every variable on a finite probability space. -/
 theorem cltcluster_b_general_betaJM_witness (s : ℝ) :
     Tendsto (fun n => ((coins (n + 3)).map (fun ω =>
         (fun _ : Fin 1 => (1 : ℝ)) ⬝ᵥ
@@ -4253,9 +4249,11 @@ end PartBWitness
 
 /-! ## The score representation from Theorem 3
 
-This section derives the score representation `β̂_JM − β = (X̃'X̃)^{-1}X̃'ν` from Theorem 3(a),
-through `Multiway.jm_equiv`, and Theorem 3(c), through `Multiway.within_inner_dummy_eq_zero`, and
-shows that `A_n` has full column rank. The binders are:
+The score representation `β̂_JM − β = (X̃'X̃)^{-1}X̃'ν` follows from Theorem 3(a), through
+`Multiway.jm_equiv`, and Theorem 3(c), through `Multiway.within_inner_dummy_eq_zero`, and `A_n`
+has full column rank.
+
+#### Hypotheses
 
 * `Sm`, `Xop`: the fixed-effect spaces `𝒮_m = col(Δ_m)` and the regressor map `a ↦ Xa`;
 * `hwithin`: `X̃ = Q_[Δ]X`, written as `X̃a = Q_[Δ]Xa` for every `a`;
@@ -4366,7 +4364,7 @@ theorem isUnit_det_gram_of_identified (hw : IsWithinMatrix S Xop Xt)
     exact (WithLp.ofLp_eq_zero _).mp this
   exact sub_eq_zero.mp (hid (a1 - a2) (Multiway.jointWithin_eq_zero_iff.mp hj))
 
-/-- **The score representation** `β̂_JM − β = (X̃'X̃)^{-1}X̃'ν`, from Theorem 3(a) and (c). -/
+/-- The score representation `β̂_JM − β = (X̃'X̃)^{-1}X̃'ν`, from Theorem 3(a) and (c). -/
 theorem score_representation {D : Type*} [Fintype D]
     {Sm : D → Submodule ℝ (EuclideanSpace ℝ O)}
     (hw : IsWithinMatrix (⨆ k, Sm k) Xop Xt)
@@ -4601,7 +4599,7 @@ theorem norm_wiota : ‖wiota‖ = 1 := by
 theorem inner_wiota (u : EuclideanSpace ℝ (Fin 2)) : ⟪wiota, u⟫ = u 0 := by
   simp [PiLp.inner_apply, RCLike.inner_apply, wiota, Fin.sum_univ_two]
 
-/-- `Q_[Δ]u = u − u_1ι_n`: the within transformation of this design, computed. -/
+/-- The within transformation of this design is `Q_[Δ]u = u − u_1ι_n`. -/
 theorem wjointWithin (u : EuclideanSpace ℝ (Fin 2)) :
     Multiway.jointWithin (⨆ k, wS k) u = u - (u 0) • wiota := by
   rw [wS_iSup, Multiway.jointWithin_apply, Submodule.starProjection_singleton, norm_wiota,
@@ -4646,14 +4644,15 @@ theorem wIsAugSlope :
   · intro a; simp
   · intro v _; simp
 
-/-- Vacuity witness for `score_representation`. -/
+/-- The hypotheses of `score_representation` hold on this two-observation design. -/
 theorem score_representation_witness :
     (![7] : Fin 1 → ℝ) - ![2]
       = (wXtᵀ * wXt)⁻¹ *ᵥ (wXtᵀ *ᵥ (WithLp.ofLp wnu)) :=
   score_representation (D := Fin 1) (Sm := wS) wIsWithinMatrix wIdentified wiota_mem
     wfe_mem rfl wIsAugSlope
 
-/-- The witness is not degenerate. -/
+/-- In this example `β̂_JM − β ≠ 0`, and the fixed-effect direction is nonzero and annihilated
+by the within transformation. -/
 theorem score_representation_witness_nondegenerate :
     ((![7] : Fin 1 → ℝ) - ![2]) ≠ 0
       ∧ Multiway.jointWithin (⨆ k, wS k) wiota = 0
@@ -4739,7 +4738,7 @@ theorem map_inner_stdGaussian (t : E) :
       integral_id_stdGaussian, map_zero]
   · rw [variance_dual_stdGaussian, innerSL_apply_norm]
 
-/-- **Cramér–Wold**: `⟶ᵈ N(0, I_r)` from the scalar limits in every unit direction. -/
+/-- The Cramér–Wold device, `⟶ᵈ N(0, I_r)` from the scalar limits in every unit direction. -/
 theorem tendstoInDistribution_stdGaussian_of_unit_directions
     {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
     {Wv : ℕ → Ω → E} (hmeas : ∀ n, AEMeasurable (Wv n) P)
@@ -4813,7 +4812,9 @@ open scoped RealInnerProductSpace
 
 variable {Ω : Type*} {𝒟 : MeasurableSpace Ω} [mΩ : MeasurableSpace Ω] [StandardBorelSpace Ω]
 
-/-- **The unconditional cluster CLT as `⟶ᵈ N(0, I_r)`.** -/
+/-- **The unconditional cluster CLT in vector form.** If the scalar statistic `⟪W_n, b⟫`
+converges to `N(0,1)` under `ℙ_ω` for every unit `b` and almost every `ω` (`hfrozen`), then
+`W_n ⟶ᵈ N(0, I_r)` under `P`. -/
 theorem cltcluster_a_unconditional_vector_of_design
     {rr : Type*} [Fintype rr]
     (h𝒟 : 𝒟 ≤ mΩ) (P : Measure Ω) [IsProbabilityMeasure P]
@@ -4851,7 +4852,7 @@ open scoped RealInnerProductSpace
 
 namespace CWWitness
 
-/-- The witness space: `ℝ²` under the standard Gaussian. -/
+/-- The example space, `ℝ²` under the standard Gaussian. -/
 abbrev wE : Type := EuclideanSpace ℝ (Fin 2)
 
 /-- Every unit direction of `N(0,I₂)` is `N(0,1)`. -/
@@ -4864,7 +4865,7 @@ theorem wdir (b : wE) (hb : ‖b‖ = 1) :
   rw [Measure.map_id, map_inner_stdGaussian, hb]
   norm_num
 
-/-- Vacuity witness for the Cramér–Wold step, at `r = 2`. -/
+/-- The hypotheses of the Cramér–Wold step hold for the standard Gaussian on `ℝ²`. -/
 theorem cramerWold_witness :
     TendstoInDistribution (fun (_ : ℕ) (ω : wE) => ω) atTop (id : wE → wE)
       (fun _ => stdGaussian wE) (stdGaussian wE) :=
@@ -4886,7 +4887,7 @@ end CWWitness
 end CramerWoldWitness
 
 
-/-! ### A witness for `cltcluster_a_unconditional_vector_of_design` at `r = 1`
+/-! ### An example for `cltcluster_a_unconditional_vector_of_design` at `r = 1`
 
 This reuses the `DesignWitness` model, with its nontrivial design σ-field, and adds the vector
 statistic `FdesV` and the per-direction `hfrozen`. Each unit `b` of `EuclideanSpace ℝ (Fin 1)`
@@ -4952,7 +4953,7 @@ theorem hfrozenV (b : EuclideanSpace ℝ (Fin 1)) (hb : ‖b‖ = 1) :
   simp only [hlaw]
   exact tendsto_const_nhds
 
-/-- Vacuity witness for `cltcluster_a_unconditional_vector_of_design`. -/
+/-- The hypotheses of `cltcluster_a_unconditional_vector_of_design` hold on this model. -/
 theorem cltcluster_a_unconditional_vector_design_witness :
     TendstoInDistribution (m := fun _ : ℕ => (inferInstance : MeasurableSpace DOmg))
       (fun (n : ℕ) (ω : DOmg) => FdesV n (ddes n ω) ω) atTop
@@ -4984,7 +4985,7 @@ open Matrix
 
 variable {Ω : Type*} {𝒟 : MeasurableSpace Ω} [mΩ : MeasurableSpace Ω] [StandardBorelSpace Ω]
 
-/-- **Freezing the design, entry by entry.** A `𝒟`-measurable design matrix is
+/-- A `𝒟`-measurable design matrix is
 `ℙ_ω`-almost surely equal to its value at `ω`, for every `n`, by
 `CLTMartingale.CondD.ae_ae_eq_condExpKernel` applied to each entry. -/
 theorem ae_ae_eq_frozen_design (h𝒟 : 𝒟 ≤ mΩ) (P : Measure Ω) [IsFiniteMeasure P]
@@ -5004,9 +5005,8 @@ theorem ae_ae_eq_frozen_design (h𝒟 : 𝒟 ≤ mΩ) (P : Measure Ω) [IsFinite
   filter_upwards [ae_all_iff.2 hω1, ae_all_iff.2 hω2] with y hy1 hy2
   exact ⟨Matrix.ext fun o a => hy1 (o, a), Matrix.ext fun o o' => hy2 (o, o')⟩
 
-/-- **Deconditioning from the frozen statistic.** The statistic is assumed almost surely
-equal under `ℙ_ω` to a frozen form `Wfr` with a conditional limit law; the design's value type
-may vary with `n`. -/
+/-- If the statistic is `ℙ_ω`-almost surely equal to a frozen form `Wfr` whose conditional
+limit law is `N(0,1)` for almost every `ω`, then the statistic converges to `N(0,1)` under `P`. -/
 theorem cltcluster_a_unconditional_of_frozen_stat
     (h𝒟 : 𝒟 ≤ mΩ) (P : Measure Ω) [IsProbabilityMeasure P]
     [∀ ω : Ω, IsProbabilityMeasure (condExpKernel P 𝒟 ω)]
@@ -5262,10 +5262,10 @@ theorem cltcluster_b_general_betaJM_unconditional
 end FrozenDesign
 
 
-/-! ### A witness with a random design and a growing array
+/-! ### An example with a random design and a growing array
 
-`Ω = Bool × ((ℕ × ℕ) → Bool)` carries a fair design coin and an independent i.i.d. fair coin for
-every `(n, o)`; `𝒟 = σ(design coin)` is a proper sub-σ-field and `ℙ_ω ≠ P`. The conditional law
+On `Ω = Bool × ((ℕ × ℕ) → Bool)` the first coordinate is a fair design coin and the second an
+independent i.i.d. fair coin for every `(n, o)`; `𝒟 = σ(design coin)` is a proper sub-σ-field and `ℙ_ω ≠ P`. The conditional law
 of the disturbance coordinate is identified as the product measure through
 `Measure.eq_infinitePi`, checking the countably many measurable boxes with `ae_all_iff` and
 `condExp_indep_eq`. At index `n` there are `n+1` singleton clusters, one regressor
@@ -5651,7 +5651,7 @@ theorem w_total_variance_cond :
     (Finset.measurable_sum _ fun o _ => (meas_vSign n o).const_mul _).pow_const 2
   exact (integral_of_snd hω hmeas).trans (w_total_variance n)
 
-/-- Vacuity witness for `cltcluster_a_oneDimension_betaJM_unconditional`. -/
+/-- The hypotheses of `cltcluster_a_oneDimension_betaJM_unconditional` hold on this model. -/
 theorem cltcluster_a_oneDimension_betaJM_unconditional_witness :
     Pw {y : Aw | y.1 = true} = 2⁻¹
     ∧ (∃ B : Set Aw, MeasurableSet B ∧ ¬ MeasurableSet[Dw] B)
@@ -6238,8 +6238,8 @@ end ConditionalCramerWoldGeneral
 
 /-! ### Fair signs indexed by the coin
 
-The lemmas about `vSign`, stated on the coin index `ℕ × ℕ` itself, so that any injection into
-the coin lattice specializes them through `iIndepFun.precomp`. `vSign n o` is definitionally
+The lemmas about `vSign` are stated on the coin index `ℕ × ℕ`, so that any injection into the
+coin lattice specializes them through `iIndepFun.precomp`. `vSign n o` is definitionally
 `coinSign (n, o.val)`. -/
 
 section CoinSignLayer
@@ -6309,11 +6309,11 @@ end FrozenDesignWitness
 
 end CoinSignLayer
 
-/-! ### Witnesses for the general-`J` and part (b) unconditional theorems
+/-! ### Examples for the general-`J` and part (b) unconditional theorems
 
-The product space of `FrozenDesignWitness`, with its nontrivial `𝒟`, carries the `J = 2` design:
-`n+3` observations with the sharing relation `|o − o'| ≤ 1`, the union of two clustering maps
-and not transitive, so `D_n = 2`. The design `X̃_n(ω) = ±ι_{n+3}` has its sign read off the
+The `J = 2` design is placed on the product space of `FrozenDesignWitness`, with its nontrivial
+`𝒟`. It has `n+3` observations and the sharing relation `|o − o'| ≤ 1`, which is the union of two
+clustering maps and is not transitive, and `D_n = 2`. The design `X̃_n(ω) = ±ι_{n+3}` has its sign read off the
 design coin, `λ_min(Ω_n) = n+3`, and `(n/D_n)^{1/3}δ_n ≤ 8(n+3)^{-1/2} → 0`. The total
 conditional variance is `1` at every `n`. The disturbance is a fair sign, so it is bounded. -/
 
@@ -6481,7 +6481,7 @@ theorem g_total_variance_cond :
   exact (integral_of_snd hω hmeas).trans (g_total_variance n)
 
 
-/-- Vacuity witness for `cltcluster_a_general_betaJM_unconditional`. -/
+/-- The hypotheses of `cltcluster_a_general_betaJM_unconditional` hold on this model. -/
 theorem cltcluster_a_general_betaJM_unconditional_witness :
     Pw {y : Aw | y.1 = true} = 2⁻¹
     ∧ (∃ B : Set Aw, MeasurableSet B ∧ ¬ MeasurableSet[Dw] B)
@@ -6540,7 +6540,7 @@ theorem cltcluster_a_general_betaJM_unconditional_witness :
     omega
   · exact Filter.Eventually.of_forall fun _ => by simpa using tendsto_steinRate_witness
 
-/-- Vacuity witness for `cltcluster_b_general_betaJM_unconditional`, on the same `J = 2`
+/-- The hypotheses of `cltcluster_b_general_betaJM_unconditional` hold on the same `J = 2`
 design. -/
 theorem cltcluster_b_general_betaJM_unconditional_witness :
     Pw {y : Aw | y.1 = true} = 2⁻¹
@@ -6612,7 +6612,7 @@ end FrozenGeneralWitness
 
 end FrozenGeneralWitness
 
-/-! ### Witnesses for the vector forms at `r = 1`
+/-! ### Examples for the vector forms at `r = 1`
 
 At `r = 1` the vector statistic is the scalar one in its single coordinate (`g_vectorStat`), so
 measurability of the vector statistic follows from that of the scalar one. -/
@@ -6647,7 +6647,7 @@ theorem g_hWvm (n : ℕ) : Measurable fun y : Aw =>
   exact (by fun_prop : Measurable
     (fun x : ℝ => (WithLp.toLp 2 ![x] : EuclideanSpace ℝ (Fin 1)))).comp (g_hWm n)
 
-/-- Vacuity witness for `cltcluster_a_general_betaJM_unconditional_vector`. -/
+/-- The hypotheses of `cltcluster_a_general_betaJM_unconditional_vector` hold on this model. -/
 theorem cltcluster_a_general_betaJM_unconditional_vector_witness :
     (∀ n : ℕ, ∃ a b c : Fin (n + 3),
         pathG (n + 3) a b ∧ pathG (n + 3) b c ∧ ¬ pathG (n + 3) a c)
@@ -6698,7 +6698,7 @@ theorem cltcluster_a_general_betaJM_unconditional_vector_witness :
     omega
   · exact Filter.Eventually.of_forall fun _ => by simpa using tendsto_steinRate_witness
 
-/-- Vacuity witness for `cltcluster_b_general_betaJM_unconditional_vector`. -/
+/-- The hypotheses of `cltcluster_b_general_betaJM_unconditional_vector` hold on this model. -/
 theorem cltcluster_b_general_betaJM_unconditional_vector_witness :
     (∀ n : ℕ, ∃ a b c : Fin (n + 3),
         pathG (n + 3) a b ∧ pathG (n + 3) b c ∧ ¬ pathG (n + 3) a c)
@@ -6823,7 +6823,7 @@ theorem sign2_pow_four {m : ℕ} (i : Fin m) (ω : Fin m → Bool) : (sign2 i ω
   unfold sign2
   by_cases h : ω i <;> norm_num [h]
 
-/-- The witness rate at `J = 1`: `D_n = 1` and `λ_min(Ω_n) = n+1`, so
+/-- In the example at `J = 1`, `D_n = 1` and `λ_min(Ω_n) = n+1`, so
 `(n/D_n)^{1/3}δ_n = (n+1)^{-2/3} ≤ (n+1)^{-1/2} → 0`. -/
 theorem tendsto_steinRate_oneDimension_witness :
     Tendsto (fun n : ℕ => steinRate (n + 1) 1 ((n : ℝ) + 1)) atTop (𝓝 0) := by
@@ -6868,9 +6868,9 @@ theorem tendsto_steinRate_oneDimension_witness :
     hsqrt.inv_tendsto_atTop
   simpa [div_eq_mul_inv] using hinv
 
-/-- **Vacuity witness for `cltcluster_b_oneDimension_betaJM`**, on `n+1` observations with
-one regressor `x̃_o = 1`, `𝓡_n = I_1`, `Ω_n = X̃'X̃ = n+1`, singleton clusters and one fair sign
-per observation. The first conjunct records the fourth moment `1`. -/
+/-- The hypotheses of `cltcluster_b_oneDimension_betaJM` hold with `n+1` observations, one
+regressor `x̃_o = 1`, `𝓡_n = I_1`, `Ω_n = X̃'X̃ = n+1`, singleton clusters and one fair sign per
+observation. The first conjunct states that the fourth moment is `1`. -/
 theorem cltcluster_b_oneDimension_betaJM_witness (s : ℝ) :
     (∀ (n : ℕ) (o : Fin (n + 1)) (ω : Fin (n + 1) → Bool), (sign2 o ω) ^ 4 = 1)
     ∧ Tendsto (fun n => ((coins (n + 1)).map (fun ω =>

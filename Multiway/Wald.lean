@@ -12,7 +12,7 @@ import Mathlib.MeasureTheory.Function.ConvergenceInMeasure
 This file proves a reusable Wald lemma: given a central limit theorem for a restricted deviation
 (taken as a hypothesis) and a consistent variance estimator, the restricted variance estimate is
 positive definite with probability tending to one and the Wald statistic converges in distribution
-to `χ²_r`. It serves Theorems 7(b), 9(c), 11(c) and 12(b) of the paper. The limit `χ²_r` is
+to `χ²_r`. It is used in Theorems 7(b), 9(c), 11(c) and 12(b) of the paper. The limit `χ²_r` is
 written as the law of `‖Z‖²` with `Z ~ N(0, I_r)`, and convergence in probability of a matrix is
 convergence in probability of `ω ↦ frobNorm (A n ω - Σ)`.
 
@@ -36,8 +36,7 @@ variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 
 /-! ### The Frobenius norm as a norm on a Euclidean space
 
-The definitions live in `Multiway/Sqrt.lean`; they are re-exported here under the `Wald`
-namespace. -/
+The definitions are in `Multiway/Sqrt.lean` and are re-exported under the `Wald` namespace. -/
 
 export Multiway (matVec matVec_apply matVec_add matVec_sub matVec_smul matVec_sum
   frobSq_nonneg frobNorm_nonneg sq_frobNorm norm_matVec dist_matVec)
@@ -67,8 +66,7 @@ theorem posDef_smul_iff {a : ℝ} (ha : 0 < a) (A : Matrix ι ι ℝ) :
   have h := hc.smul (inv_pos.mpr ha)
   rwa [smul_smul, inv_mul_cancel₀ ha.ne', one_smul] at h
 
-/-- **The Wald statistic is invariant under `(V̂, θ̂ − θ) ↦ (aV̂, √a(θ̂ − θ))`** for `a > 0`:
-it is homogeneous of degree zero in that pair. -/
+/-- The Wald statistic is invariant under `(V̂, θ̂ − θ) ↦ (aV̂, √a(θ̂ − θ))` for `a > 0`. -/
 theorem waldStat_smul {a : ℝ} (ha : 0 < a) (A : Matrix ι ι ℝ) (x : EuclideanSpace ℝ ι) :
     waldStat (a • A) (Real.sqrt a • x) = waldStat A x := by
   by_cases hA : A.PosDef
@@ -91,7 +89,7 @@ theorem waldStat_smul {a : ℝ} (ha : 0 < a) (A : Matrix ι ι ℝ) (x : Euclide
 Off the event `Σ̂ ≻ 0` the inverse square root vanishes, so the identity `waldStat_eq_sq_norm`
 holds in every realization. -/
 
-/-- `Σ̂^{-1/2} = 0` whenever `Σ̂` fails to be positive definite: if `Σ̂` is not even positive
+/-- `Σ̂^{-1/2} = 0` whenever `Σ̂` is not positive definite. If `Σ̂` is not positive
 semidefinite then `CFC.sqrt Σ̂ = 0`, and if it is positive semidefinite but singular then so is
 its square root. -/
 theorem inv_sqrtPD_eq_zero_of_not_posDef {A : Matrix ι ι ℝ} (h : ¬ A.PosDef) :
@@ -108,13 +106,12 @@ theorem inv_sqrtPD_eq_zero_of_not_posDef {A : Matrix ι ι ℝ} (h : ¬ A.PosDef
     rw [Matrix.isUnit_iff_isUnit_det, Matrix.det_zero] at hu
     exact not_isUnit_zero hu
 
-/-- **The studentizing matrix** `T := Σ̂^{-1/2}Σ^{1/2}` of Lemma SM.B.14, with `Σ̂ := A` and
+/-- The studentizing matrix `T := Σ̂^{-1/2}Σ^{1/2}` of Lemma SM.B.14, with `Σ̂ := A` and
 `Σ := C`. Off the event `A ≻ 0` it is the zero matrix, by `inv_sqrtPD_eq_zero_of_not_posDef`. -/
 noncomputable def studentizerMat (A C : Matrix ι ι ℝ) : Matrix ι ι ℝ := (sqrtPD A)⁻¹ * sqrtPD C
 
-/-- **The Wald statistic is a squared norm, in every realization.**
-`𝒲 = ‖T(Σ^{-1/2}x)‖²` with `T = Σ̂^{-1/2}Σ^{1/2}`: on the event `Σ̂ ≻ 0` because
-`TΣ^{-1/2} = Σ̂^{-1/2}`, off it because both sides are zero. -/
+/-- In every realization `𝒲 = ‖T(Σ^{-1/2}x)‖²` with `T = Σ̂^{-1/2}Σ^{1/2}`. On the event `Σ̂ ≻ 0`
+this holds because `TΣ^{-1/2} = Σ̂^{-1/2}`, and off it both sides are zero. -/
 theorem studentizer_comp_invSqrt (A : Matrix ι ι ℝ) {C : Matrix ι ι ℝ} (hC : C.PosDef)
     (x : EuclideanSpace ℝ ι) :
     toEuclideanCLM (𝕜 := ℝ) (studentizerMat A C) (toEuclideanCLM (𝕜 := ℝ) ((sqrtPD C)⁻¹) x)
@@ -170,8 +167,8 @@ theorem opNorm_le_frobNorm (M : Matrix ι ι ℝ) : ‖M‖ ≤ frobNorm M := by
 
 /-! ### The event `Σ̂ ≻ 0`, quantitatively -/
 
-/-- A Hermitian matrix within spectral distance `t < 1` of the identity is positive definite:
-`‖I − 𝒦‖ ≤ t` gives `(1−t)I ⪯ 𝒦`. -/
+/-- A Hermitian matrix within spectral distance `t < 1` of the identity is positive definite,
+since `‖I − 𝒦‖ ≤ t` gives `(1−t)I ⪯ 𝒦`. -/
 theorem posDef_of_norm_sub_one_le {K : Matrix ι ι ℝ} (hK : K.IsHermitian) {t : ℝ}
     (ht : ‖K - 1‖ ≤ t) (ht1 : t < 1) : K.PosDef := by
   have hlower : (1 - t) • (1 : Matrix ι ι ℝ) ≤ K := by
@@ -184,7 +181,7 @@ theorem posDef_of_norm_sub_one_le {K : Matrix ι ι ℝ} (hK : K.IsHermitian) {t
     rw [e]; exact h
   exact posDef_of_le (Matrix.PosDef.one.smul (by linarith : (0 : ℝ) < 1 - t)) hlower
 
-/-- **The deterministic core.** With `𝒦 = Σ^{-1/2}Σ̂Σ^{-1/2}` and `ϑ = ‖𝒦 − I‖`, if
+/-- With `𝒦 = Σ^{-1/2}Σ̂Σ^{-1/2}` and `ϑ = ‖𝒦 − I‖`, if
 `ϑ ≤ t ≤ 1/2` then `Σ̂ ≻ 0` and the studentizing matrix `T = Σ̂^{-1/2}Σ^{1/2}` satisfies
 `‖T − I‖_F² ≤ 3rt`, by Lemma SM.B.14. -/
 theorem posDef_and_frobSq_studentizer_le_of_norm {C A : Matrix ι ι ℝ} (hC : C.PosDef)
@@ -292,7 +289,7 @@ omit [DecidableEq ι] in
 theorem measurable_matVec : Measurable (matVec : Matrix ι ι ℝ → EuclideanSpace ℝ (ι × ι)) :=
   continuous_matVec.measurable
 
-/-- The continuous map `(x, T) ↦ Tx`, with the matrix carried as a vector of
+/-- The continuous map `(x, T) ↦ Tx`, with the matrix viewed as a vector of
 `EuclideanSpace ℝ (ι × ι)` so that Slutsky's theorem applies. -/
 noncomputable def waldVec (q : EuclideanSpace ℝ ι × EuclideanSpace ℝ (ι × ι)) :
     EuclideanSpace ℝ ι :=
@@ -311,7 +308,7 @@ theorem waldVec_apply (x : EuclideanSpace ℝ ι) (T : Matrix ι ι ℝ) :
 
 theorem sqrtPD_eq_cfcSqrt (A : Matrix ι ι ℝ) : sqrtPD A = CFC.sqrt A := rfl
 
-/-! ### The `ε`--`δ` form of the deterministic core
+/-! ### The `ε`–`δ` form of the deterministic bound
 
 One `δ` controls both positive definiteness and the studentizer. -/
 
@@ -384,8 +381,8 @@ theorem exists_delta_studentizer_ratio {ε : ℝ} (hε : 0 < ε) :
 /-! ### Transferring a limit law to another probability space
 
 `TendstoInDistribution` depends on the limiting random variable only through its law, so a limit
-stated against a variable on an auxiliary space can be restated against the canonical variable on
-the law's own space. -/
+stated for a variable on one probability space also holds for any variable with the same law on
+another space. -/
 
 theorem tendstoInDistribution_congr_law {E : Type*} [MeasurableSpace E] [TopologicalSpace E]
     [OpensMeasurableSpace E]
@@ -408,7 +405,7 @@ variable {Ω : Type*} {mΩ : MeasurableSpace Ω} {P : Measure Ω} [IsProbability
 variable {Ω' : Type*} {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} [IsProbabilityMeasure P']
 
 set_option maxHeartbeats 1000000 in
-/-- **The Slutsky step.** If `w_n ⟶^d N(0, I_r)` and `‖T_n − I_r‖_F ⟶^p 0`, then
+/-- Slutsky's theorem for the studentized deviation. If `w_n ⟶^d N(0, I_r)` and `‖T_n − I_r‖_F ⟶^p 0`, then
 `T_n w_n ⟶^d N(0, I_r)`. -/
 theorem studentizedTendsto_of_studentizer
     {w : ℕ → Ω → EuclideanSpace ℝ ι} {T : ℕ → Ω → Matrix ι ι ℝ} {G : Ω' → EuclideanSpace ℝ ι}
@@ -441,8 +438,8 @@ theorem studentizedTendsto_of_studentizer
   refine tendstoInDistribution_congr_law hslut (by fun_prop) ?_
   rw [hG, Measure.map_id]
 
-/-- **The Wald statistic converges to `χ²_r`.** The continuous mapping theorem applied to
-`studentizedTendsto_of_studentizer` with `z ↦ ‖z‖²`. -/
+/-- The Wald statistic converges in distribution to `χ²_r`, by the continuous mapping theorem
+applied to `studentizedTendsto_of_studentizer` with `z ↦ ‖z‖²`. -/
 theorem waldTendsto_of_studentizer
     {w : ℕ → Ω → EuclideanSpace ℝ ι} {T : ℕ → Ω → Matrix ι ι ℝ} {G : Ω' → EuclideanSpace ℝ ι}
     (hw : TendstoInDistribution w atTop G (fun _ => P) P')
@@ -646,8 +643,8 @@ end Probability
 
 /-! ### A model for the Wald lemma
 
-The hypotheses of `wald_of_clt` are jointly satisfiable: take `Σ = I_r`, the constant sequence
-`Σ̂_n = I_r`, and the identity on `(EuclideanSpace ℝ ι, N(0, I_r))`. At `Σ̂ = I_r` the Wald
+The hypotheses of `wald_of_clt` hold with `Σ = I_r`, the constant sequence `Σ̂_n = I_r` and the
+identity on `(EuclideanSpace ℝ ι, N(0, I_r))`. At `Σ̂ = I_r` the Wald
 statistic is `‖x‖²` (`waldStat_one`). -/
 
 theorem waldStat_one (x : EuclideanSpace ℝ ι) : waldStat (1 : Matrix ι ι ℝ) x = ‖x‖ ^ 2 := by

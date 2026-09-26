@@ -24,7 +24,7 @@ open scoped RealInnerProductSpace
 
 namespace Multiway
 
-/-! ## Crossing the boundary -/
+/-! ## Matrices as operators on `EuclideanSpace ℝ O` -/
 
 section Bridge
 
@@ -42,7 +42,7 @@ theorem inner_euclidean (x y : EuclideanSpace ℝ O) : ⟪x, y⟫ = ∑ o : O, x
   simp only [PiLp.inner_apply, RCLike.inner_apply, conj_trivial]
   exact Finset.sum_congr rfl fun o _ => mul_comm _ _
 
-/-- The indicator vector of the fibre `{o : i_m(o) = a}`: the column of `Δ_m` belonging to
+/-- The indicator vector of the fibre `{o : i_m(o) = a}`, that is, the column of `Δ_m` for
 category `a`. -/
 noncomputable def fibreIndicator (f : O → L) (a : L) : EuclideanSpace ℝ O :=
   WithLp.toLp 2 fun o => if f o = a then (1 : ℝ) else 0
@@ -51,7 +51,7 @@ omit [Fintype O] [DecidableEq O] in
 @[simp] theorem fibreIndicator_apply (f : O → L) (a : L) (o : O) :
     fibreIndicator f a o = if f o = a then (1 : ℝ) else 0 := rfl
 
-/-- `𝒮_m = col(Δ_m)` as a subspace of `EuclideanSpace ℝ O`: the span of the indicator
+/-- `𝒮_m = col(Δ_m)` as a subspace of `EuclideanSpace ℝ O`, the span of the indicator
 vectors of the fibres of the index map. -/
 noncomputable def fibreSpace (f : O → L) : Submodule ℝ (EuclideanSpace ℝ O) :=
   Submodule.span ℝ (Set.range (fibreIndicator f))
@@ -114,16 +114,16 @@ theorem projEuc_mem_fibreSpace (f : O → L) (x : EuclideanSpace ℝ O) :
   exact Submodule.sum_mem _ fun o _ =>
     Submodule.smul_mem _ _ (Submodule.subset_span ⟨f o, rfl⟩)
 
-/-- A vector constant within every category lies in `col(Δ_m)`: it is fixed by `P_m`, whose
-range lies there. -/
+/-- A vector constant within every category lies in `col(Δ_m)`, since it is fixed by `P_m`
+and the range of `P_m` lies in `col(Δ_m)`. -/
 theorem mem_fibreSpace_of_const (f : O → L) {x : EuclideanSpace ℝ O}
     (h : ∀ o o' : O, f o = f o' → x o = x o') : x ∈ fibreSpace f := by
   rw [← projEuc_eq_self_of_const f h]
   exact projEuc_mem_fibreSpace f x
 
 omit [Fintype O] [DecidableEq O] in
-/-- Conversely, every vector of `col(Δ_m)` is constant within every category: the generators
-are, and the property is closed under the operations of a submodule. -/
+/-- Conversely, every vector of `col(Δ_m)` is constant within every category, since the
+generators are and the property is preserved by sums and scalar multiples. -/
 theorem const_of_mem_fibreSpace {f : O → L} {x : EuclideanSpace ℝ O} (hx : x ∈ fibreSpace f) :
     ∀ o o' : O, f o = f o' → x o = x o' := by
   induction hx using Submodule.span_induction with
@@ -135,12 +135,12 @@ theorem const_of_mem_fibreSpace {f : O → L} {x : EuclideanSpace ℝ O} (hx : x
   | add u v _ _ hu hv => intro o o' hff; simp [hu o o' hff, hv o o' hff]
   | smul c v _ hv => intro o o' hff; simp [hv o o' hff]
 
-/-- `col(Δ_m)` is exactly the set of vectors constant within every category. -/
+/-- `col(Δ_m)` is the set of vectors constant within every category. -/
 theorem mem_fibreSpace_iff (f : O → L) (x : EuclideanSpace ℝ O) :
     x ∈ fibreSpace f ↔ ∀ o o' : O, f o = f o' → x o = x o' :=
   ⟨const_of_mem_fibreSpace, mem_fibreSpace_of_const f⟩
 
-/-! ## The central theorem -/
+/-! ## `proj f` is the orthogonal projector onto `col(Δ_m)` -/
 
 /-- `P_m` is symmetric: `⟪P_m x, y⟫ = ⟪x, P_m y⟫`. -/
 theorem inner_projEuc_left_eq_right (f : O → L) (x y : EuclideanSpace ℝ O) :
@@ -156,8 +156,8 @@ theorem inner_projEuc_left_eq_right (f : O → L) (x y : EuclideanSpace ℝ O) :
   rw [hs]
   ring
 
-/-- The matrix `proj f` is the orthogonal projector onto `𝒮_m = col(Δ_m)`: `P_m x ∈ col(Δ_m)`,
-and `x - P_m x ⟂ col(Δ_m)` because `P_m` is symmetric and fixes `col(Δ_m)`. -/
+/-- The matrix `proj f` is the orthogonal projector onto `𝒮_m = col(Δ_m)`. Indeed
+`P_m x ∈ col(Δ_m)`, and `x - P_m x ⟂ col(Δ_m)` because `P_m` is symmetric and fixes `col(Δ_m)`. -/
 theorem starProjection_fibreSpace (f : O → L) (x : EuclideanSpace ℝ O) :
     (fibreSpace f).starProjection x = projEuc f x := by
   refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero (projEuc_mem_fibreSpace f x) ?_
@@ -210,8 +210,8 @@ theorem constSpace_le_fibreSpace (f : O → L) : constSpace O ≤ fibreSpace f :
   rw [constSpace, Submodule.span_singleton_le_iff_mem]
   exact mem_fibreSpace_of_const f fun _ _ _ => rfl
 
-/-- `P_0` is the orthogonal projector onto `span(ι_n)`: `grandMeanProj O`, with entries
-`(P_0)_{o,o'} = 1/n`, acts as the orthogonal projection onto the constant vectors. -/
+/-- The matrix `grandMeanProj O`, with entries `(P_0)_{o,o'} = 1/n`, is the orthogonal
+projector `P_0` onto `span(ι_n)`. -/
 theorem starProjection_constSpace (x : EuclideanSpace ℝ O) :
     (constSpace O).starProjection x = WithLp.toLp 2 (grandMeanProj O *ᵥ WithLp.ofLp x) := by
   have h : constSpace O = fibreSpace (fun _ : O => (() : Unit)) := fibreSpace_unit.symm
@@ -240,8 +240,8 @@ section Uniform
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
 
-/-- Dimension-wise Mundlak augmentation is uniformly fixed-effects equivalent: the spanning
-condition `G_X = 0` holds at every identified `X`. -/
+/-- Dimension-wise Mundlak augmentation is uniformly fixed-effects equivalent, that is, the
+spanning condition `G_X = 0` holds at every identified `X`. -/
 def UniformlyFEEquivalent {D : Type*} (C₀ : Submodule ℝ E) (P : D → Submodule ℝ E)
     (F : Type*) [AddCommGroup F] [Module ℝ F] : Prop :=
   ∀ X : F →ₗ[ℝ] E, Identified (⨆ ℓ, P ℓ) X →
@@ -274,7 +274,8 @@ theorem iSup_twoFib (f g : O → L) :
   · rw [h, twoFib_one]; exact le_sup_right
 
 omit [Fintype O] [DecidableEq O] in
-/-- `𝒮_{-1}` at `M = 2` is the other dimension's own space. -/
+/-- At `M = 2`, the sum of the fibre spaces of the dimensions other than `0` is the fibre
+space of `g`. -/
 theorem iSup_ne_twoFib (f g : O → L) :
     (⨆ ℓ, ⨆ (_ : ℓ ≠ (0 : Fin 2)), twoFib f g ℓ) = fibreSpace g := by
   refine le_antisymm (iSup_le fun ℓ => iSup_le fun hℓ => ?_) ?_

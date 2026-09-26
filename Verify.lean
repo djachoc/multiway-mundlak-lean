@@ -2400,7 +2400,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.variance_matchedPart_le_cut_tot
 #print axioms Multiway.concentration_clause_b_general_closed
 
--- Lemma SM.C.3(b), witnesses.
+-- Lemma SM.C.3(b), examples.
 #print axioms Multiway.StepTwoClosedWitness.sK
 #print axioms Multiway.StepTwoClosedWitness.sN
 #print axioms Multiway.StepTwoClosedWitness.sV
@@ -2456,7 +2456,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.StepTwoBiasedWitness.bmatched_varianceV
 #print axioms Multiway.StepTwoBiasedWitness.bstep2_closed_witness
 
--- Theorem 11, moment conditions and witnesses.
+-- Theorem 11, moment conditions and examples.
 #print axioms Multiway.RateAgnostic.sq_condExp_le_condExp_sq
 #print axioms Multiway.RateAgnostic.integrable_pow_four
 #print axioms Multiway.RateAgnostic.abs_condOmega_le_sqrt
@@ -2514,7 +2514,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.PiInf.tendstoInDistribution_apply_of_solve_std
 #print axioms Multiway.PiInf.pi_clt_std
 #print axioms Multiway.PiInf.piinf_wald_of_meat_of_pi_clt
--- Theorem 6, witness.
+-- Theorem 6, example.
 #print axioms Multiway.PiInf.PiWitness.wNs
 #print axioms Multiway.PiInf.PiWitness.wa
 #print axioms Multiway.PiInf.PiWitness.wmx
@@ -2543,7 +2543,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.CLTMartingale.CondD.tendstoInDistribution_of_tendsto_condCharFunD
 #print axioms Multiway.CLTMartingale.CondD.tendstoInDistribution_of_design
 
--- The regular conditional law given the design, witness.
+-- The regular conditional law given the design, example.
 #print axioms Multiway.CLTMartingale.CondD.FrozenWitness.coin
 #print axioms Multiway.CLTMartingale.CondD.FrozenWitness.coin_singleton
 #print axioms Multiway.CLTMartingale.CondD.FrozenWitness.Pw
@@ -2557,7 +2557,7 @@ Run with `lake env lean Verify.lean` from the package root.
 -- Theorem 4(a), unconditional form.
 #print axioms Multiway.CLT.clt_a_unconditional_of_design
 
--- Theorem 4(a), unconditional witness.
+-- Theorem 4(a), unconditional example.
 #print axioms Multiway.CLT.FrozenWitness.tendsto_sqrt_div
 #print axioms Multiway.CLT.FrozenWitness.tendstoInDistribution_of_tendsto_const
 #print axioms Multiway.CLT.FrozenWitness.uvec
@@ -2646,7 +2646,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.PiInf.aemeasurable_frobNorm_dimMeat_r1Dist
 #print axioms Multiway.PiInf.piinf_a_of_regime1
 
--- Theorem 12(a), Step 1 witness.
+-- Theorem 12(a), Step 1 example.
 #print axioms Multiway.PiInf.Step1Model.wO
 #print axioms Multiway.PiInf.Step1Model.wC
 #print axioms Multiway.PiInf.Step1Model.wZ
@@ -2704,7 +2704,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.PiInf.tendsto_ringInverse_of_psi
 #print axioms Multiway.PiInf.piinf_c_of_regime1
 
--- Theorem 12(a), end-to-end witness.
+-- Theorem 12(a), end-to-end example.
 #print axioms Multiway.PiInf.Step1Model.wPi
 #print axioms Multiway.PiInf.Step1Model.card_univ_wO
 #print axioms Multiway.PiInf.Step1Model.wPi_transpose
@@ -2716,7 +2716,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.PiInf.Step1Model.wRate2
 #print axioms Multiway.PiInf.Step1Model.piinf_a_regime1_full_witness
 
--- Theorem 12(b), end-to-end witness.
+-- Theorem 12(b), end-to-end example.
 #print axioms Multiway.PiInf.RectDesign.frobNorm_one_fin_two
 #print axioms Multiway.PiInf.RectDesign.rJ
 #print axioms Multiway.PiInf.RectDesign.rO
@@ -2760,7 +2760,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.CLTMartingale.Trunc.tendsto_charFun_of_l2_approx
 #print axioms Multiway.CLTMartingale.Trunc.tendstoInDistribution_of_l2_approx
 
--- Theorem 4(b), truncation witness.
+-- Theorem 4(b), truncation example.
 #print axioms Multiway.CLTMartingale.Trunc.ApproxWitness.Pg
 #print axioms Multiway.CLTMartingale.Trunc.ApproxWitness.integral_sq_Pg
 #print axioms Multiway.CLTMartingale.Trunc.ApproxWitness.integral_const_mul_sq
@@ -2794,7 +2794,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.PrimitiveDesign.designcond_tendstoInProb_uncond
 #print axioms Multiway.PrimitiveDesign.designcond_design_ii_uncond
 
--- Proposition SM.D.1, witnesses.
+-- Proposition SM.D.1, examples.
 #print axioms Multiway.PrimitiveDesign.DecondWitness.dval_bounds
 #print axioms Multiway.PrimitiveDesign.DecondWitness.dval_sq_le_four
 #print axioms Multiway.PrimitiveDesign.DecondWitness.dval_sq_tendsto
@@ -2956,7 +2956,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.CLT.integral_norm_score_sq_E2
 #print axioms Multiway.CLT.clt_b_consistency
 
--- Theorem 4(b), witness.
+-- Theorem 4(b), example.
 #print axioms Multiway.CLT.Witness.zE2
 #print axioms Multiway.CLT.Witness.wE2
 #print axioms Multiway.CLT.Witness.nuE2
@@ -3098,7 +3098,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.SteinCluster.CWWitness.cramerWold_witness
 #print axioms Multiway.SteinCluster.CWWitness.cramerWold_witness_nondegenerate
 
--- Theorem 5, vector-form witness.
+-- Theorem 5, vector-form example.
 #print axioms Multiway.SteinCluster.DesignWitness.FdesV
 #print axioms Multiway.SteinCluster.DesignWitness.meas_FdesV
 #print axioms Multiway.SteinCluster.DesignWitness.inner_FdesV
@@ -3150,7 +3150,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.SteinCluster.cltcluster_a_general_betaJM_unconditional
 #print axioms Multiway.SteinCluster.cltcluster_b_general_betaJM_unconditional
 
--- Theorem 5 under a random design, witness.
+-- Theorem 5 under a random design, example.
 #print axioms Multiway.SteinCluster.FrozenDesignWitness.Cw
 #print axioms Multiway.SteinCluster.FrozenDesignWitness.Aw
 #print axioms Multiway.SteinCluster.FrozenDesignWitness.P1
@@ -3275,7 +3275,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.SteinCluster.FrozenDesignWitness.integral_coinSign
 #print axioms Multiway.SteinCluster.FrozenDesignWitness.integral_coinSign_mul
 
--- Theorem 5, general-`J` witnesses under a random design.
+-- Theorem 5, general-`J` examples under a random design.
 #print axioms Multiway.SteinCluster.FrozenGeneralWitness.gvSign
 #print axioms Multiway.SteinCluster.FrozenGeneralWitness.guSign
 #print axioms Multiway.SteinCluster.FrozenGeneralWitness.meas_gvSign
@@ -3298,7 +3298,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.SteinCluster.FrozenGeneralWitness.cltcluster_a_general_betaJM_unconditional_witness
 #print axioms Multiway.SteinCluster.FrozenGeneralWitness.cltcluster_b_general_betaJM_unconditional_witness
 
--- Corollary SM.D.3, witness under a random design.
+-- Corollary SM.D.3, example under a random design.
 #print axioms Multiway.ClusterShock.FrozenShockWitness.csIdx
 #print axioms Multiway.ClusterShock.FrozenShockWitness.esIdx
 #print axioms Multiway.ClusterShock.FrozenShockWitness.csIdx_injective
@@ -3334,13 +3334,13 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.ClusterShock.FrozenShockWitness.c_hGrate
 #print axioms Multiway.ClusterShock.FrozenShockWitness.clustershock_a_oneDimension_unconditional_witness
 
--- Theorem 5, general-`J` vector witnesses.
+-- Theorem 5, general-`J` vector examples.
 #print axioms Multiway.SteinCluster.FrozenGeneralWitness.g_vectorStat
 #print axioms Multiway.SteinCluster.FrozenGeneralWitness.g_hWvm
 #print axioms Multiway.SteinCluster.FrozenGeneralWitness.cltcluster_a_general_betaJM_unconditional_vector_witness
 #print axioms Multiway.SteinCluster.FrozenGeneralWitness.cltcluster_b_general_betaJM_unconditional_vector_witness
 
--- Theorem 4(b), truncation, Lindeberg condition and witness.
+-- Theorem 4(b), truncation, Lindeberg condition and example.
 #print axioms Multiway.CLT.scalar_clt_of_truncation
 #print axioms Multiway.CLT.clt_b_of_truncation
 #print axioms Multiway.CLT.setIntegral_sq_le_integral_pow_four
@@ -3388,7 +3388,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.ClusterShock.coinShockRebuild_comp
 #print axioms Multiway.ClusterShock.coinShockDep
 
--- Corollary SM.D.3, a `J = 2` design and its witnesses.
+-- Corollary SM.D.3, a `J = 2` example.
 #print axioms Multiway.ClusterShock.FrozenGeneralShockWitness.gcIdx
 #print axioms Multiway.ClusterShock.FrozenGeneralShockWitness.gcIdx_component
 #print axioms Multiway.ClusterShock.FrozenGeneralShockWitness.gcIdx_eq_iff
@@ -3449,7 +3449,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.CLTMartingale.Step45.ae_abs_degenDiff_le
 #print axioms Multiway.CLTMartingale.Step45.integrable_pow_four_degenDiff
 
--- Theorem 4(b), Lindeberg and multi-component witnesses.
+-- Theorem 4(b), Lindeberg and multi-component examples.
 #print axioms Multiway.CLT.Witness.ae_abs_le_one_rade
 #print axioms Multiway.CLT.Witness.ae_abs_xi_le_one
 #print axioms Multiway.CLT.Witness.condExp_xi_eq_zero_of_notMem
@@ -3499,7 +3499,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.CLT.Witness.mhone
 #print axioms Multiway.CLT.Witness.multi_martingale_witness
 
--- Theorem 4(b), witnesses for Steps 4 and 5.
+-- Theorem 4(b), examples for Steps 4 and 5.
 #print axioms Multiway.CLTMartingale.Step45.norm_witness
 #print axioms Multiway.CLTMartingale.Step45.rate_witness
 
@@ -3517,7 +3517,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.TensorBasis.tendsto_norm_sub_trunc
 #print axioms Multiway.TensorBasis.tendsto_norm_sub_truncBox
 #print axioms Multiway.TensorBasis.norm_sub_trunc_pos
--- Tensor-product basis expansion, witness.
+-- Tensor-product basis expansion, example.
 #print axioms Multiway.TensorBasis.Witness.fourierNat
 #print axioms Multiway.TensorBasis.Witness.memlp_coefs
 #print axioms Multiway.TensorBasis.Witness.repr_wit
@@ -3611,7 +3611,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Cumulant.mixedCumulant_eq_zero_of_split
 #print axioms Cumulant.mixedCumulant_eq_zero_of_indepFun
 
--- Cumulants: witnesses.
+-- Cumulants: examples.
 #print axioms Cumulant.SkewWitness.skewLaw
 #print axioms Cumulant.SkewWitness.integrable_skew
 #print axioms Cumulant.SkewWitness.skewIntegral
@@ -3736,7 +3736,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.CLT.scalar_clt_of_truncation_scaled
 #print axioms Multiway.CLT.clt_b_of_truncation_scaled
 
--- Theorem 4(b), witnesses and a two-point orthonormal basis.
+-- Theorem 4(b), examples and a two-point orthonormal basis.
 #print axioms Multiway.CLT.Witness.sgn
 #print axioms Multiway.CLT.Witness.measurable_sgn
 #print axioms Multiway.CLT.Witness.abs_sgn
@@ -3829,7 +3829,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.Quadform.condExp_quad_eq_zero
 #print axioms Multiway.Quadform.condVar_quadForm_le_of_condIndep
 
--- Lemma SM.C.5, witness.
+-- Lemma SM.C.5, example.
 #print axioms Multiway.Quadform.CondIndepWitness.measurable_clamp
 #print axioms Multiway.Quadform.CondIndepWitness.clamp_one
 #print axioms Multiway.Quadform.CondIndepWitness.clamp_neg_one
@@ -3878,7 +3878,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.PrimitiveDesign.integral_rectFrobSq_xiSharp_le_of_primitive
 #print axioms Multiway.PrimitiveDesign.designcond_tendstoInProb_of_primitive
 
--- Proposition SM.D.1 and Lemma SM.B.9, witness.
+-- Proposition SM.D.1 and Lemma SM.B.9, example.
 #print axioms Multiway.PrimitiveDesign.measurable_pdClamp
 #print axioms Multiway.PrimitiveDesign.pdClamp_one
 #print axioms Multiway.PrimitiveDesign.pdClamp_neg_one
@@ -4165,7 +4165,7 @@ Run with `lake env lean Verify.lean` from the package root.
 -- Janson (1988), Theorem 2 under hypothesis (1.5).
 #print axioms Janson.tendsto_gaussPM_of_depGraph_janson15
 
--- Janson (1988), witnesses.
+-- Janson (1988), examples.
 #print axioms Janson.variance_eq_cumulant_two
 #print axioms Janson.Theorem1Witness.mixFactor
 #print axioms Janson.Theorem1Witness.instMixFactor
@@ -4294,7 +4294,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.CLT.lindeberg_cellDiff_of_fourth
 #print axioms Multiway.CLT.scalar_clt_of_truncation_cell_alg
 
--- Theorem 4(b), cell-step witnesses.
+-- Theorem 4(b), cell-step examples.
 
 #print axioms Multiway.CLT.Witness.cellSite
 #print axioms Multiway.CLT.Witness.cellSite_injective
@@ -4405,7 +4405,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.ClusterJanson.cltcluster_b_general_betaJM_janson_unconditional_vector_of_dep
 #print axioms Multiway.ClusterJanson.cltcluster_b_general_betaJM_janson_of_jm
 
--- Theorem 5(a), witness at `r = 2`.
+-- Theorem 5(a), example at `r = 2`.
 #print axioms Multiway.ClusterJanson.Rank2Witness.rk2w
 #print axioms Multiway.ClusterJanson.Rank2Witness.rk2w_ne_zero
 #print axioms Multiway.ClusterJanson.Rank2Witness.one_le_rk2w_sq
@@ -4566,7 +4566,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.ClusterJanson.clustershock_rateagnostic_b_shockmoments
 #print axioms Multiway.ClusterJanson.clustershock_wald_both_halves_shockmoments
 
--- Corollary SM.D.3, witnesses.
+-- Corollary SM.D.3, examples.
 #print axioms Multiway.ClusterJanson.RepresentationWitness.RsS
 #print axioms Multiway.ClusterJanson.RepresentationWitness.rsIdx
 #print axioms Multiway.ClusterJanson.RepresentationWitness.rsIdx_injective
@@ -4629,7 +4629,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.MomentsWitness.integral_epsW_pow_four
 #print axioms Multiway.MomentsWitness.lem_fourth_regime1_witness
 
--- Theorem 4, witness at `K = 2`.
+-- Theorem 4, example at `K = 2`.
 #print axioms Multiway.CLT.Rank2Witness.blk
 #print axioms Multiway.CLT.Rank2Witness.blk_apply
 #print axioms Multiway.CLT.Rank2Witness.op2
@@ -4719,7 +4719,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.LeverageCondRegime1.prop_lc_a_random_regimeOne
 #print axioms Multiway.LeverageCondRegime1.prop_lc_b_random_regimeOne
 
--- Proposition SM.D.4, witness.
+-- Proposition SM.D.4, example.
 #print axioms Multiway.LeverageCondWitness.epsC
 #print axioms Multiway.LeverageCondWitness.measurable_epsC
 #print axioms Multiway.LeverageCondWitness.abs_epsC_le
@@ -4787,7 +4787,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.Sharing.witOmSpread_eq
 #print axioms Multiway.Sharing.witness_lambdaMin_lt_eigenvalues
 
--- Theorem 6, witness at `K = 2`.
+-- Theorem 6, example at `K = 2`.
 #print axioms Multiway.PiInf.PiRank2Witness.inner_fin_two
 #print axioms Multiway.PiInf.PiRank2Witness.qvecOf
 #print axioms Multiway.PiInf.PiRank2Witness.qvecOf_zero
@@ -4901,10 +4901,10 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.PiInf.PiRank2Witness.qhlim
 #print axioms Multiway.PiInf.PiRank2Witness.piinf_wald_unconditional_of_design_closed_rank2_witness
 
--- Theorem 4(a), unconditional witness at `K = 2`.
+-- Theorem 4(a), unconditional example at `K = 2`.
 #print axioms Multiway.CLT.Rank2Witness.clt_a_rank2_unconditional_witness
 
--- Theorem 11(b), perturbation witness.
+-- Theorem 11(b), perturbation example.
 #print axioms Multiway.PerturbWitness.pwNu
 #print axioms Multiway.PerturbWitness.pwXt
 #print axioms Multiway.PerturbWitness.pwPr
@@ -4951,7 +4951,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.PerturbWitness.wr_condOmega_diag_eq_two
 #print axioms Multiway.PerturbWitness.wr_centeredSummand_ne_zero
 
--- Witnesses for Lemmas SM.C.1, SM.B.1, SM.B.2 and Theorem 3(b).
+-- Examples for Lemmas SM.C.1, SM.B.1, SM.B.2 and Theorem 3(b).
 #print axioms Multiway.AlgebraWitness.parB
 #print axioms Multiway.AlgebraWitness.parA
 #print axioms Multiway.AlgebraWitness.parA_apply

@@ -28,8 +28,8 @@ import Mathlib.Analysis.Complex.RealDeriv
 import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 -- PORT v4.34.0: `Measurable.abs` (the `to_additive` image of `Measurable.mabs`) is no longer
--- reachable through the imports above — the upstream import graph was pruned between
--- v4.29.1 and v4.34.0 — so its home module is now named explicitly.
+-- reachable through the imports above (the upstream import graph was pruned between
+-- v4.29.1 and v4.34.0), so its home module is now named explicitly.
 import Mathlib.MeasureTheory.Order.Group.Lattice
 
 /-!
@@ -48,7 +48,7 @@ distribution to the standard normal law. Rows need not be related to each other.
 * `triangular_wlln_of_L1`: the weak law for row-i.i.d. arrays whose row laws converge weakly
   and whose first absolute moments converge.
 
-The proof goes through characteristic functions: Lindeberg's telescoping argument bounds
+The proof uses characteristic functions. Lindeberg's telescoping argument bounds
 `|∏ᵢ φₙ,ᵢ(t) − exp(−t²/2)|`, and Lévy's continuity theorem gives weak convergence.
 
 ## References
@@ -288,7 +288,7 @@ private lemma tendsto_prod_charFun_lindeberg
   have hI1 : ∀ n i, Integrable (X n i) P := fun n i => (hL2 n i).integrable one_le_two
   have hVeq : ∀ n i, Var[X n i; P] = ∫ ω, (X n i ω) ^ 2 ∂P :=
     fun n i => variance_of_integral_eq_zero (hmeas n i).aemeasurable (hmean n i)
-  -- The RHS constant as a genuine exponential.
+  -- The RHS constant as an exponential.
   have hc : charFun (gaussianReal 0 1) t = Complex.exp (-(↑t ^ 2 / 2)) := by
     rw [charFun_gaussianReal]; push_cast; ring_nf
   -- Measurability of the truncation sets.
@@ -657,7 +657,7 @@ theorem weighted_iid_clt {m : ℕ → ℕ} {Y : ℕ → Ω → ℝ} {w : (n : �
       exact Finset.sum_congr rfl fun i _ => by rw [mul_pow, inv_pow, mul_comm]
     rw [e, hsn2 n, mul_inv, mul_comm ((σ ^ 2)⁻¹) ((∑ i, (w n i) ^ 2)⁻¹), ← mul_assoc,
       mul_inv_cancel₀ (ne_of_gt (hw n)), one_mul]
-  -- Row regularity: measurable, `L²`, centered, independent.
+  -- Each row is measurable, `L²`, centered and independent.
   have hmeas' : ∀ n i, Measurable (X n i) := by
     intro n i; simp only [hXdef]; exact (hmeas ↑i).const_mul _
   have hL2' : ∀ n i, MemLp (X n i) 2 P := by
@@ -673,7 +673,7 @@ theorem weighted_iid_clt {m : ℕ → ℕ} {Y : ℕ → Ω → ℝ} {w : (n : �
       (fun i => measurable_id.const_mul _)
     refine (iIndepFun_congr (fun i => ?_)).2 h2
     filter_upwards with ω; simp only [hXdef, Function.comp]
-  -- Row variances sum to `1`, hence trivially tend to `1`.
+  -- Row variances sum to `1`, hence tend to `1`.
   have hvarval : ∀ n, ∑ i, Var[X n i; P] = 1 := by
     intro n
     have hVi : ∀ i, Var[X n i; P] = ((s n)⁻¹ * w n i) ^ 2 * σ ^ 2 := by
@@ -684,7 +684,7 @@ theorem weighted_iid_clt {m : ℕ → ℕ} {Y : ℕ → Ω → ℝ} {w : (n : �
   have hvar' : Tendsto (fun n => ∑ i, Var[X n i; P]) atTop (𝓝 1) := by
     have hcongr : (fun n => ∑ i, Var[X n i; P]) = fun _ => (1 : ℝ) := funext hvarval
     rw [hcongr]; exact tendsto_const_nhds
-  -- The `L²`-tail of the sampling law vanishes: `∫_{K < |Y₀|} Y₀² → 0` as `K → ∞`.
+  -- The `L²`-tail `∫_{K < |Y₀|} Y₀²` of the sampling law tends to `0` as `K → ∞`.
   have hsq0 : Integrable (fun ω => (Y 0 ω) ^ 2) P := hL2.integrable_sq
   obtain ⟨tail, htaildef⟩ : ∃ tail : ℕ → ℝ,
       tail = fun (K : ℕ) => ∫ ω in {ω | (K : ℝ) < |Y 0 ω|}, (Y 0 ω) ^ 2 ∂P := ⟨_, rfl⟩
@@ -800,8 +800,8 @@ theorem weighted_iid_clt {m : ℕ → ℕ} {Y : ℕ → Ω → ℝ} {w : (n : �
 
 /-! ### Truncation lemmas for the triangular weak law
 
-The weak law is proved by truncation at a fixed level `K`: the excess `(|y| − K)⁺` has
-integrals converging along the rows, because both `∫|y| dGₙ` and `∫ (|y| ∧ K) dGₙ` converge. -/
+The weak law is proved by truncation at a fixed level `K`. The excess `(|y| − K)⁺` has
+integrals that converge along the rows, because both `∫|y| dGₙ` and `∫ (|y| ∧ K) dGₙ` converge. -/
 
 /-- Package a bounded continuous real function on the line as an element of `ℝ →ᵇ ℝ`. -/
 private noncomputable def wllnBcf (f : ℝ → ℝ) (hf : Continuous f) {C : ℝ}
@@ -849,7 +849,7 @@ private lemma wllnTrunc_sub {K : ℝ} (hK : 0 ≤ K) (y : ℝ) :
         abs_of_nonneg (by linarith : (0 : ℝ) ≤ y - K),
         abs_of_nonneg (by linarith : (0 : ℝ) ≤ y), max_eq_left (by linarith)]
 
-/-- The excess is the difference between `|y|` and its own truncation `|y| ∧ K`. -/
+/-- The excess is the difference between `|y|` and its truncation `|y| ∧ K`. -/
 private lemma wlln_excess_eq {K : ℝ} (hK : 0 ≤ K) (y : ℝ) :
     max (|y| - K) 0 = |y| - min |y| K := by
   rcases le_total |y| K with h | h
@@ -915,8 +915,8 @@ private lemma wlln_excess_tendsto_zero {ν : Measure ℝ} [IsProbabilityMeasure 
       rw [max_eq_right this])
   simpa using h
 
-/-- The per-row estimate: with a truncation level `K` whose centring error is below `ε/3`,
-the deviation probability is bounded by a Chebyshev term for the truncated average and a Markov
+/-- The per-row estimate. With a truncation level `K` whose centring error is below `ε/3`,
+the deviation probability is at most a Chebyshev term for the truncated average plus a Markov
 term for the excess. -/
 private lemma wlln_row_bound {n : ℕ} (hn : 0 < n) {Yn : Fin n → Ω → ℝ} {Gn : Measure ℝ}
     [IsProbabilityMeasure Gn] (hmeas : ∀ i, Measurable (Yn i)) (hindep : iIndepFun Yn P)
@@ -1069,8 +1069,8 @@ private lemma wlln_row_bound {n : ℕ} (hn : 0 < n) {Yn : Fin n → Ω → ℝ} 
 converges weakly to `ν`, and `∫ |y| dGₙ → ∫ |y| dν < ∞`, then the row averages converge in
 probability to `∫ y dν`.
 
-The hypothesis `hGint` is needed: without it, `hL1` holds vacuously for non-integrable `Gₙ`
-(the Bochner integral is then `0`), and `Gₙ = (1 − 1/n) δ₀ + (1/n) μₙ` with `μₙ` a
+The hypothesis `hGint` is needed. Without it, `hL1` is satisfied by non-integrable `Gₙ`, whose
+Bochner integrals are `0`, and `Gₙ = (1 − 1/n) δ₀ + (1/n) μₙ` with `μₙ` a
 non-integrable law supported in `[n³, ∞)` is a counterexample. -/
 theorem triangular_wlln_of_L1 {Y : (n : ℕ) → Fin n → Ω → ℝ} {G : ℕ → Measure ℝ}
     {ν : Measure ℝ} [∀ n, IsProbabilityMeasure (G n)] [IsProbabilityMeasure ν]
@@ -1105,7 +1105,7 @@ theorem triangular_wlln_of_L1 {Y : (n : ℕ) → Fin n → Ω → ℝ} {G : ℕ 
     · exact ⟨1, one_pos, by simp [h]⟩
     · exact ⟨ρ.toReal, ENNReal.toReal_pos hρ.ne' h.ne, by rw [ENNReal.ofReal_toReal h.ne]⟩
   set m : ℝ := ∫ y, y ∂ν with hmdef
-  -- choose the truncation level: the limiting excess integral must beat both budgets
+  -- choose the truncation level so that the limiting excess integral is below both tolerances
   obtain ⟨Kn, hKn⟩ : ∃ Kn : ℕ,
       ∫ y, max (|y| - (Kn : ℝ)) 0 ∂ν < min (ε / 6) (δ * ε / 12) :=
     ((wlln_excess_tendsto_zero hν).eventually

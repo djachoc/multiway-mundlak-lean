@@ -309,7 +309,7 @@ theorem tensorLp_indicatorConst (s : ∀ i, Set (α i)) (hs : ∀ i, MeasurableS
     obtain ⟨i, hi⟩ := h
     exact Finset.prod_eq_zero (Finset.mem_univ i) (Set.indicator_of_notMem hi _)
 
-/-- **Completeness.** Nothing but `0` is orthogonal to every product of basis
+/-- **Completeness.** Only `0` is orthogonal to every product of basis
 elements. -/
 theorem orthogonal_span_basisProd_eq_bot (b : ∀ i, HilbertBasis R 𝕜 (Lp 𝕜 2 (μ i))) :
     (Submodule.span 𝕜 (Set.range (basisProd b)))ᗮ = ⊥ := by
@@ -480,10 +480,10 @@ end KernelTruncation
 
 end Truncation
 
-/-! ## Witness
+/-! ## Example
 
 The coordinate set is `Fin 2` and the one-dimensional system is Mathlib's `fourierBasis` on
-`AddCircle 1`, reindexed by `ℕ`. The exhibited vector has a nonzero coefficient at every
+`AddCircle 1`, reindexed by `ℕ`. The vector `wit` has a nonzero coefficient at every
 multi-index, so its truncation gap is strictly positive at every level `L` while tending to `0`.
 -/
 
@@ -494,7 +494,7 @@ open AddCircle
 /-- Each coordinate is the circle `ℝ/ℤ`. -/
 abbrev Circ : Type := AddCircle (1 : ℝ)
 
-/-- Each coordinate carries the Haar probability measure. -/
+/-- Each coordinate has the Haar probability measure. -/
 noncomputable abbrev hmu : ∀ _ : Fin 2, Measure Circ := fun _ => AddCircle.haarAddCircle
 
 /-- Mathlib's Fourier basis of `L²` of the circle, reindexed by `ℕ`. -/
@@ -546,7 +546,7 @@ theorem memlp_coefs : Memℓp coefs 2 := by
   rw [hfun]
   exact (summable_geometric_of_lt_one (by norm_num) (by norm_num)).comp_injective enc_injective
 
-/-- The witness vector: the element of `L²` of the two-dimensional torus whose coefficient
+/-- The vector `wit`, the element of `L²` of the two-dimensional torus whose coefficient
 against every product `ψ_{r_0} ⊗ ψ_{r_1}` is nonzero. -/
 noncomputable def wit : Lp ℂ 2 (Measure.pi hmu) := PB.repr.symm ⟨coefs, memlp_coefs⟩
 

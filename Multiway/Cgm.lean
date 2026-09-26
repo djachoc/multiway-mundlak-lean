@@ -41,13 +41,13 @@ variable {O K D L : Type*}
 
 /-! ## The inclusion–exclusion step
 
-Deterministic, pointwise in `ω`. -/
+The identity holds for each `ω`. -/
 
 section Meat
 
 variable [Fintype O] [DecidableEq O] [DecidableEq D] [DecidableEq L]
 
-/-- Lemma SM.B.7, entry by entry and realization by realization: the multiway meat equals the
+/-- Lemma SM.B.7 at each entry and each `ω`. The multiway meat equals the
 sum over linked pairs `∑_{o∼o'} x̃_{oa} x̃_{o'b} v_o v_{o'}`. -/
 theorem meat_eq_linkedPairs {Ω : Type*} (c : D → O → L) (dims : Finset D)
     (X : O → K → Ω → ℝ) (v : O → Ω → ℝ) (a b : K) (ω : Ω) :
@@ -206,14 +206,14 @@ end ClauseA
 
 /-! ## The operator norm against the Frobenius norm
 
-The Gram bound `‖Y'Y‖ ≤ ‖Y‖²_F`. -/
+The main result is the Gram bound `‖Y'Y‖ ≤ ‖Y‖²_F`. -/
 
 section OpNorm
 
 variable {α β : Type*} [Fintype α] [DecidableEq α] [Fintype β] [DecidableEq β]
 
 omit [DecidableEq α] [DecidableEq β] in
-/-- `‖My‖² ≤ ‖M‖²_F ‖y‖²`, coordinatewise: Cauchy--Schwarz applied row by row. -/
+/-- `‖My‖² ≤ ‖M‖²_F ‖y‖²`, by the Cauchy–Schwarz inequality applied to each row of `M`. -/
 theorem sum_sq_mulVec_le_rectFrobSq (M : Matrix α β ℝ) (y : β → ℝ) :
     ∑ i : α, (M *ᵥ y) i ^ 2 ≤ rectFrobSq M * ∑ k : β, y k ^ 2 := by
   rw [rectFrobSq, Finset.sum_mul]
@@ -223,7 +223,7 @@ theorem sum_sq_mulVec_le_rectFrobSq (M : Matrix α β ℝ) (y : β → ℝ) :
   exact Finset.sum_mul_sq_le_sq_mul_sq Finset.univ (fun k => M i k) y
 
 omit [DecidableEq α] in
-/-- `‖M‖ ≤ ‖M‖_F`: the `l2` operator norm is bounded by the rectangular Frobenius norm. -/
+/-- The `l2` operator norm is bounded by the rectangular Frobenius norm, `‖M‖ ≤ ‖M‖_F`. -/
 theorem l2_opNorm_le_rectFrobNorm (M : Matrix α β ℝ) : ‖M‖ ≤ rectFrobNorm M := by
   rw [Matrix.l2_opNorm_def]
   refine ContinuousLinearMap.opNorm_le_bound _ (rectFrobNorm_nonneg M) fun y => ?_
@@ -260,7 +260,7 @@ end OpNorm
 
 /-! ## Clause (b), the deterministic part
 
-Norm and trace inequalities for the fixed matrix `Ξ_n`. -/
+The lemmas below are norm and trace inequalities for the fixed matrix `Ξ_n`. -/
 
 section Deterministic
 
@@ -376,7 +376,7 @@ theorem rectFrobSq_of_symmProj {A : Matrix O O ℝ} (hsym : Aᵀ = A) (hidem : A
   rw [rectFrobSq_eq_trace, hsym, hidem]
 
 omit [DecidableEq O] [Fintype N] [DecidableEq N] in
-/-- The diagonal of a symmetric idempotent matrix is nonnegative: `A_oo = ∑_{o'} A²_{oo'}`. -/
+/-- The diagonal of a symmetric idempotent matrix is nonnegative, since `A_oo = ∑_{o'} A²_{oo'}`. -/
 theorem diag_nonneg_of_symmProj {A : Matrix O O ℝ} (hsym : Aᵀ = A) (hidem : A * A = A)
     (o : O) : 0 ≤ A o o := by
   have h : A o o = ∑ o' : O, A o o' * A o o' := by
@@ -481,7 +481,7 @@ theorem rectFrobSq_blockPart_gram_le (i : O → N) (x : Matrix O K ℝ) {B Gmax 
 
 /-! ### The bound for a symmetric idempotent matrix
 
-Stated for an arbitrary symmetric idempotent `A` and applied at `A^{(m)}` and at `Λ`. -/
+The bound holds for an arbitrary symmetric idempotent `A`; it is applied at `A^{(m)}` and at `Λ`. -/
 
 theorem opNorm_xT_blockPart_le (i : O → N) (x : Matrix O K ℝ) {A : Matrix O O ℝ}
     (hsym : Aᵀ = A) (hidem : A * A = A) {B Gmax : ℝ}
@@ -625,8 +625,8 @@ theorem transpose_mul_mul_apply (x : Matrix O K ℝ) (M : Matrix O O ℝ) (a b :
   exact Finset.sum_comm
 
 omit [Fintype K] [DecidableEq D] in
-/-- Splitting the linked pairs into diagonal and off-diagonal pairs, as a deterministic
-identity. -/
+/-- The linked-pair sum splits into its diagonal and off-diagonal pairs. The identity is
+deterministic. -/
 theorem linkedPairs_split (c : D → O → L) {dims : Finset D} (hdims : dims.Nonempty)
     (R : Matrix O O ℝ) (x : Matrix O K ℝ) (a b : K) :
     ∑ o : O, ∑ o' : O, (if Linked c dims o o' then x o a * x o' b * R o o' else 0)
@@ -832,22 +832,22 @@ theorem condExp_meatCGM {c : D → O → L} {dims : Finset D}
 
 end ClauseBCond
 
-/-! ## Vacuity witnesses
+/-! ## Examples
 
-Each theorem below applies a main result of this file to an explicit model, showing that its
-hypotheses are jointly satisfiable. -/
+Each theorem below applies a main result of this file to an explicit model on which its
+hypotheses hold. -/
 
 section Witness
 
-/-- The design of the deterministic witness: two observations in one cluster of dimension
-`m`, with within regressors `+1` and `-1`, which sum to zero over the cluster. -/
+/-- The design of the example for `xiMat_opNorm_le`, with two observations in one cluster of
+dimension `m` and within regressors `+1` and `-1`, which sum to zero over the cluster. -/
 def witnessX : Matrix (Fin 2) (Fin 1) ℝ := Matrix.of fun o _ => if o = 0 then 1 else -1
 
-/-- The `P_m` of the deterministic witness: one cluster of size `2`, so every entry of the
-block is `1/2`. -/
+/-- The `P_m` of the example for `xiMat_opNorm_le`. There is one cluster of size `2`, so every
+entry of the block is `1/2`. -/
 noncomputable def witnessPm : Matrix (Fin 2) (Fin 2) ℝ := Matrix.of fun _ _ => 1 / 2
 
-/-- Vacuity witness for `condExp_meat_idiosyncratic`: `Ω = Unit`, `μ = dirac ()`, `𝒟 = ⊥`, one
+/-- An example for `condExp_meat_idiosyncratic`: `Ω = Unit`, `μ = dirac ()`, `𝒟 = ⊥`, one
 observation, one coefficient, one maintained dimension, `x̃ ≡ 1` and `ε ≡ 1`; both sides
 equal `1`. -/
 theorem condExp_meat_idiosyncratic_witness :
@@ -872,9 +872,9 @@ theorem condExp_meat_idiosyncratic_witness :
   have h1 : (fun _ : Unit => (1 : ℝ) * 1) = fun _ : Unit => (1 : ℝ) := by norm_num
   rw [h1, h2, condExp_const bot_le]
 
-/-- Vacuity witness for `xiMat_opNorm_le`: two observations in a single cluster, `K = 1`,
+/-- An example for `xiMat_opNorm_le`: two observations in a single cluster, `K = 1`,
 `X̃ = (1,-1)'`, `P_m = (1/2)ιι'`, `Π = P_m`, `R = I - P_m`, `B = 1`, `G^{(m)}_max = 2`, and
-`A^{(m)} = Λ = 0`. Here `R` and `Ξ_n` are nonzero. -/
+`A^{(m)} = Λ = 0`. In this example `R` and `Ξ_n` are nonzero. -/
 theorem xiMat_opNorm_le_witness :
     ‖xiMat (fun _ _ => (0 : Fin 1)) ({0} : Finset (Fin 1)) (1 - witnessPm) witnessX‖
       ≤ (1 : ℝ) ^ 2 *

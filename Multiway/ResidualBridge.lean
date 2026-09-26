@@ -7,9 +7,9 @@ import Mathlib.LinearAlgebra.Matrix.Hermitian
 # The residual maker as a matrix
 
 This file represents the residual maker `R` of Lemma SM.B.6 (residual representation and exact
-leverage identity) as a matrix on `ℝⁿ = EuclideanSpace ℝ O`, and transports its properties:
-`R` is symmetric and idempotent, every row of `R` sums to zero over every cell of a maintained
-fixed-effect dimension (`RΔ_m = 0`), and `tr(R) = n - d_[Δ] - K`. The hat matrix `Π = I_n - R`
+leverage identity) as a matrix on `ℝⁿ = EuclideanSpace ℝ O`. The matrix `R` is symmetric and idempotent, every
+row of `R` sums to zero over every cell of a maintained fixed-effect dimension (`RΔ_m = 0`), and
+`tr(R) = n - d_[Δ] - K`. The hat matrix `Π = I_n - R`
 is the orthogonal projector onto `col([Δ, X])`, of trace `d_[Δ] + K`.
 
 ## Notation
@@ -38,8 +38,8 @@ section OpMatrix
 
 variable {O : Type*} [Fintype O] [DecidableEq O]
 
-/-- The matrix of an operator on `EuclideanSpace ℝ O`: its table of entries
-`R_{oo'} = (R e_{o'})_o` in the standard basis. -/
+/-- The matrix of an operator on `EuclideanSpace ℝ O`, with entries `R_{oo'} = (R e_{o'})_o` in
+the standard basis. -/
 noncomputable def opMatrix (R : EuclideanSpace ℝ O →L[ℝ] EuclideanSpace ℝ O) :
     Matrix O O ℝ :=
   Matrix.of fun o o' => LeverageCond.opEntry R o o'
@@ -106,8 +106,8 @@ omit [Fintype O] in
 @[simp] theorem cellVec_apply (t : Finset O) (o : O) :
     cellVec t o = if o ∈ t then (1 : ℝ) else 0 := rfl
 
-/-- `(Rι_t)_o = ∑_{o' ∈ t} R_{oo'}`: a row sum over a set is the operator evaluated at the set's
-indicator. -/
+/-- `(Rι_t)_o = ∑_{o' ∈ t} R_{oo'}`, so a row sum over a set is the operator evaluated at the
+set's indicator. -/
 theorem sum_row_opMatrix (R : EuclideanSpace ℝ O →L[ℝ] EuclideanSpace ℝ O) (t : Finset O)
     (o : O) : ∑ o' ∈ t, opMatrix R o o' = R (cellVec t) o := by
   rw [LeverageCond.apply_eq_sum_opEntry R (cellVec t) o]
@@ -286,8 +286,8 @@ theorem fibreSpace_le_fixedEffectSpace (c : D → O → L) (dims : Finset D) {m 
     (hm : m ∈ dims) : fibreSpace (c m) ≤ fixedEffectSpace c dims :=
   le_iSup₂ (f := fun m (_ : m ∈ dims) => fibreSpace (c m)) m hm
 
-/-- The indicator of a level-`{m}` cell is a column of `Δ_m`: the fibre of `i_m` over
-`i_m(o₀)`. -/
+/-- The indicator of a level-`{m}` cell, the fibre of `i_m` over `i_m(o₀)`, is a column of
+`Δ_m`. -/
 theorem cellVec_cellOf_singleton (c : D → O → L) (m : D) (o₀ : O) :
     cellVec (cellOf c ({m} : Finset D) o₀) = fibreIndicator (c m) (c m o₀) := by
   have hiff : ∀ o : O, o ∈ cellOf c ({m} : Finset D) o₀ ↔ c m o = c m o₀ := by
@@ -310,7 +310,7 @@ theorem fibreIndicator_mem_fixedEffectSpace (c : D → O → L) (dims : Finset D
     fibreIndicator (c m) a ∈ fixedEffectSpace c dims :=
   fibreSpace_le_fixedEffectSpace c dims hm (Submodule.subset_span ⟨a, rfl⟩)
 
-/-- `RΔ_m = 0`: every row of `R` sums to zero over every level-`{m}` cell. -/
+/-- `RΔ_m = 0`, that is, every row of `R` sums to zero over every level-`{m}` cell. -/
 theorem residualMatrix_cell_sum_eq_zero (c : D → O → L) (dims : Finset D)
     (x : ι → EuclideanSpace ℝ O) {m : D} (hm : m ∈ dims) :
     ∀ t ∈ cells c ({m} : Finset D), ∀ o : O,
@@ -336,8 +336,8 @@ theorem residualMatrix_cell_sum_eq_zero_dims (c : D → O → L) (dims : Finset 
       ∑ o' ∈ t, residualMatrix (fixedEffectSpace c dims) x o o' = 0 :=
   fun _ hm => residualMatrix_cell_sum_eq_zero c dims x hm
 
-/-- Proposition SM.E.2(c) for the residual maker: `T_{{m}}(R) = -tr(R)`, with both hypotheses of
-`GroupCompute.superAgg_residual_singleton` discharged. -/
+/-- Proposition SM.E.2(c) for the residual maker, `T_{{m}}(R) = -tr(R)`. Both hypotheses of
+`GroupCompute.superAgg_residual_singleton` are verified for `R`. -/
 theorem superAgg_residualMatrix_singleton (c : D → O → L) (dims : Finset D)
     (x : ι → EuclideanSpace ℝ O) {m : D} (hm : m ∈ dims) :
     superAgg c ({m} : Finset D)
@@ -347,14 +347,14 @@ theorem superAgg_residualMatrix_singleton (c : D → O → L) (dims : Finset D)
 
 end FixedEffects
 
-/-! ## A witness
+/-! ## An example
 
 Two observations, one fixed-effect dimension with a single category, and no regressors. Then
 `𝒮 = span(ι_n)`, `d_[Δ] = 1`, `K = 0`, `n = 2`, `tr(R) = 1`, and `T_{{0}}(R) = -1`. -/
 
 section Witness
 
-/-- The index map of the witness design: two observations, one category. -/
+/-- The index map of the example, with two observations and one category. -/
 def witC : Fin 1 → Fin 2 → Unit := fun _ _ => ()
 
 /-- No regressors: `K = 0`. -/
@@ -365,7 +365,7 @@ theorem witX_linearIndependent :
       (withinRegressor (fixedEffectSpace witC ({0} : Finset (Fin 1))) witX) :=
   linearIndependent_empty_type
 
-/-- With one dimension carrying a single category, `col(Δ) = col(ι_n)`. -/
+/-- With one dimension that has a single category, `col(Δ) = col(ι_n)`. -/
 theorem witFixedEffectSpace :
     fixedEffectSpace witC ({0} : Finset (Fin 1)) = constSpace (Fin 2) := by
   have h : fixedEffectSpace witC ({0} : Finset (Fin 1))
@@ -391,7 +391,7 @@ theorem witness_trace :
   rw [residualMatrix_trace _ _ witX_linearIndependent, witFixedEffectSpace, witFinrank]
   norm_num
 
-/-- `T_{{0}}(R) = -tr(R) = -1` on the witness design. -/
+/-- `T_{{0}}(R) = -tr(R) = -1` on the example. -/
 theorem witness_superAgg :
     superAgg witC ({0} : Finset (Fin 1))
         (fun o o' =>
@@ -400,7 +400,7 @@ theorem witness_superAgg :
   rw [superAgg_residualMatrix_singleton witC ({0} : Finset (Fin 1)) witX
         (Finset.mem_singleton_self 0), witness_trace]
 
-/-- Symmetry, idempotence and `RΔ_m = 0` on the witness design. -/
+/-- Symmetry, idempotence and `RΔ_m = 0` on the example. -/
 theorem witness_properties :
     (residualMatrix (fixedEffectSpace witC ({0} : Finset (Fin 1))) witX).IsSymm
       ∧ residualMatrix (fixedEffectSpace witC ({0} : Finset (Fin 1))) witX

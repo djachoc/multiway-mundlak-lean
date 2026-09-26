@@ -138,7 +138,7 @@ theorem diag_nonneg (hsym : Rᵀ = R) (hidem : R * R = R) (o : O) : 0 ≤ R o o 
   exact Finset.sum_nonneg fun _ _ => sq_nonneg _
 
 omit [DecidableEq O] in
-/-- `R_oo ≤ 1`: the diagonal entry dominates its own square. -/
+/-- `R_oo ≤ 1`, since `R_oo ≥ R_oo²`. -/
 theorem diag_le_one (hsym : Rᵀ = R) (hidem : R * R = R) (o : O) : R o o ≤ 1 := by
   have hterm : R o o ^ 2 ≤ ∑ o' : O, R o o' ^ 2 :=
     Finset.single_le_sum (f := fun o' : O => R o o' ^ 2) (fun _ _ => sq_nonneg _)
@@ -147,7 +147,7 @@ theorem diag_le_one (hsym : Rᵀ = R) (hidem : R * R = R) (o : O) : R o o ≤ 1 
   nlinarith [diag_nonneg hsym hidem o]
 
 omit [DecidableEq O] in
-/-- `|R_{oo'}| ≤ 1`: every entry is dominated by its row sum of squares, which is `R_oo ≤ 1`. -/
+/-- `|R_{oo'}| ≤ 1`, since `R²_{oo'}` is at most the row sum of squares `R_oo ≤ 1`. -/
 theorem abs_entry_le_one (hsym : Rᵀ = R) (hidem : R * R = R) (o o' : O) : |R o o'| ≤ 1 := by
   have hterm : R o o' ^ 2 ≤ ∑ o'' : O, R o o'' ^ 2 :=
     Finset.single_le_sum (f := fun o'' : O => R o o'' ^ 2) (fun _ _ => sq_nonneg _)
@@ -263,8 +263,8 @@ theorem abs_condExp_feResidual_sq_sub_le {R : Matrix O O ℝ} (hsym : Rᵀ = R) 
   · linarith
 
 omit [DecidableEq O] in
-/-- `E[𝓜̂_W|𝒟]` entry by entry: the `𝒟`-measurable weight comes out by the pull-out
-property. -/
+/-- `E[𝓜̂_W|𝒟]` entry by entry. The `𝒟`-measurable weight is taken outside the conditional
+expectation. -/
 theorem condExp_meatW (R : Matrix O O ℝ) {eps w : O → Ω → ℝ}
     (hw : ∀ o, StronglyMeasurable[𝒟] (w o))
     (hint : ∀ o' o'', Integrable (fun ω => eps o' ω * eps o'' ω) μ)
@@ -321,8 +321,7 @@ section Fluctuation
 variable {O : Type*} [Fintype O] [DecidableEq O]
 variable {Ω : Type*} (𝒟 : MeasurableSpace Ω) {mΩ : MeasurableSpace Ω} {μ : Measure Ω}
 
-/-- The matrix `c · RA_{jk}R`, with the normalizer `c` (in the theorem, `n^{-1}`) carried
-inside. -/
+/-- The matrix `c · RA_{jk}R`, where the normalizer `c` is `n^{-1}` in the theorem. -/
 def meatMat (c : ℝ) (R : Matrix O O ℝ) (w : O → Ω → ℝ) (ω : Ω) : Matrix O O ℝ :=
   c • (R * Matrix.diagonal (fun o => w o ω) * R)
 
@@ -423,7 +422,7 @@ theorem integrable_bdd_mul {f g : Ω → ℝ} {B : ℝ} (hf : AEStronglyMeasurab
     (hb : ∀ ω, |f ω| ≤ B) (hg : Integrable g μ) : Integrable (fun ω => f ω * g ω) μ :=
   hg.bdd_mul hf (Filter.Eventually.of_forall fun ω => by rw [Real.norm_eq_abs]; exact hb ω)
 
-/-- Lemma SM.C.5 with a deterministic Frobenius bound:
+/-- Lemma SM.C.5 with a deterministic Frobenius bound,
 `E[(ε'Wε)²|𝒟] - (E[ε'Wε|𝒟])² ≤ 3CF` whenever `‖W‖²_F ≤ F` in every realization. -/
 theorem condExp_quadForm_le_const [IsFiniteMeasure μ] (h𝒟 : 𝒟 ≤ mΩ)
     {W : Ω → Matrix O O ℝ} {eps sig : O → Ω → ℝ} {C Bw F : ℝ} (hC : 0 ≤ C) (hBw : 0 ≤ Bw)
@@ -516,7 +515,7 @@ theorem condExp_meatW_var_le [IsFiniteMeasure μ] (h𝒟 : 𝒟 ≤ mΩ)
   rw [hfun] at hres
   exact hres
 
-/-- The fluctuation bound at `c = n^{-1}`: `Var(n^{-1}(𝓜̂_W)_{jk}|𝒟) ≤ 3CB⁴/n`. -/
+/-- The fluctuation bound at `c = n^{-1}`, `Var(n^{-1}(𝓜̂_W)_{jk}|𝒟) ≤ 3CB⁴/n`. -/
 theorem condExp_meatW_var_le_normalized [IsFiniteMeasure μ] [Nonempty O] (h𝒟 : 𝒟 ≤ mΩ)
     {R : Matrix O O ℝ} (hsym : Rᵀ = R) (hidem : R * R = R)
     {eps sig w : O → Ω → ℝ} {C B2 : ℝ} (hC : 0 ≤ C) (hB0 : 0 ≤ B2)
@@ -641,7 +640,7 @@ omit [DecidableEq K] in
 /-- **Theorem 7(b)**, with the variance limit as a hypothesis. `P(𝓡V̂_W𝓡' ≻ 0) → 1` and
 `𝒲(𝓡, V̂_W; β̂_JM) ⟶ᵈ χ²_r`. The central limit theorem is the hypothesis `hCLT`, in restricted
 form, and `hVhlim` is the restricted variance limit; `vhat_wald_of_nVhat` derives the latter.
-The normalizer is a positive sequence `a_n` (the paper's `a_n = n`). -/
+The normalizer is a positive sequence `a_n` (in the paper, `a_n = n`). -/
 theorem vhat_wald
     {Rm : Matrix ι K ℝ} {C : Matrix K K ℝ} (hC : C.PosDef)
     (hRank : Function.Injective Rm.vecMul)
@@ -689,7 +688,7 @@ section CgmC
 variable {O K D L : Type*} [Fintype O] [DecidableEq O] [DecidableEq D] [DecidableEq L]
 variable {Ω : Type*} (𝒟 : MeasurableSpace Ω) {mΩ : MeasurableSpace Ω} {μ : Measure Ω}
 
-/-- `W_{oo'} = s x̃_{oa}x̃_{o'b}𝟙{o ∼ o'}`, with the normalizer `s` carried inside. -/
+/-- `W_{oo'} = s x̃_{oa}x̃_{o'b}𝟙{o ∼ o'}`, including the normalizer `s`. -/
 def linkWeightMat (c : D → O → L) (dims : Finset D) (X : O → K → Ω → ℝ) (a b : K) (s : ℝ)
     (ω : Ω) : Matrix O O ℝ :=
   Matrix.of fun o o' => s * (if Linked c dims o o' then X o a ω * X o' b ω else 0)
@@ -859,7 +858,7 @@ theorem cgm_meat_var_le [IsFiniteMeasure μ] (h𝒟 : 𝒟 ≤ mΩ)
 
 end CgmC
 
-/-! ## Non-vacuity
+/-! ## Examples
 
 The conditional clauses are instantiated on the one-point model of `Multiway.Quadform`, and
 Theorem 7(b) on a Gaussian model. -/
@@ -1175,7 +1174,7 @@ theorem tendstoInProb_of_bias_condVar [IsProbabilityMeasure P] (h𝒟 : 𝒟 ≤
 
 end Asymptotic
 
-/-! ### The two pieces §8 needs that §4 builds inline -/
+/-! ### Measurability and square integrability of the quadratic form -/
 
 section MeatMeasurable
 
@@ -1414,11 +1413,11 @@ theorem tendstoInProb_meatW_sub [IsProbabilityMeasure P] (h𝒟 : 𝒟 ≤ mΩ)
 
 end MeatLimit
 
-/-! ### Non-vacuity of the limit in probability -/
+/-! ### An example for the limit in probability -/
 
 section AsymptoticWitness
 
-/-- `tendstoInProb_meatW_sub` on a growing family of one-point models: `𝒪_j = {0,…,j}`,
+/-- `tendstoInProb_meatW_sub` on a growing family of one-point models, with `𝒪_j = {0,…,j}`,
 `Ω = Unit`, `P = dirac ()`, `𝒟 = ⊥`, `R = I`, `ε_o = 𝟙{o = 0}`, `σ²_ε(o) = 𝟙{o = 0}`,
 `σ̄² = 1`, `w ≡ 1`, `B² = 1`, `C = 1`. -/
 theorem tendstoInProb_meatW_sub_witness :
@@ -1851,9 +1850,9 @@ section NVhat
 
 variable {K : Type*} [Fintype K] [DecidableEq K]
 
-/-- **Theorem 7(a).** `N_n(X̃'X̃)^{-1}𝓜̂_W(X̃'X̃)^{-1} →ᵖ H^{-1}SH^{-1}`. Here `Gr` is `X̃'X̃`,
-`Mh` is `𝓜̂_W` and `Sn` is `S_n`, all unnormalized; `hH`, `hG` give `N_n^{-1}X̃'X̃ →ᵖ H ≻ 0`,
-`hM` gives `N_n^{-1}𝓜̂_W - S_n →ᵖ 0`, and `hS` gives `S_n →ᵖ S`. -/
+/-- **Theorem 7(a).** `N_n(X̃'X̃)^{-1}𝓜̂_W(X̃'X̃)^{-1} →ᵖ H^{-1}SH^{-1}`. The argument `Gr`
+is `X̃'X̃`, `Mh` is `𝓜̂_W` and `Sn` is `S_n`, all unnormalized; `hH`, `hG` give
+`N_n^{-1}X̃'X̃ →ᵖ H ≻ 0`, `hM` gives `N_n^{-1}𝓜̂_W - S_n →ᵖ 0`, and `hS` gives `S_n →ᵖ S`. -/
 theorem tendstoInProb_nVhat {Gr Mh Sn : ℕ → Ω → Matrix K K ℝ} {H S : Matrix K K ℝ}
     {N : ℕ → ℝ} (hN : ∀ n, 0 < N n) (hH : H.PosDef)
     (hG : TendstoInMeasure P (fun n ω => frobNorm ((N n)⁻¹ • Gr n ω - H))
@@ -1881,9 +1880,9 @@ theorem tendstoInProb_nVhat {Gr Mh Sn : ℕ → Ω → Matrix K K ℝ} {H S : Ma
 
 end NVhat
 
-/-! ### Non-vacuity
+/-! ### Examples
 
-With `K = 1` over a one-point space: `N_j = j+1`, `X̃'X̃ = [j+1]`, `H = [1]`,
+Consider `K = 1` over a one-point space, with `N_j = j+1`, `X̃'X̃ = [j+1]`, `H = [1]`,
 `S_n = [1 + (j+1)^{-1}]`, `𝓜̂_W = [(j+1)(1 + (j+1)^{-1})]`, `S = [1]`. Both `‖S_n - S‖_F` and
 `‖nV̂_W - H^{-1}SH^{-1}‖_F` equal `(j+1)^{-1} > 0`. -/
 
@@ -2156,30 +2155,30 @@ theorem vhat_wald_of_nVhat
 
 end Restricted
 
-/-! ### Non-vacuity
+/-! ### Examples
 
-One regressor (`K = ι = Fin 1`, `𝓡 = I₁`) over `Ω = ℝ¹` under `N(0, 1)`, with `N_n = n + 1`,
-`X̃'X̃ = [n+1]`, `H = [1]`, `S_n = [1 + (n+1)^{-1}]`, `S = [1]`,
+Consider one regressor (`K = ι = Fin 1`, `𝓡 = I₁`) over `Ω = ℝ¹` under `N(0, 1)`, with
+`N_n = n + 1`, `X̃'X̃ = [n+1]`, `H = [1]`, `S_n = [1 + (n+1)^{-1}]`, `S = [1]`,
 `𝓜̂_W = [(n+1)(1 + (n+1)^{-1})]` and `β̂ − β = (n+1)^{-1/2}ω`, so that `√N_n 𝓡(β̂ − β) = ω`. The
 restricted variance estimate is `[1 + (n+1)^{-1}] ≻ 0` at every index, so the Wald statistic is
 `ω²/(1 + (n+1)^{-1})`. -/
 
 section WaldOfNVhatWitness
 
-/-- The witness's bread `X̃'X̃ = [n+1]`, constant in `ω`. -/
+/-- The bread `X̃'X̃ = [n+1]` of the example, constant in `ω`. -/
 noncomputable def wGr (n : ℕ) (_ω : EuclideanSpace ℝ (Fin 1)) : Matrix (Fin 1) (Fin 1) ℝ :=
   Matrix.of fun _ _ => (n : ℝ) + 1
 
-/-- The witness's meat `𝓜̂_W = [(n+1)(1 + (n+1)^{-1})]`, constant in `ω`. -/
+/-- The meat `𝓜̂_W = [(n+1)(1 + (n+1)^{-1})]` of the example, constant in `ω`. -/
 noncomputable def wMh (n : ℕ) (_ω : EuclideanSpace ℝ (Fin 1)) : Matrix (Fin 1) (Fin 1) ℝ :=
   Matrix.of fun _ _ => ((n : ℝ) + 1) * (1 + ((n : ℝ) + 1)⁻¹)
 
-/-- The witness's `S_n = [1 + (n+1)^{-1}]`, which converges to `S = [1]` without ever equalling
-it. -/
+/-- The matrix `S_n = [1 + (n+1)^{-1}]` of the example, which converges to `S = [1]` without
+ever equalling it. -/
 noncomputable def wSn (n : ℕ) (_ω : EuclideanSpace ℝ (Fin 1)) : Matrix (Fin 1) (Fin 1) ℝ :=
   Matrix.of fun _ _ => 1 + ((n : ℝ) + 1)⁻¹
 
-/-- The witness's deviation `β̂ − β = (n+1)^{-1/2}ω`, so that `√N_n(β̂ − β) = ω ~ N(0,1)`. -/
+/-- The deviation `β̂ − β = (n+1)^{-1/2}ω` of the example, so that `√N_n(β̂ − β) = ω ~ N(0,1)`. -/
 noncomputable def wDev (n : ℕ) (ω : EuclideanSpace ℝ (Fin 1)) : EuclideanSpace ℝ (Fin 1) :=
   (Real.sqrt ((n : ℝ) + 1))⁻¹ • ω
 
@@ -2193,7 +2192,7 @@ theorem frobNorm_wSn_sub (n : ℕ) (ω : EuclideanSpace ℝ (Fin 1)) :
     simp [wSn]
   rw [heq, frobNorm_scalar, abs_of_nonneg (by positivity)]
 
-/-- The restricted variance estimate of the witness is `𝓡(N_nV̂_W)𝓡' = [1 + (n+1)^{-1}]`. -/
+/-- The restricted variance estimate of the example is `𝓡(N_nV̂_W)𝓡' = [1 + (n+1)^{-1}]`. -/
 theorem wVhat_restricted (n : ℕ) (ω : EuclideanSpace ℝ (Fin 1)) :
     ((n : ℝ) + 1) • ((1 : Matrix (Fin 1) (Fin 1) ℝ)
         * ((wGr n ω)⁻¹ * wMh n ω * (wGr n ω)⁻¹) * (1 : Matrix (Fin 1) (Fin 1) ℝ)ᵀ)
@@ -2211,7 +2210,7 @@ theorem wVhat_restricted (n : ℕ) (ω : EuclideanSpace ℝ (Fin 1)) :
     Finset.univ_unique, Finset.sum_singleton]
   field_simp
 
-/-- `vhat_wald_of_nVhat` on the witness model. -/
+/-- `vhat_wald_of_nVhat` on the example. -/
 theorem vhat_wald_of_nVhat_witness :
     Tendsto (fun n : ℕ => (multivariateGaussian (0 : EuclideanSpace ℝ (Fin 1)) 1)
         {ω | ((1 : Matrix (Fin 1) (Fin 1) ℝ) * ((wGr n ω)⁻¹ * wMh n ω * (wGr n ω)⁻¹)

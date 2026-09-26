@@ -15,9 +15,9 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
 
 This file develops the martingale argument behind part (b) of Theorem 4 of the paper
 (asymptotic normality of the joint-projection Mundlak estimator under interaction components).
-The degenerate multilinear score of Lemma SM.C.2 is re-indexed as a martingale-difference array
-and fed to the martingale central limit theorem `StatLean.TimeSeries.mds_clt` (Brown 1971;
-Hall and Heyde 1980, Corollary 3.1). The first condition of that theorem is derived from
+The degenerate multilinear score of Lemma SM.C.2 is re-indexed as a martingale-difference array,
+to which the martingale central limit theorem `StatLean.TimeSeries.mds_clt` (Brown 1971;
+Hall and Heyde 1980, Corollary 3.1) applies. The first condition of that theorem is derived from
 Lemma SM.C.3 (concentration of the conditional variance), the truncation limit `L → ∞` is
 taken on characteristic functions, and the conditioning on the design `𝒟` is removed through
 the regular conditional law `ProbabilityTheory.condExpKernel`.
@@ -125,7 +125,7 @@ theorem mdsRowSum_degenDiff_ae [Nonempty ι] {U : ℕ → V → Ω → ℝ} {coo
 /-- `T_n(L)/s_n(L) →ᵈ N(0,1)` for each fixed `L`, in the `charFun` form of
 `StatLean.TimeSeries.mds_clt`. The hypotheses `hvar` (`V_n²/s_n²(L) →ᵖ 1`) and `hlind` (the
 Lindeberg condition) are the two conditions of the martingale CLT; see
-`Var.tendsto_charFun_degenSum_of_concentration` for a version with `hvar` discharged. The
+`Var.tendsto_charFun_degenSum_of_concentration` for a version in which `hvar` is proved. The
 coefficients `c n` are taken already divided by `s_n(L)`. -/
 theorem tendsto_charFun_degenSum [Nonempty ι] {U : ℕ → V → Ω → ℝ} {coord : ℕ → T → ι → V}
     {g : ℕ → (ι → ℝ) → ℝ} {c : ℕ → T → ℝ} {step : ℕ → V → ℕ} {k : ℕ → ℕ}
@@ -225,8 +225,8 @@ theorem tendsto_charFun_of_forall_subseq
     (integrable_const _)
     (fun i => norm_condCharFunD_le_one 𝒟 h𝒟 P _ t) hae
 
-/-- Deconditioning of characteristic functions. The design convergences are carried by a
-single sequence `d` into a pseudo-emetric space, so that one subsequence serves all of them;
+/-- Deconditioning of characteristic functions. The design convergences are stated for a
+single sequence `d` into a pseudo-emetric space, so that one subsequence works for all of them;
 `hcond` is the conditional convergence along almost every realization of the design. -/
 theorem tendsto_charFun_of_deconditioning
     (𝒟 : MeasurableSpace Ω) (h𝒟 : 𝒟 ≤ mΩ) (P : @Measure Ω mΩ) [IsProbabilityMeasure P]
@@ -244,7 +244,7 @@ theorem tendsto_charFun_of_deconditioning
   exact ⟨ms, hcond (fun i => ns (ms i)) (hns.comp hms.tendsto_atTop) hae⟩
 
 /-- Deconditioning followed by Lévy's continuity theorem: convergence in distribution to a
-random variable `Z` carrying the limit law. -/
+random variable `Z` whose law is the limit law. -/
 theorem tendstoInDistribution_of_deconditioning
     [FiniteDimensional ℝ E] [BorelSpace E]
     (𝒟 : MeasurableSpace Ω) (h𝒟 : 𝒟 ≤ mΩ) (P : @Measure Ω mΩ) [IsProbabilityMeasure P]
@@ -379,7 +379,7 @@ omit [SecondCountableTopology E] in
 /-- Deconditioning with the design frozen, at a general `E`. The estimator is a measurable
 function `F n` of the design `D n` and the disturbances (`hY`), the design is `𝒟`-measurable
 (`hD`), and the frozen-design limit theorem holds for almost every realization under `ℙ_ω`
-(`hfrozen`). The instance binder on `condExpKernel P 𝒟 ω` is discharged by `inferInstance`. -/
+(`hfrozen`). -/
 theorem tendstoInDistribution_of_design
     [FiniteDimensional ℝ E]
     (h𝒟 : 𝒟 ≤ mΩ) (P : Measure Ω) [IsProbabilityMeasure P]
@@ -496,8 +496,8 @@ end CondD
 
 Given `T_n(L)/s_n(L) →ᵈ N(0,1)` for each fixed `L` (`hstep3`), the bound
 `|s_n²(L)/n - c'Sc| ≤ δ(L)` (`hstep4`), and an `L²` bound `δ(L)` on the distance between
-`n^{-1/2}c'X̃'ν` and `n^{-1/2}T_n(L)` (`hstep5`), the two limits are interchanged. The argument
-is carried out on characteristic functions using
+`n^{-1/2}c'X̃'ν` and `n^{-1/2}T_n(L)` (`hstep5`), the two limits are interchanged. The proof
+works with characteristic functions and uses the following bounds.
 
 * `norm_charFun_map_sub_le`: `‖φ_X(u) - φ_Y(u)‖ ≤ |u|·‖X-Y‖_{L²}`;
 * `norm_charFun_map_sub_arg_le`: `‖φ_X(u) - φ_X(v)‖ ≤ |u-v|·‖X‖_{L²}`;
@@ -869,9 +869,9 @@ end Trunc
 
 /-! ### Orthogonality of completely degenerate terms
 
-Two completely degenerate terms are uncorrelated when some coordinate of one is carried by no
-coordinate of the other: condition on all latent variables except the unshared one, use complete
-degeneracy, and apply the tower property. The hypothesis is stated as a support condition,
+Two completely degenerate terms are uncorrelated when one depends on a latent variable on which
+the other does not. The proof conditions on all latent variables except that one and applies
+complete degeneracy and the tower property. The hypothesis is stated as a support condition,
 `coord' s k ∉ tupleSupport coord t`. -/
 
 namespace Orth
@@ -909,7 +909,7 @@ theorem condExp_degenTerm_eq_zero_of_set
 
 omit [Fintype ι] in
 /-- A variable measurable with respect to the latent variables in `S` is uncorrelated with a
-completely degenerate term carrying a coordinate outside `S`. -/
+completely degenerate term that depends on a latent variable outside `S`. -/
 theorem integral_mul_degenTerm_eq_zero
     (hU : ∀ v, Measurable (U v)) (hindep : iIndepFun U μ)
     (hg : Measurable g) {t : T}
@@ -937,8 +937,8 @@ theorem integral_mul_degenTerm_eq_zero
     _ = 0 := by rw [integral_congr_ae h2]; simp
 
 omit [Fintype ι] in
-/-- If some coordinate of `s` is carried by no coordinate of `t`, the two completely
-degenerate terms are uncorrelated. -/
+/-- If the term at `s` depends on a latent variable that does not occur in `t`, the two
+completely degenerate terms are uncorrelated. -/
 theorem integral_degenTerm_mul_eq_zero {ι' T' : Type*} [Fintype ι']
     {coord' : T' → ι' → V} {g' : (ι' → ℝ) → ℝ}
     (hU : ∀ v, Measurable (U v)) (hindep : iIndepFun U μ)
@@ -1029,7 +1029,7 @@ end Uncorrelated
 `tendstoInProb_condVar_of_concentration` derives `V_n²/s_n²(L) →ᵖ 1` from clauses (a) and (b) of
 Lemma SM.C.3, a rate estimate and Chebyshev's inequality, given the identification `halg` of the
 conditional-variance process with the quadratic form `∑_{γ,γ'}λ_γλ_{γ'}X_{γγ'}`.
-`tendsto_charFun_degenSum_of_concentration` is the martingale CLT with this condition supplied. -/
+`tendsto_charFun_degenSum_of_concentration` is the martingale CLT with `hvar` obtained in this way. -/
 
 namespace Var
 
@@ -1142,7 +1142,7 @@ variable {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
 /-! #### Chebyshev's inequality -/
 
 /-- Chebyshev's inequality in the form of the first condition of `mds_clt`: a sequence with
-mean exactly `1` and variance bounded by a null sequence converges to `1` in probability. -/
+mean `1` and variance bounded by a null sequence converges to `1` in probability. -/
 theorem tendstoInProb_of_variance_le [IsProbabilityMeasure μ]
     {W : ℕ → Ω → ℝ} {σ2 : ℝ} {b : ℕ → ℝ}
     (hW : ∀ n, MemLp (W n) 2 μ)
@@ -1375,7 +1375,7 @@ theorem weak_constant_bounded_below (n : ℕ) :
 `halg` identifies it with the quadratic form plus the cell constant `cellc n`.
 
 * `hnorm` is the display `∑_γλ_γ²‖W^{(e_γ)}_c‖_F² + ∑_o(c'x̃_o)²σ²_ε(o) = s_n²(L)` after division
-  by `s_n²(L)`, so that the mean of `Vn n` is exactly `1`.
+  by `s_n²(L)`, so that the mean of `Vn n` is `1`.
 * `cellc n` is the sum of the cell-step conditional variances `(c'x̃_o)²σ²_ε(o)`.
 
 The index types `N n`, `S n`, `Ix n` may vary with `n`; the components `Γ` and their
@@ -1514,10 +1514,10 @@ end Assembly
 
 /-! #### Example
 
-Two components with equal tags on two interaction coordinates, independent fair signs,
-`λ_γ = 1/2` and a coefficient array shrinking like `1/(n+1)`. The variance of `V_n` is
-`(n+1)^{-4}/4 > 0` at every index, and the rate is obtained through `rate_of_contraction`. Here
-`halg` holds by definition of `V_n`. -/
+Consider two components with equal tags on two interaction coordinates, independent fair
+signs, `λ_γ = 1/2` and a coefficient array shrinking like `1/(n+1)`. The variance of `V_n` is
+`(n+1)^{-4}/4 > 0` at every index, and the rate is obtained through `rate_of_contraction`. The
+identity `halg` holds by definition of `V_n`. -/
 
 section WitnessBridge
 
@@ -1525,7 +1525,8 @@ open ClauseAWitness ClauseBWitness GeneralWitness Matrix
 
 namespace BridgeWitness
 
-/-- Two interaction coordinates, two latent indices each: `V = Σ_k 𝒩_k` with `|K| = 2`. -/
+/-- The two interaction coordinates, each with two latent indices, so that `V = Σ_k 𝒩_k` with
+`|K| = 2`. -/
 abbrev bK : Type := Fin 2
 abbrev bN : bK → Type := fun _ => Fin 2
 abbrev bSite : Type := Site bK bN
@@ -1591,7 +1592,7 @@ theorem bHnorm (n : ℕ) :
   simp only [brectFrobSq, blam, bcell, Fin.sum_univ_two]
   ring
 
-/-- `π^γ`, the sub-tuple's basis product: two signs. -/
+/-- `π^γ`, the basis product of a sub-tuple, which is a product of two signs. -/
 noncomputable def bpi (γ : Fin 2) (ω : bSite → ℝ) : ℝ :=
   basisProd (gU bSite) wψ bsites brIdx γ () ω
 
@@ -1748,7 +1749,7 @@ variable {Γ : Type*} [Fintype Γ] {Ix : Type*} [Fintype Ix]
   {Sg : Γ → Type*} [∀ γ, Fintype (Sg γ)]
 
 /-- `hnorm` from the definition of `s_n²(L)`: dividing the statistic by `s_n(L)` divides every
-coefficient array by `√(s_n²(L))` and the cell term by `s_n²(L)`. Requires `0 < s_n²(L)`. -/
+coefficient array by `√(s_n²(L))` and the cell term by `s_n²(L)`. The hypothesis `0 < s_n²(L)` is required. -/
 theorem hnorm_of_scaling (lam : Γ → ℝ) (arrRaw : ∀ γ, Sg γ → Ix → ℝ) (cellRaw s2 : ℝ)
     (hs2 : s2 = (∑ γ, lam γ ^ 2 * rectFrobSq (arrRaw γ)) + cellRaw) (hpos : 0 < s2) :
     (∑ γ, lam γ ^ 2 * rectFrobSq (fun s i => arrRaw γ s i / Real.sqrt s2))
@@ -1969,7 +1970,7 @@ theorem norm_witness :
   hnorm_of_scaling (Sg := fun _ : Fin 2 => Fin 1) (Ix := Fin 1) (fun _ => 1)
     (fun _ _ _ => 2) 1 9 (by simp [rectFrobSq]; norm_num) (by norm_num)
 
-/-- `rate_of_contraction_of_step4` with every hypothesis met and the constant taken at
+/-- `rate_of_contraction_of_step4` with every hypothesis verified and the constant taken at
 `B_0 = 2`, `|Γ| = 3`, `M = 2`. -/
 theorem rate_witness :
     Tendsto (fun n : ℕ => Var.clauseBConst 2 3 2 *
@@ -1994,8 +1995,8 @@ end Step45
 
 This section connects `Multiway.TensorBasis` with the site model. When the latent variables are
 independent with a common law and `coord t` is injective, the latent tuple pushes `P` forward to
-`Measure.pi` (`map_latentTuple_eq_pi`), so moments of kernel terms are `L²` norms of kernels. On
-this basis it derives `IsBasisSystem` from a uniformly bounded orthonormal system, the complete
+`Measure.pi` (`map_latentTuple_eq_pi`), so moments of kernel terms are `L²` norms of kernels. It
+then derives `IsBasisSystem` from a uniformly bounded orthonormal system, the complete
 degeneracy and unit second moments of product kernels, the moments of the truncated kernel
 `h^{(e)}_L` and of its tail, the variance comparison `abs_varcomp_le`, `δ(L) → 0`, and the
 one-step factorization `D^γ_κ = ψ_{r_{k⋆}}(U^{(k⋆)}_i)·A^γ_i`. -/
@@ -2231,7 +2232,7 @@ theorem condExp_degenTerm_prodKernel_eq_zero (h : IsBasisSystem P U ψ Rpos B₀
     rw [Real.norm_eq_abs, Pi.mul_apply, abs_mul]
     exact mul_le_mul (hbdY ω) (hbdZ ω) (abs_nonneg _)
       (pow_nonneg (le_trans zero_le_one (le_max_right _ _)) _)
-  -- conditioning on everything but `w` already kills it
+  -- the conditional expectation given all latent variables except `w` is zero
   have hcompl : P[degenTerm U coord (prodKernel ψ ρ) t | latentSigma U ({w}ᶜ : Set V)]
       =ᵐ[P] 0 := by
     rw [hsplit]
@@ -2240,7 +2241,7 @@ theorem condExp_degenTerm_prodKernel_eq_zero (h : IsBasisSystem P U ψ Rpos B₀
       (latentSigma_indep h.measurable_latent h.indep
         (S := ({w} : Set V)) (S' := ({w}ᶜ : Set V)) disjoint_compl_right)
       (h.integral_eq_zero w (hρ j))
-  -- and the conditioning field of the statement is smaller
+  -- the conditioning field of the statement is smaller
   have hsub : coord t '' e' ⊆ ({w}ᶜ : Set V) := by
     rintro _ ⟨i, hi, rfl⟩
     simp only [Set.mem_compl_iff, Set.mem_singleton_iff]
@@ -2626,7 +2627,7 @@ theorem stronglyMeasurable_blockA (h : IsBasisSystem P U ψ Rpos B₀)
   exact hm.stronglyMeasurable
 
 omit [DecidableEq T] [IsProbabilityMeasure P] in
-/-- `|A^γ_i|` is bounded, which is all the integrability below needs. -/
+/-- `|A^γ_i|` is bounded, which gives the integrability used below. -/
 theorem abs_blockA_le (h : IsBasisSystem P U ψ Rpos B₀)
     {coord : T → ι → V} {ρ : ι → R} {c : T → ℝ} {S : Finset T} {kstar : ι} (ω : Ω) :
     |∑ t ∈ S, c t * ∏ i ∈ Finset.univ.erase kstar, ψ (ρ i) (U (coord t i) ω)|
@@ -3179,14 +3180,14 @@ variable {Ω : Type*} {m0 : MeasurableSpace Ω} {μ : Measure Ω}
 
 /-! #### Concatenation of martingale-difference arrays -/
 
-/-- `X` first, then `Y`. -/
+/-- The array whose `n`-th row is the `n`-th row of `X` followed by that of `Y`. -/
 noncomputable def concatArray (k m : ℕ → ℕ) (X : (n : ℕ) → Fin (k n) → Ω → ℝ)
     (Y : (n : ℕ) → Fin (m n) → Ω → ℝ) (n : ℕ) (i : Fin (k n + m n)) : Ω → ℝ :=
   if h : (i : ℕ) < k n then X n ⟨(i : ℕ), h⟩
   else Y n ⟨(i : ℕ) - k n, by have hi := i.isLt; omega⟩
 
 set_option warn.classDefReducibility false in
-/-- `F` below the junction, `G` at and above it. -/
+/-- The filtration equal to `F` below the junction and to `G` at and above it. -/
 def concatSigma (k m : ℕ → ℕ) (F : (n : ℕ) → Fin (k n + 1) → MeasurableSpace Ω)
     (G : (n : ℕ) → Fin (m n + 1) → MeasurableSpace Ω) (n : ℕ)
     (i : Fin (k n + m n + 1)) : MeasurableSpace Ω :=
@@ -3259,7 +3260,7 @@ theorem concatSigma_mono (hFm : ∀ n, Monotone (F n)) (hGm : ∀ n, Monotone (G
   · exact hGm n (show (⟨(i : ℕ) - k n, _⟩ : Fin (m n + 1)) ≤ ⟨(i' : ℕ) - k n, _⟩ by
       simp only [Fin.le_def]; omega)
 
-/-- The concatenation of two martingale-difference arrays is one. -/
+/-- The concatenation of two martingale-difference arrays is a martingale-difference array. -/
 theorem isMDSArray_concat (hX : IsMDSArray k X F μ) (hY : IsMDSArray m Y G μ)
     (hjoin : ∀ n, F n (Fin.last (k n)) ≤ G n 0) :
     IsMDSArray (fun n => k n + m n) (concatArray k m X Y) (concatSigma k m F G) μ where
@@ -3337,7 +3338,7 @@ theorem isMDSArray_concat (hX : IsMDSArray k X F μ) (hY : IsMDSArray m Y G μ)
       rw [hval, hs]
       exact hY.condexp_zero n _
 
-/-- The row sum splits. -/
+/-- The row sum of the concatenation is the sum of the two row sums. -/
 theorem mdsRowSum_concat (n : ℕ) (ω : Ω) :
     mdsRowSum (fun n => k n + m n) (concatArray k m X Y) n ω
       = mdsRowSum k X n ω + mdsRowSum m Y n ω := by
@@ -3347,7 +3348,7 @@ theorem mdsRowSum_concat (n : ℕ) (ω : Ω) :
   · exact Finset.sum_congr rfl fun j _ => by rw [concatArray_castAdd]
   · exact Finset.sum_congr rfl fun j _ => by rw [concatArray_natAdd]
 
-/-- The conditional-variance process splits. -/
+/-- The conditional-variance process of the concatenation is the sum of the two processes. -/
 theorem mdsCondVariance_concat (n : ℕ) (ω : Ω) :
     mdsCondVariance (fun n => k n + m n) (concatArray k m X Y) (concatSigma k m F G) μ n ω
       = mdsCondVariance k X F μ n ω + mdsCondVariance m Y G μ n ω := by
@@ -3502,8 +3503,8 @@ noncomputable def totalDiff (μ : Measure Ω) (U : ℕ → V → Ω → ℝ) (co
   concatArray k m (rowDiff μ U coord g c step k) (cellDiff a eps m)
 
 set_option warn.classDefReducibility false in
-/-- Its filtration: the row filtration below the junction, then the latent σ-field together
-with the disturbances already revealed. -/
+/-- The filtration of the total array is the row filtration below the junction and, from the
+junction on, the latent σ-field together with the disturbances already revealed. -/
 def totalSigma (U : ℕ → V → Ω → ℝ) (step : ℕ → V → ℕ) (k : ℕ → ℕ)
     (eps : ℕ → ℕ → Ω → ℝ) (m : ℕ → ℕ) :
     (n : ℕ) → Fin (k n + m n + 1) → MeasurableSpace Ω :=
@@ -3511,7 +3512,8 @@ def totalSigma (U : ℕ → V → Ω → ℝ) (step : ℕ → V → ℕ) (k : �
 
 variable {a : ℕ → ℕ → ℝ} {eps : ℕ → ℕ → Ω → ℝ} {sg : ℕ → ℕ → ℝ} {m : ℕ → ℕ}
 
-/-- The junction: the latent half has revealed everything by its last step. -/
+/-- The last σ-field of the row filtration is contained in the first σ-field of the cell
+filtration. -/
 theorem hjoin_total (n : ℕ) :
     rowSigma U step k n (Fin.last (k n)) ≤ cellSigma (latentBase U step k) eps m n 0 :=
   le_sup_left
@@ -3543,7 +3545,7 @@ theorem mdsRowSum_total_ae [Nonempty ι] [IsProbabilityMeasure μ]
 
 omit [Fintype ι] [DecidableEq T] in
 /-- `halg` for the total array from `halg` for the latent part (`hlat`, at `cellc = 0`): the
-cell steps contribute exactly `∑_o(c'x̃_o)²σ²_ε(o)`. -/
+cell steps contribute `∑_o(c'x̃_o)²σ²_ε(o)`. -/
 theorem condVar_total_of_latent [IsProbabilityMeasure μ]
     (hc : IsCellModel (m0 := m0) μ (latentBase U step k) eps sg m) {Q : Ω → ℝ} {cc : ℝ} {n : ℕ}
     (hlat : mdsCondVariance k (rowDiff μ U coord g c step k) (rowSigma U step k) μ n

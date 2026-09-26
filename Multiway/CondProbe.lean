@@ -8,12 +8,12 @@ import Mathlib.Probability.Distributions.Gaussian.Real
 /-!
 # Removing the conditioning in a conditional central limit theorem
 
-This file isolates the last step of the proof of Theorem 4(a) of the paper: passing from
+This file isolates the last step of the proof of Theorem 4(a) of the paper, the passage from
 almost-sure convergence of a conditional characteristic function `φ_n(t) = E[exp(i t'Y_n) ∣ 𝒟]`
-to unconditional convergence in distribution. The argument uses only the subsequence principle,
-dominated convergence (`|φ_n(t)| ≤ 1`), the tower property and Lévy's continuity theorem; no
-conditional law or kernel is formed. The conditional limit is supplied as the hypothesis
-`hstep4`, and the limit `ψ` of the conditional characteristic functions may be random.
+to unconditional convergence in distribution. The argument uses the subsequence principle,
+dominated convergence (`|φ_n(t)| ≤ 1`), the tower property and Lévy's continuity theorem.
+The conditional limit is supplied as the hypothesis `hstep4`, and the limit `ψ` of the
+conditional characteristic functions may be random.
 
 ## Main results
 
@@ -167,8 +167,8 @@ theorem probe_condGaussian
   rw [hZlaw]
   exact this.congr fun i => (heq i).symm
 
-/-- The hypotheses of `probe_condGaussian` are jointly satisfiable: the degenerate design
-`𝒟 = ⊥`, `Ω = ℝ` carrying `N(0,v)`, `Y_n = Z = id` and `s_n ≡ v`. -/
+/-- The hypotheses of `probe_condGaussian` hold for the degenerate design `𝒟 = ⊥`, with
+`Ω = ℝ` under `N(0,v)`, `Y_n = Z = id` and `s_n ≡ v`. -/
 theorem probe_condGaussian_witness (v : ℝ≥0) :
     TendstoInDistribution (m := fun _ : ℕ => (inferInstance : MeasurableSpace ℝ))
       (fun _ : ℕ => (id : ℝ → ℝ)) atTop (id : ℝ → ℝ)

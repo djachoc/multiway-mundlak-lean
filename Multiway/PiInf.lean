@@ -39,8 +39,8 @@ variable {O D L K : Type*}
 
 /-! ## §0 Squared lengths and outer products
 
-`vecSqNorm` is the squared Euclidean length on `ℝ^q`, used so that no `Real.sqrt` is carried
-through the Cauchy--Schwarz steps. -/
+`vecSqNorm` is the squared Euclidean length on `ℝ^q`. The Cauchy–Schwarz steps are stated in
+terms of it, without `Real.sqrt`. -/
 
 section Vec
 
@@ -103,17 +103,17 @@ theorem frobNorm_vecMulVec_le {a b : K → ℝ} {B : ℝ} (ha : vecSqNorm a ≤ 
 end Vec
 
 
-/-! ## §1 Cauchy--Schwarz inside a cell
+/-! ## §1 Cauchy–Schwarz inside a cell
 
 Steps 1, 2 and 4 each bound a sum over the cells of a fixed level by the cell size times a sum
-over the observations, via Cauchy--Schwarz inside the cell and `Multiway.sum_over_cells`. -/
+over the observations, via Cauchy–Schwarz inside the cell and `Multiway.sum_over_cells`. -/
 
 section Cells
 
 variable [Fintype O] [DecidableEq O] [DecidableEq D] [DecidableEq L]
 
 omit [Fintype O] [DecidableEq O] in
-/-- Cauchy--Schwarz inside one cell: `(∑_{o ∈ t}|v_o|)² ≤ #t ∑_{o ∈ t} v_o²`. -/
+/-- Cauchy–Schwarz inside one cell: `(∑_{o ∈ t}|v_o|)² ≤ #t ∑_{o ∈ t} v_o²`. -/
 theorem sq_sum_abs_le (t : Finset O) (v : O → ℝ) :
     (∑ o ∈ t, |v o|) ^ 2 ≤ (t.card : ℝ) * ∑ o ∈ t, v o ^ 2 := by
   have h := sq_sum_le_card_mul_sum_sq (s := t) (f := fun o => |v o|)
@@ -192,8 +192,8 @@ end Cells
 
 /-! ## §2 The cell scores and the three meats
 
-The inclusion--exclusion meat, the dimension-wise meat, and the pairwise form they both
-collapse to. -/
+The inclusion–exclusion meat and the dimension-wise meat both reduce to a pairwise form over
+pairs of observations (Step 3). -/
 
 section Meats
 
@@ -206,7 +206,7 @@ omit [Fintype O] [DecidableEq O] [Fintype K] [DecidableEq K] in
 theorem cellScore_eq (z : O → K → ℝ) (v : O → ℝ) (t : Finset O) :
     cellScore z v t = fun k => ∑ o ∈ t, z o k * v o := rfl
 
-/-- `(n²/N_*) Υ̂`, the inclusion--exclusion meat. -/
+/-- `(n²/N_*) Υ̂`, the inclusion–exclusion meat. -/
 noncomputable def ieMeat (c : D → O → L) (dims : Finset D) (z : O → K → ℝ) (v : O → ℝ) :
     Matrix K K ℝ :=
   ∑ A ∈ dims.powerset.filter (fun A => A.Nonempty), (-1 : ℝ) ^ (A.card + 1) •
@@ -304,7 +304,7 @@ theorem dimMeat_sub_ieMeat (c : D → O → L) (dims : Finset D) (z : O → K �
     simp
 
 omit [DecidableEq K] in
-/-- **Step 2's Cauchy--Schwarz bound.**
+/-- **Step 2's Cauchy–Schwarz bound.**
 `∑_{m,j}‖ĝ^{(m)}_j - g^{(m)}_j‖² ≤ B²MG_max‖w‖²`, where `w` is the vector whose cell aggregates
 are bounded (`w = P_{C_1}u` in Step 2). -/
 theorem step2_score_diff_bound (c : D → O → L) (dims : Finset D) (z : O → K → ℝ) (w : O → ℝ)
@@ -385,7 +385,7 @@ theorem frobNorm_dimMeat_sub_dimMeat_le (c : D → O → L) (dims : Finset D) (z
               * Real.sqrt (vecSqNorm (cellScore z u t))) := by
     intro t
     exact frobNorm_outer_three_le (cellScore z (fun o => v o - u o) t) (cellScore z u t)
-  -- the Cauchy--Schwarz inequality, inside each dimension's cells and then across dimensions
+  -- the Cauchy–Schwarz inequality, inside each dimension's cells and then across dimensions
   have hcs : ∑ m ∈ dims, ∑ t ∈ cells c ({m} : Finset D),
         (Real.sqrt (vecSqNorm (cellScore z (fun o => v o - u o) t))
           * Real.sqrt (vecSqNorm (cellScore z u t)))
@@ -438,7 +438,7 @@ theorem sub_one_le_choose_two (k : ℕ) : k - 1 ≤ k.choose 2 := by
       exact Nat.le_add_right _ _
 
 omit [Fintype O] [DecidableEq O] in
-/-- The level-two subsets of `dims` contained in `E(o,o')` are exactly the level-two subsets of
+/-- The level-two subsets of `dims` contained in `E(o,o')` are the level-two subsets of
 `E(o,o')`, so their number is `C(#E(o,o'),2)`. -/
 theorem card_filter_powersetCard_two (c : D → O → L) (dims : Finset D) (o o' : O) :
     ((Finset.powersetCard 2 dims).filter (fun e => e ⊆ sharedDims c dims o o')).card
@@ -556,7 +556,7 @@ variable [Fintype O] [DecidableEq O] [DecidableEq D] [DecidableEq L] [Fintype K]
 /-- `∑_{o ∈ t} z̃_o`, the category aggregate `z^{(m)}_j` at a level-`{m}` cell. -/
 def cellVec (z : O → K → ℝ) (t : Finset O) : K → ℝ := fun k => ∑ o ∈ t, z o k
 
-/-- The inclusion--exclusion meat with the second moment `Eu(o,o')` in place of `u_o u_{o'}`;
+/-- The inclusion–exclusion meat with the second moment `Eu(o,o')` in place of `u_o u_{o'}`;
 this is `(n²/N_*)` times the mean of the union meat. -/
 noncomputable def ieMeatKer (c : D → O → L) (dims : Finset D) (z : O → K → ℝ)
     (Eu : O → O → ℝ) : Matrix K K ℝ :=
@@ -888,9 +888,10 @@ theorem step2_tendstoInProb
 
 /-! ### §5c Clause (a), chained
 
-The two inputs of `piinf_a_of_steps` are supplied: `step4_smul_tendstoInProb` rescales Step 4's
-limit, and `step2_assembly_tendstoInProb` combines Step 2's limit with the two outputs of Step 1,
-`hstep1` and `hscore`, through the product rule `Sequence.tendstoInProb_zero_of_le_sqrt_mul`. -/
+`step4_smul_tendstoInProb` and `step2_assembly_tendstoInProb` give the two inputs of
+`piinf_a_of_steps`. The first rescales Step 4's limit. The second combines Step 2's limit with
+the two outputs of Step 1, `hstep1` and `hscore`, through
+`Sequence.tendstoInProb_zero_of_le_sqrt_mul`. -/
 
 section Chained
 
@@ -925,7 +926,7 @@ theorem step4_smul_tendstoInProb
 omit [IsProbabilityMeasure P] [DecidableEq K] [∀ n, DecidableEq (Kn n)] in
 /-- **Step 2: `Υ̂^dim - Υ_n ⟶^p 0`.** Combines `frobNorm_dimMeat_sub_dimMeat_le`, the
 limit of `step2_tendstoInProb`, `S_g = O_p(1)` (`hscore`) and Step 1's conclusion (`hstep1`).
-Here `u` is the disturbance and `v` the residual. -/
+The disturbance is `u` and the residual is `v`. -/
 theorem step2_assembly_tendstoInProb
     (c : ∀ n, Dn n → On n → Ln n) (dims : ∀ n, Finset (Dn n))
     (z : ∀ n, Ω → On n → K → ℝ) (v u : ∀ n, Ω → On n → ℝ)
@@ -1055,12 +1056,10 @@ section ClauseB
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 
 /-- **Theorem 12(b), Step 6.** With `a_n = N_*`, the Wald statistic for `𝓡π = 𝓡π₀` converges in
-distribution to `χ²_r`, given:
-
-* `Vp n ω`, the restricted variance estimator `𝓡V̂_π𝓡'`, Hermitian and measurable;
-* `ha`, clause (a) restricted through `𝓡`: `𝓡(N_*V̂_π)𝓡' ⟶^p Sg`;
-* `hCLT`, the restricted central limit theorem, and `hSg`, positive definiteness of its limit;
-* `x n ω = 𝓡(π̂ - π)`. -/
+distribution to `χ²_r`. The argument `Vp n ω` is the restricted variance estimator `𝓡V̂_π𝓡'`,
+Hermitian and measurable; `ha` is clause (a) restricted through `𝓡`, that is
+`𝓡(N_*V̂_π)𝓡' ⟶^p Sg`; `hCLT` is the restricted central limit theorem and `hSg` the positive
+definiteness of its limit; and `x n ω = 𝓡(π̂ - π)`. -/
 theorem piinf_wald
     {Ns : ℕ → ℝ} (hNs : ∀ n, 0 < Ns n)
     {Sg : Matrix ι ι ℝ} (hSg : Sg.PosDef)
@@ -1129,10 +1128,10 @@ theorem piinf_wald_of_meat
   exact frobNorm_add_le _ _
 
 /-- **Theorem 12(b) from clause (a), for `V̂_π = N_*^{-1}Ψ̂_n^{-1}Υ̂Ψ̂_n^{-1}` restricted through
-`𝓡`.** Here `Uh` is `Υ̂`, `Ups` is `Υ_n`, `Gn` is `Ψ̂_n^{-1}`, `Rm` is `𝓡` and `Sg` is
+`𝓡`.** The arguments `Uh`, `Ups`, `Gn`, `Rm` and `Sg` are `Υ̂`, `Υ_n`, `Ψ̂_n^{-1}`, `𝓡` and
 `𝓡Ψ⁻¹ΥΨ⁻¹𝓡'`. The hypotheses `hLg` and `hLr` bound `‖Ψ̂_n^{-1}‖_F` and `‖𝓡‖_F` uniformly, and
 `hdet` is the deterministic limit `𝓡Ψ̂_n^{-1}Υ_nΨ̂_n^{-1}𝓡' → 𝓡Ψ⁻¹ΥΨ⁻¹𝓡'`. The matrices `Ψ̂_n`
-are deterministic, i.e. the statement holds along a realization of `(X,𝒪)`. -/
+are deterministic, so the statement holds along a realization of `(X,𝒪)`. -/
 theorem piinf_wald_of_meat_restricted
     {Kq : ℕ → Type*} [∀ n, Fintype (Kq n)]
     (Uh : ∀ n, Ω → Matrix (Kq n) (Kq n) ℝ) (Ups : ∀ n, Matrix (Kq n) (Kq n) ℝ)
@@ -1170,17 +1169,16 @@ end ClauseB
 
 end Probability
 
-/-! ## §6 Witnesses
+/-! ## §6 Examples
 
-Each witness applies the result it concerns to an explicit model, showing that its hypotheses are
-jointly satisfiable. -/
+Each example applies a result to an explicit model on which its hypotheses hold. -/
 
 section Witnesses
 
 open MeasureTheory Filter ProbabilityTheory
 open scoped Topology
 
-/-- The witness model: every observation in one category of every dimension, with
+/-- The model in which every observation lies in one category of every dimension, so that
 `c^{(2)}_max = G_max = 1`. -/
 def wIndex (M : ℕ) : Fin M → Fin 1 → Fin 1 := fun _ _ => 0
 
@@ -1203,7 +1201,7 @@ theorem step4_bound_witness :
   · have h : t.card ≤ 1 := by simpa using Finset.card_le_univ t
     exact_mod_cast h
 
-/-- The second moments of the clause-(c) witness: `ς²_m = 1` and `σ²_ε(o) = 1`, in the shape of
+/-- The second moments `ς²_m = 1` and `σ²_ε(o) = 1` of the clause-(c) example, in the form of
 `hEu`. -/
 def wEu : Fin 1 → Fin 1 → ℝ := fun o o' =>
   (∑ m ∈ (Finset.univ : Finset (Fin 1)),
@@ -1305,13 +1303,13 @@ theorem isHermitian_fin_one (M : Matrix (Fin 1) (Fin 1) ℝ) : M.IsHermitian := 
   fin_cases j
   simp [Matrix.conjTranspose_apply]
 
-/-- The witness value `Ψ̂_n^{-1} = 2I₂`. -/
+/-- `Ψ̂_n^{-1} = 2I₂` in the example. -/
 noncomputable def wPsiInv : Matrix (Fin 2) (Fin 2) ℝ := (2 : ℝ) • (1 : Matrix (Fin 2) (Fin 2) ℝ)
 
-/-- The witness value of `𝓡`: the `1 × 2` selector of the first coordinate. -/
+/-- `𝓡` in the example, the `1 × 2` selector of the first coordinate. -/
 def wRestrict : Matrix (Fin 1) (Fin 2) ℝ := Matrix.of fun _ j => if j = 0 then (1 : ℝ) else 0
 
-/-- `𝓡Ψ̂⁻¹(tI₂)Ψ̂⁻¹𝓡' = 4tI₁` on the witness model. -/
+/-- `𝓡Ψ̂⁻¹(tI₂)Ψ̂⁻¹𝓡' = 4tI₁` in the example. -/
 theorem wRestrict_conj (t : ℝ) :
     wRestrict * (wPsiInv * (t • (1 : Matrix (Fin 2) (Fin 2) ℝ)) * wPsiInv) * wRestrictᵀ
       = (4 * t) • (1 : Matrix (Fin 1) (Fin 1) ℝ) := by
@@ -1392,7 +1390,7 @@ theorem piinf_wald_of_meat_restricted_witness :
         (multivariateGaussian 0 1) := tendstoInDistribution_const aemeasurable_id
     simpa using h
 
-/-! ### §6b Witnesses for §5b on a growing family of designs
+/-! ### §6b Examples for §5b on a growing family of designs
 
 At index `n` the model has `n+1` observations, `M = 2` dimensions with one category each, unit
 scores and unit residuals, so `c^{(2)}_max = G_max = n+1`; the scaling is `a_n = (n+1)^{-3}` and
@@ -1402,14 +1400,14 @@ section SeqWitness
 
 open scoped ENNReal
 
-/-- The witness family: `n+1` observations at index `n`, two fixed-effect dimensions and one
-category in each. -/
+/-- The family of designs with `n+1` observations at index `n`, two fixed-effect dimensions and
+one category in each. -/
 def seqIndex (n : ℕ) : Fin 2 → Fin (n + 1) → Fin 1 := fun _ _ => 0
 
-/-- Unit scores on the witness family, so `B = 1`. -/
+/-- Unit scores on the family of §6b, so `B = 1`. -/
 def seqScore (n : ℕ) : Fin (n + 1) → Fin 1 → ℝ := fun _ _ => 1
 
-/-- Unit residuals on the witness family, so `‖û‖² = n+1`. -/
+/-- Unit residuals on the family of §6b, so `‖û‖² = n+1`. -/
 def seqResid (n : ℕ) : Fin (n + 1) → ℝ := fun _ => 1
 
 theorem seq_card (n : ℕ) : (Fintype.card (Fin (n + 1)) : ℝ) = (n : ℝ) + 1 := by
@@ -1418,7 +1416,7 @@ theorem seq_card (n : ℕ) : (Fintype.card (Fin (n + 1)) : ℝ) = (n : ℝ) + 1 
 theorem seq_residSq (n : ℕ) : (∑ o : Fin (n + 1), seqResid n o ^ 2) = (n : ℝ) + 1 := by
   simp [seqResid]
 
-/-- On the witness family, `‖û‖²/n = O_p(1)`, obtained from `residSq_div_card_bddInProb`. -/
+/-- On the family of §6b, `‖û‖²/n = O_p(1)`, obtained from `residSq_div_card_bddInProb`. -/
 theorem seq_bddInProb :
     Sequence.BddInProb (Measure.dirac (0 : ℝ))
       (fun (n : ℕ) (_ : ℝ) => (∑ o : Fin (n + 1), seqResid n o ^ 2)
@@ -1439,7 +1437,7 @@ theorem seq_bddInProb :
     rw [lintegral_const]
     simp
 
-/-- On the witness family, `‖(n²/N_*)D‖_F = (n+1)²`. -/
+/-- On the family of §6b, `‖(n²/N_*)D‖_F = (n+1)²`. -/
 theorem seq_meat_diff_frobNorm (n : ℕ) :
     frobNorm (dimMeat (seqIndex n) (Finset.univ : Finset (Fin 2)) (seqScore n) (seqResid n)
         - ieMeat (seqIndex n) (Finset.univ : Finset (Fin 2)) (seqScore n) (seqResid n))
@@ -1465,7 +1463,7 @@ theorem seq_meat_diff_frobNorm (n : ℕ) :
   simp only [frobNorm, frobSq, Fin.sum_univ_one, hentry]
   exact Real.sqrt_sq (by positivity)
 
-/-- On the witness family, the score-difference sum of Step 2 equals `2(n+1)²`. -/
+/-- On the family of §6b, the score-difference sum of Step 2 equals `2(n+1)²`. -/
 theorem seq_step2_value (n : ℕ) :
     (∑ m ∈ (Finset.univ : Finset (Fin 2)),
         ∑ t ∈ cells (seqIndex n) ({m} : Finset (Fin 2)),
@@ -1496,7 +1494,7 @@ theorem seq_step2_value (n : ℕ) :
   simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
   norm_num
 
-/-- `step4_tendstoInProb` on the witness family, where the sequence is `(n+1)^{-1}`. -/
+/-- `step4_tendstoInProb` on the family of §6b, where the sequence is `(n+1)^{-1}`. -/
 theorem step4_tendstoInProb_witness :
     TendstoInMeasure (Measure.dirac (0 : ℝ))
       (fun (n : ℕ) (_ : ℝ) => (((n : ℝ) + 1) ^ 3)⁻¹ *
@@ -1524,7 +1522,7 @@ theorem step4_tendstoInProb_witness :
     simp only [step4Rate, seq_card, hp]
     field_simp
 
-/-- `step2_tendstoInProb` on the witness family, where the sequence is `2(n+1)^{-1}`. -/
+/-- `step2_tendstoInProb` on the family of §6b, where the sequence is `2(n+1)^{-1}`. -/
 theorem step2_tendstoInProb_witness :
     TendstoInMeasure (Measure.dirac (0 : ℝ))
       (fun (n : ℕ) (_ : ℝ) => (((n : ℝ) + 1) ^ 3)⁻¹ *
@@ -1554,12 +1552,12 @@ theorem step2_tendstoInProb_witness :
     simp only [step2Rate, seq_card, hc2]
     field_simp
 
-/-! ### §6c Witnesses for §5c on the same family
+/-! ### §6c Examples for §5c on the same family
 
 The disturbance is `u ≡ 0` and the residual `û ≡ 1`, so `Υ_n = 0` and Step 1's outputs hold
 trivially. The quantities sent to zero are `2(n+1)^{-1}` and `(n+1)^{-1}`. -/
 
-/-- The disturbance `u ≡ 0` of the witness model. -/
+/-- The disturbance `u ≡ 0`. -/
 def seqZero (n : ℕ) : Fin (n + 1) → ℝ := fun _ => 0
 
 /-- With `u ≡ 0` the dimension-wise meat vanishes. -/
@@ -1568,7 +1566,7 @@ theorem seq_zero_dimMeat (n : ℕ) :
   ext i j
   simp [dimMeat, Matrix.sum_apply, Matrix.vecMulVec_apply, cellScore, seqZero]
 
-/-- On the witness family, `‖(n²/N_*)Υ̂^dim‖_F = 2(n+1)²`. -/
+/-- On the family of §6b, `‖(n²/N_*)Υ̂^dim‖_F = 2(n+1)²`. -/
 theorem seq_dimMeat_frobNorm (n : ℕ) :
     frobNorm (dimMeat (seqIndex n) (Finset.univ : Finset (Fin 2)) (seqScore n) (seqResid n))
       = 2 * ((n : ℝ) + 1) ^ 2 := by
@@ -1580,7 +1578,7 @@ theorem seq_dimMeat_frobNorm (n : ℕ) :
   simp only [frobNorm, frobSq, Fin.sum_univ_one, hentry]
   exact Real.sqrt_sq (by positivity)
 
-/-- On the witness family, `‖(n²/N_*)Υ̂‖_F = (n+1)²`. -/
+/-- On the family of §6b, `‖(n²/N_*)Υ̂‖_F = (n+1)²`. -/
 theorem seq_ieMeat_frobNorm (n : ℕ) :
     frobNorm (ieMeat (seqIndex n) (Finset.univ : Finset (Fin 2)) (seqScore n) (seqResid n))
       = ((n : ℝ) + 1) ^ 2 := by
@@ -1601,7 +1599,7 @@ theorem seq_ieMeat_frobNorm (n : ℕ) :
   simp only [frobNorm, frobSq, Fin.sum_univ_one, hentry]
   exact Real.sqrt_sq (by positivity)
 
-/-- `‖P_{C_1}u‖² = O_p(G_max)` on the witness model. -/
+/-- `‖P_{C_1}u‖² = O_p(G_max)` on the family of §6b. -/
 theorem seq_hproj :
     Sequence.BddInProb (Measure.dirac (0 : ℝ))
       (fun (n : ℕ) (_ : ℝ) => (∑ o : Fin (n + 1), (seqResid n o - seqZero n o) ^ 2)
@@ -1614,7 +1612,7 @@ theorem seq_hproj :
   rw [h1, seq_card, div_self hne]
   norm_num
 
-/-- `N_*n^{-2}∑_{m,j}‖g^{(m)}_j‖² = O_p(1)` on the witness model, where it is `0`. -/
+/-- `N_*n^{-2}∑_{m,j}‖g^{(m)}_j‖² = O_p(1)` on the family of §6b, where it is `0`. -/
 theorem seq_hscore :
     Sequence.BddInProb (Measure.dirac (0 : ℝ))
       (fun (n : ℕ) (_ : ℝ) => (((n : ℝ) + 1) ^ 3)⁻¹ *
@@ -1629,7 +1627,7 @@ theorem seq_hscore :
     simp [cellScore, vecSqNorm, seqZero]
   rw [h0, mul_zero, abs_zero]
 
-/-- `N_*n^{-2}∑_{m,j}g^{(m)}_jg^{(m)′}_j - Υ_n ⟶^p 0` on the witness model, where both terms
+/-- `N_*n^{-2}∑_{m,j}g^{(m)}_jg^{(m)′}_j - Υ_n ⟶^p 0` on the family of §6b, where both terms
 vanish. -/
 theorem seq_hstep1 :
     TendstoInMeasure (Measure.dirac (0 : ℝ))
@@ -1640,7 +1638,7 @@ theorem seq_hstep1 :
     (fun n => Filter.Eventually.of_forall fun ω => ?_) tendsto_const_nhds
   rw [seq_zero_dimMeat n, smul_zero, sub_zero, frobNorm_zero, abs_zero]
 
-/-- `step2_assembly_tendstoInProb` on the witness family, where the sequence is
+/-- `step2_assembly_tendstoInProb` on the family of §6b, where the sequence is
 `2(n+1)^{-1}`. -/
 theorem step2_assembly_tendstoInProb_witness :
     TendstoInMeasure (Measure.dirac (0 : ℝ))
@@ -1668,7 +1666,7 @@ theorem step2_assembly_tendstoInProb_witness :
     simp only [step2Rate, seq_card, hc2]
     field_simp
 
-/-- `piinf_a` on the witness family, where the sequence is `(n+1)^{-1}`. -/
+/-- `piinf_a` on the family of §6b, where the sequence is `(n+1)^{-1}`. -/
 theorem piinf_a_witness :
     TendstoInMeasure (Measure.dirac (0 : ℝ))
       (fun (n : ℕ) (_ : ℝ) => frobNorm ((((n : ℝ) + 1) ^ 3)⁻¹ •
@@ -1718,9 +1716,9 @@ The proof splits the score as `Z̃'u = Ğ_n + Z̃'ε` (`score_decomposition`), s
 `√N_* n⁻¹Z̃'ε ⟶^p 0` (`tendstoInProb_score_eps`), applies the Lindeberg–Feller theorem to the
 category term by Cramér–Wold (`score_clt_gen`), and passes through `Ψ_n⁻¹` by Slutsky.
 `pi_clt_unconditional_of_frozen` removes the conditioning given `hfreeze`, and
-`piinf_wald_of_meat_of_pi_clt` discharges the central limit hypothesis of Theorem 12(b).
+`piinf_wald_of_meat_of_pi_clt` proves the central limit hypothesis of Theorem 12(b).
 Condition (ii) enters as `hA : A_n → Ψ⁻¹` for a left inverse `A_n` of `n⁻¹Z̃'Z̃`, and the
-variances are carried per category as `vr n j`. -/
+variances are given per category as `vr n j`. -/
 
 section PiCLT
 
@@ -1729,7 +1727,7 @@ open scoped Topology RealInnerProductSpace ENNReal
 
 variable {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
 
-/-- Generalized scalar Lindeberg CLT: arbitrary finite index type per `n`, arbitrary scale. -/
+/-- The scalar Lindeberg CLT for a finite index type that depends on `n`, at an arbitrary scale. -/
 theorem scalar_clt_gen {J : ℕ → Type*} [∀ n, Fintype (J n)]
     (a : ℕ → ℝ) (w : ∀ n, J n → ℝ) (e : ∀ n, J n → Ω → ℝ) (vr : ∀ n, J n → ℝ) (C σ2 : ℝ)
     (hmeas : ∀ n j, Measurable (e n j))
@@ -1872,7 +1870,7 @@ theorem scalar_clt_gen {J : ℕ → Type*} [∀ n, Fintype (J n)]
   exact hrow n ω
 
 
-/-- Generalized vector CLT by Cramer--Wold. -/
+/-- The vector Lindeberg CLT, by Cramér–Wold. -/
 theorem score_clt_gen {K : ℕ} {J : ℕ → Type*} [∀ n, Fintype (J n)]
     (a : ℕ → ℝ) (z : ∀ n, J n → EuclideanSpace ℝ (Fin K))
     (e : ∀ n, J n → Ω → ℝ) (vr : ∀ n, J n → ℝ) (C : ℝ)
@@ -2635,7 +2633,7 @@ theorem sum_norm_sq_wzc (n : ℕ) : ∑ j, ‖wzc n j‖ ^ 2 = ((n : ℝ) + 1) ^
   push_cast
   ring
 
-/-- Condition (iii) holds exactly at every `n`, with limit `Υ = 1 ≻ 0`. -/
+/-- Condition (iii) holds at every `n` with its limit `Υ = 1 ≻ 0` attained. -/
 theorem upsilon_witness (t : EuclideanSpace ℝ (Fin 1)) (n : ℕ) :
     wa n ^ 2 * ∑ j, ⟪wzc n j, t⟫ ^ 2 * (1 : ℝ) = t 0 ^ 2 := by
   have hterm : ∀ j : wJ n, ⟪wzc n j, t⟫ ^ 2 * (1 : ℝ) = (((n : ℝ) + 1) * t 0) ^ 2 := by
@@ -2789,10 +2787,9 @@ end PiCLT
 
 /-! ## §8 The `O_p` inputs of clause (a) from the second moments
 
-`piinf_a_of_step1` is clause (a) with `hproj`, `hresid` and `hscore` derived rather than assumed,
-leaving `hstep1`. The inputs are the second-moment identity `hEu` (as in `piinf_c`), with
-`omegaU` the kernel `Ω_u`, and a symmetric idempotent matrix `Pim` with `tr(Pim) ≤ R` standing
-for `P_{C_1}`.
+`piinf_a_of_step1` proves `hproj`, `hresid` and `hscore` and gives clause (a) from `hstep1`.
+The inputs are the second-moment identity `hEu` (as in `piinf_c`), with `omegaU` the kernel `Ω_u`,
+and a symmetric idempotent matrix `Pim` with `tr(Pim) ≤ R` standing for `P_{C_1}`.
 
 * `proj_bddInProb`: `‖P_{C_1}u‖² = O_p(G_max)`, via `tr(PΩ_u) ≤ g·tr(P)`.
 * `residSq_bddInProb_of_omega`: `‖û‖² = O_p(n)`.
@@ -3245,9 +3242,10 @@ variable {Dn On Ln : ℕ → Type*}
   [∀ n, Fintype (On n)] [∀ n, DecidableEq (On n)]
   [∀ n, DecidableEq (Dn n)] [∀ n, DecidableEq (Ln n)]
 
-/-- `‖P_{C_1}u‖² = O_p(G_max)`. Here `hsym`, `hidem` and `htr` say that `Pim` is symmetric,
-idempotent and of trace at most `R`; `hw` is `û = u - Pim u`; `hEu` is the second-moment identity;
-`hcell` bounds the category sizes by `G_max ≥ 1`; `hvr` and `hsg` bound the variances. -/
+/-- `‖P_{C_1}u‖² = O_p(G_max)`. The hypotheses `hsym`, `hidem` and `htr` say that `Pim` is
+symmetric, idempotent and of trace at most `R`; `hw` is `û = u - Pim u`; `hEu` is the
+second-moment identity; `hcell` bounds the category sizes by `G_max ≥ 1`; `hvr` and `hsg`
+bound the variances. -/
 theorem proj_bddInProb
     (c : ∀ n, Dn n → On n → Ln n) (dims : ∀ n, Finset (Dn n))
     (u v : ∀ n, Ω → On n → ℝ) (Pim : ∀ n, Matrix (On n) (On n) ℝ)
@@ -3453,7 +3451,7 @@ end Chain
 
 end Step1Inputs
 
-/-! ### §8h Witness for `piinf_a_of_step1`
+/-! ### §8h Example for `piinf_a_of_step1`
 
 The growing design of §6b with `u ≡ 1`, `P_{C_1}` the projector on the first coordinate, and
 `û = (0,1,…,1)`; `P` is a point mass. The quantity sent to zero is `n²/(n+1)³`. -/
@@ -3462,17 +3460,17 @@ section Step1Witness
 open MeasureTheory Filter ProbabilityTheory
 open scoped Topology ENNReal
 
-/-- The witness projector on the first coordinate, of trace one. -/
+/-- The projector on the first coordinate, of trace one. -/
 noncomputable def seqPim (n : ℕ) : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ :=
   Matrix.diagonal (fun i => if i = 0 then (1 : ℝ) else 0)
 
-/-- The witness residual `û = u - P_{C_1}u = (0,1,…,1)` at `u ≡ 1`. -/
+/-- The residual `û = u - P_{C_1}u = (0,1,…,1)` at `u ≡ 1`. -/
 def seqResid1 (n : ℕ) : Fin (n + 1) → ℝ := fun o => if o = 0 then 0 else 1
 
-/-- The witness category variances: `1` on the first dimension and `0` on the second. -/
+/-- The category variances, `1` on the first dimension and `0` on the second. -/
 def seqVr : Fin 2 → ℝ := fun m => if m = 0 then 1 else 0
 
-/-- The witness idiosyncratic variances, all zero. -/
+/-- The idiosyncratic variances, all zero. -/
 def seqSg (n : ℕ) : Fin (n + 1) → ℝ := fun _ => 0
 
 theorem seqPim_transpose (n : ℕ) : (seqPim n)ᵀ = seqPim n := by
@@ -3498,7 +3496,7 @@ theorem seq_hw (n : ℕ) (o : Fin (n + 1)) :
   rw [seqPim_mulVec]
   by_cases h : o = 0 <;> simp [h, seqResid1, seqResid]
 
-/-- On the witness model `Ω_u ≡ 1`. -/
+/-- In the example of §8h, `Ω_u ≡ 1`. -/
 theorem seq_omegaU (n : ℕ) (p q : Fin (n + 1)) :
     omegaU (seqIndex n) (Finset.univ : Finset (Fin 2)) seqVr (seqSg n) p q = 1 := by
   simp [omegaU, seqIndex, seqVr, seqSg]
@@ -3510,7 +3508,7 @@ theorem seq_sum_resid1 (n : ℕ) : ∑ o : Fin (n + 1), seqResid1 n o = (n : ℝ
   rw [Finset.sum_congr rfl fun o (_ : o ∈ Finset.univ) => h1 o, Finset.sum_sub_distrib]
   simp
 
-/-- On the witness model `‖P_{C_1}u‖² = 1`. -/
+/-- In the example of §8h, `‖P_{C_1}u‖² = 1`. -/
 theorem seq_projSq (n : ℕ) :
     ∑ o : Fin (n + 1), (seqResid1 n o - seqResid n o) ^ 2 = 1 := by
   have h1 : ∀ o : Fin (n + 1), (seqResid1 n o - seqResid n o) ^ 2
@@ -3520,14 +3518,14 @@ theorem seq_projSq (n : ℕ) :
   rw [Finset.sum_congr rfl fun o (_ : o ∈ Finset.univ) => h1 o]
   simp
 
-/-- On the witness model `‖û‖² = n`. -/
+/-- In the example of §8h, `‖û‖² = n`. -/
 theorem seq_residSq1 (n : ℕ) : ∑ o : Fin (n + 1), seqResid1 n o ^ 2 = (n : ℝ) := by
   have h1 : ∀ o : Fin (n + 1), seqResid1 n o ^ 2 = seqResid1 n o := by
     intro o
     by_cases h : o = 0 <;> simp [h, seqResid1]
   rw [Finset.sum_congr rfl fun o (_ : o ∈ Finset.univ) => h1 o, seq_sum_resid1]
 
-/-- On the witness model `‖(n²/N_*)Υ̂(û)‖_F = n²`. -/
+/-- In the example of §8h, `‖(n²/N_*)Υ̂(û)‖_F = n²`. -/
 theorem seq_ieMeat1_frobNorm (n : ℕ) :
     frobNorm (ieMeat (seqIndex n) (Finset.univ : Finset (Fin 2)) (seqScore n) (seqResid1 n))
       = (n : ℝ) ^ 2 := by
@@ -3549,7 +3547,7 @@ theorem seq_ieMeat1_frobNorm (n : ℕ) :
   simp only [frobNorm, frobSq, Fin.sum_univ_one, hentry]
   exact Real.sqrt_sq (by positivity)
 
-/-- `hstep1` on the witness model, where the quantity sent to zero is `2/(n+1)`. -/
+/-- `hstep1` in the example of §8h, where the quantity sent to zero is `2/(n+1)`. -/
 theorem seq_hstep1_one :
     TendstoInMeasure (Measure.dirac (0 : ℝ))
       (fun (n : ℕ) (_ : ℝ) => frobNorm ((((n : ℝ) + 1) ^ 3)⁻¹ •
@@ -3571,7 +3569,7 @@ theorem seq_hstep1_one :
     field_simp
   rw [heq]
 
-/-- `piinf_a_of_step1` on the witness family, where the sequence is `n²/(n+1)³`. -/
+/-- `piinf_a_of_step1` in the example of §8h, where the sequence is `n²/(n+1)³`. -/
 theorem piinf_a_of_step1_witness :
     TendstoInMeasure (Measure.dirac (0 : ℝ))
       (fun (n : ℕ) (_ : ℝ) => frobNorm ((((n : ℝ) + 1) ^ 3)⁻¹ •
@@ -3622,10 +3620,10 @@ end Step1Witness
 
 /-! ## §9 Step 1
 
-`step1_tendstoInProb` proves `hstep1` under the Regime-1 model of Theorem 6: `u = ∑_{m'}Δ_{m'}η̆^{(m')} + ε`,
-with the category effects and the idiosyncratic disturbances forming a centred independent array
-with variances `ς²_{m'}` and `σ²_ε(o)` and bounded fourth moments. `piinf_a_of_regime1` is
-clause (a) with `hstep1` supplied.
+`step1_tendstoInProb` proves `hstep1` under the Regime-1 model of Theorem 6, in which
+`u = ∑_{m'}Δ_{m'}η̆^{(m')} + ε` and the category effects and the idiosyncratic disturbances form a
+centred independent array with variances `ς²_{m'}` and `σ²_ε(o)` and bounded fourth moments.
+`piinf_a_of_regime1` is clause (a) with `hstep1` supplied.
 
 Writing `Υ̂^dim(u) - Υ_n = (Lead - Υ_n) + Cross + Rem` with
 `Lead := ∑_{m,j} z^{(m)}_jz^{(m)′}_jη̆^{(m)2}_j` and `Rem := ∑_{m,j}r^{(m)}_jr^{(m)′}_j`, in every
@@ -3637,8 +3635,7 @@ by its first (`integral_r1RemSum_le`), and `a_nS_L` has mean `a_n tr(Υ_n)` (`in
 The disturbance array is indexed by `(D × Finset O) ⊕ O`: a site `Sum.inl (m, t)` for each
 category effect, with the category represented by its level-`{m}` cell `t`, and a site `Sum.inr o`
 for each `ε_o`. The cross-level aggregates are bounded through `sum_cells_inter`: the
-level-`A ∪ A'` cells are exactly the nonempty intersections of a level-`A` cell with a level-`A'`
-cell. -/
+level-`A ∪ A'` cells are the nonempty intersections of a level-`A` cell with a level-`A'` cell. -/
 section CellsPair
 open Finset
 
@@ -3673,8 +3670,8 @@ theorem inter_mem_cells_union {c : D → O → L} {A A' : Finset D} {t t' : Fins
   rw [eq_cellOf_of_mem ht ho1, eq_cellOf_of_mem ht' ho2, ← cellOf_union]
   exact Finset.mem_image_of_mem _ (Finset.mem_univ o)
 
-/-- The level-`A ∪ A'` cells are exactly the nonempty intersections of a level-`A` cell with a
-level-`A'` cell, one to one; hence summing a function that vanishes on `∅` over pairs of cells
+/-- The level-`A ∪ A'` cells correspond one to one to the nonempty intersections of a level-`A`
+cell with a level-`A'` cell; hence summing a function that vanishes on `∅` over pairs of cells
 equals summing it over the cells of the joint level. -/
 theorem sum_cells_inter (c : D -> O -> L) (A A' : Finset D) (f : Finset O -> ℝ)
     (hf : f (EmptyCollection.emptyCollection) = 0) :
@@ -3757,8 +3754,8 @@ theorem sum_inter_cells (c : D → O → L) (A' : Finset D) (t : Finset O) (h : 
     sum_over_cells c A' (fun o => if o ∈ t then h o else 0)]
   simp [Finset.sum_ite_mem]
 
-/-- The sites carrying a Regime-1 remainder: the category effects of the dimensions in `E`, and
-the idiosyncratic disturbances of the observations in `t`. -/
+/-- The sites that enter a Regime-1 remainder, namely the category effects of the dimensions in
+`E` and the idiosyncratic disturbances of the observations in `t`. -/
 def r1Sites (c : D → O → L) (E : Finset D) (t : Finset O) : Finset ((D × Finset O) ⊕ O) :=
   (E.biUnion fun m' => (cells c ({m'} : Finset D)).image (Prod.mk m')).disjSum t
 
@@ -3795,8 +3792,8 @@ variable [Fintype O] [DecidableEq O] [DecidableEq D] [DecidableEq L] [Fintype K]
 def r1Dist (c : D → O → L) (dims : Finset D) (X : ((D × Finset O) ⊕ O) → ℝ) (o : O) : ℝ :=
   (∑ m ∈ dims, X (Sum.inl (m, cellOf c ({m} : Finset D) o))) + X (Sum.inr o)
 
-/-- The coefficients of `r^{(m)}_t` in coordinate `k`: `ζ^{(mm')}_{tt'} = ∑_{o ∈ t ∩ t'} z̃_o`
-at a category site, and `z̃_o` at an observation site. -/
+/-- The coefficients of `r^{(m)}_t` in coordinate `k`, namely
+`ζ^{(mm')}_{tt'} = ∑_{o ∈ t ∩ t'} z̃_o` at a category site, and `z̃_o` at an observation site. -/
 def r1Coef (z : O → K → ℝ) (t : Finset O) (k : K) : ((D × Finset O) ⊕ O) → ℝ :=
   Sum.elim (fun p => cellVec z (t ∩ p.2) k) (fun o => z o k)
 
@@ -4768,7 +4765,7 @@ namespace Step1Model
 open Finset MeasureTheory ProbabilityTheory Filter
 open scoped Topology ENNReal
 
-/-- The witness design: an `(n+1) × (n+1)` grid of observations. -/
+/-- The design of the example, an `(n+1) × (n+1)` grid of observations. -/
 abbrev wO (n : ℕ) : Type := Fin (n + 1) × Fin (n + 1)
 
 /-- Two fixed-effect dimensions, the row index and the column index. -/
@@ -5046,8 +5043,8 @@ end Step1Model
 /-! ## §10 Theorem 6 restricted through a rectangular `𝓡`
 
 For `s ∈ ℝ^r`, `⟪s, √N_*𝓡(π̂-π)⟫ = ⟪𝓡's, √N_*(π̂-π)⟫`, so the restricted limit follows from
-Cramér--Wold in the single direction `t := 𝓡's`, whose scalar limit has variance
-`s'(𝓡Ψ⁻¹ΥΨ⁻¹𝓡')s`. No theorem on linear images of multivariate Gaussians is needed.
+Cramér–Wold in the single direction `t := 𝓡's`, whose scalar limit has variance
+`s'(𝓡Ψ⁻¹ΥΨ⁻¹𝓡')s`.
 
 * `tendstoInDistribution_apply_of_solve_rect`: Slutsky through a rectangular limit map.
 * `pi_clt_std_rect`: the limit law of any `dev_n = A_n(score_n)` with `A_n` rectangular.
@@ -5121,7 +5118,7 @@ theorem tendstoInDistribution_apply_of_solve_rect {Kq r : ℕ}
   filter_upwards with ω
   rw [hn ω, ← ContinuousLinearMap.adjoint_inner_right]
 
-/-- The rectangular face of `pi_clt_std`. -/
+/-- `pi_clt_std` for a rectangular `A_n`. -/
 theorem pi_clt_std_rect {K r : ℕ} {J : ℕ → Type*} [∀ n, Fintype (J n)]
     {O : ℕ → Type*} [∀ n, Fintype (O n)]
     (a Ns : ℕ → ℝ) (mx : ℕ → ℝ)
@@ -5723,7 +5720,7 @@ def wR : Matrix (Fin 1) (Fin 2) ℝ := !![1, 0]
 noncomputable abbrev wPsi : EuclideanSpace ℝ (Fin 2) →L[ℝ] EuclideanSpace ℝ (Fin 2) :=
   ContinuousLinearMap.id ℝ (EuclideanSpace ℝ (Fin 2))
 
-/-- The `𝓡`-specific hypotheses of the rectangular chain are jointly satisfiable at `r < K`. -/
+/-- The hypotheses on `𝓡` of the rectangular results hold together at `r < K`. -/
 theorem rect_bridge_witness :
     (ContinuousLinearMap.adjoint (matCLM wR) = matCLM wRᵀ)
       ∧ (∀ t : EuclideanSpace ℝ (Fin 1),
@@ -5799,7 +5796,7 @@ end ClauseCRegime1
 
 end PiEleven
 
-/-! ## §12 End-to-end witnesses
+/-! ## §12 Examples of the complete results
 
 * `piinf_a_regime1_full_witness`: `piinf_a_of_regime1_full` on the balanced two-way grid
   `Fin(n+1) × Fin(n+1)` with an i.i.d. Rademacher array and the demeaning projector
@@ -6084,7 +6081,7 @@ theorem sum_norm_sq_rzc (n : ℕ) : ∑ j : rJ n, ‖rzc n j‖ ^ 2 = 2 * ((n : 
   push_cast
   ring
 
-/-- Condition (iii) holds exactly at every `n`, with limit `Υ = I₂ ≻ 0`. -/
+/-- Condition (iii) holds at every `n` with its limit `Υ = I₂ ≻ 0` attained. -/
 theorem upsilon_exact (n : ℕ) (t : EuclideanSpace ℝ (Fin 2)) :
     ra n ^ 2 * ∑ j : rJ n, ⟪rzc n j, t⟫ ^ 2 * (1 : ℝ) = t 0 ^ 2 + t 1 ^ 2 := by
   rw [sum_inner_sq_rzc, ra]
@@ -6386,9 +6383,9 @@ hypothesis of `pi_clt` is read under the regular conditional law `ℙ_ω := cond
 corresponding form of Theorem 12(b) at `𝓡 = I_K`. The limits `Υ`, `Ψ⁻¹` and `π₀` are
 deterministic.
 
-The witness runs on the product space `Bool × ((ℕ × ℕ) → Bool)` of `Multiway.SteinCluster`, where
-`𝒟` is a proper sub-σ-field and `ℙ_ω ≠ P`, with the category weights multiplied by the sign of
-the design coin. -/
+The example is set on the product space `Bool × ((ℕ × ℕ) → Bool)` of `Multiway.SteinCluster`,
+where `𝒟` is a proper sub-σ-field and `ℙ_ω ≠ P`; its category weights are multiplied by the sign
+of the design coin. -/
 
 section PiThirteen
 open Finset Matrix MeasureTheory ProbabilityTheory Filter
@@ -6888,7 +6885,7 @@ theorem hmxsum_witness (n : ℕ) : wmx n ≤ ∑ j, ‖wzc n j‖ ^ 2 := by
     _ ≤ ((n : ℝ) + 1) ^ 2 * ((n : ℝ) + 1) ^ 2 := by nlinarith [sq_nonneg ((n : ℝ) + 1)]
     _ = ((n : ℝ) + 1) ^ 4 := by ring
 
-/-- The deconditioned Theorem 6 on a non-trivial `𝒟`. -/
+/-- Theorem 6 without conditioning, on a non-trivial `𝒟`. -/
 theorem pi_clt_unconditional_of_design_closed_witness :
     Pw {y : Aw | y.1 = true} = 2⁻¹
     ∧ (∃ B : Set Aw, MeasurableSet B ∧ ¬ MeasurableSet[Dw] B)

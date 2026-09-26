@@ -6,9 +6,8 @@ import Mathlib.Basic.Real.Basic
 # Extracting an injective map into a subspace from a rank inequality
 
 If a finite-dimensional space `F` has no more dimensions than a subspace `V`, then there is an
-injective linear map from `F` whose range lies in `V`. This is the step "since
-`rank(Q_[Δ]) ≥ K`, choose linearly independent `w_1, …, w_K ∈ col(Q_[Δ])`" used in the proof
-of Proposition 1(iii).
+injective linear map from `F` whose range lies in `V`. The proof of Proposition 1(iii) uses it
+to choose linearly independent `w_1, …, w_K ∈ col(Q_[Δ])` from `rank(Q_[Δ]) ≥ K`.
 
 ## Main results
 
@@ -30,7 +29,7 @@ theorem exists_injective_range_le [FiniteDimensional ℝ F] (V : Submodule ℝ E
   classical
   set bF : Basis (Fin (finrank ℝ F)) ℝ F := finBasis ℝ F with hbF
   set bV : Basis (Fin (finrank ℝ V)) ℝ V := finBasis ℝ V with hbV
-  -- the `K` columns: a subfamily of a basis of `V`, carried into `E`
+  -- the `K` columns are a subfamily of a basis of `V`, mapped into `E`
   set f : Fin (finrank ℝ F) → E := fun i => (bV (Fin.castLE h i) : E) with hf
   have hsub : LinearIndependent ℝ (fun i : Fin (finrank ℝ F) => bV (Fin.castLE h i)) :=
     bV.linearIndependent.comp _ (Fin.castLE_injective h)

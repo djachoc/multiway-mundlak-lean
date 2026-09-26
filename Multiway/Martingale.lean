@@ -8,7 +8,7 @@ import Mathlib.MeasureTheory.Integral.Bochner.Set
 This file formalizes Lemma SM.C.2 of the paper (Martingale representation of a degenerate
 multilinear sum). For independent latent variables revealed in an arbitrary order, the
 increments `D_κ` of `𝔼[T ∣ ℱ_κ]` of a completely degenerate multilinear sum `T` form a
-martingale-difference sequence with `T = ∑_κ D_κ`, and `D_κ` collects exactly the terms whose
+martingale-difference sequence with `T = ∑_κ D_κ`, and `D_κ` is the sum of the terms whose
 last coordinate is revealed at step `κ`. Indices are zero-based: `degenDiff … κ` is `D_{κ+1}`.
 
 ## Main results
@@ -161,7 +161,7 @@ theorem latentSigma_indep [IsProbabilityMeasure μ] {U : V → Ω → ℝ}
     (hSS' : Disjoint S S') : Indep (latentSigma U S) (latentSigma U S') μ :=
   indep_iSup_of_disjoint (fun v => (hU v).comap_le) hindep hSS'
 
-/-- `U_t = (U^{(k)}_{t_k})_{k ∈ e}`, the latent tuple carried by the sub-tuple `t`. -/
+/-- `U_t = (U^{(k)}_{t_k})_{k ∈ e}`, the latent tuple indexed by the sub-tuple `t`. -/
 def latentTuple (U : V → Ω → ℝ) (coord : T → ι → V) (t : T) : Ω → ι → ℝ :=
   fun ω k => U (coord t k) ω
 
@@ -169,7 +169,7 @@ def latentTuple (U : V → Ω → ℝ) (coord : T → ι → V) (t : T) : Ω →
 def degenTerm (U : V → Ω → ℝ) (coord : T → ι → V) (g : (ι → ℝ) → ℝ) (t : T) : Ω → ℝ :=
   fun ω => g (latentTuple U coord t ω)
 
-/-- The latent variables that the sub-tuple `t` carries. -/
+/-- The indices of the latent variables in the sub-tuple `t`. -/
 def tupleSupport (coord : T → ι → V) (t : T) : Set V := Set.range (coord t)
 
 /-- `T := ∑_{t ∈ 𝒯_e} c_t g(U_t)`. -/
@@ -272,7 +272,7 @@ variable {V ι T : Type*} [Fintype ι] [Fintype T] [DecidableEq T] [IsProbabilit
   {U : V → Ω → ℝ} {coord : T → ι → V} {g : (ι → ℝ) → ℝ} {c : T → ℝ} {step : V → ℕ}
 
 omit [DecidableEq T] in
-/-- The fully revealed terms are already `ℱ_κ`-measurable, so conditioning leaves them alone. -/
+/-- The fully revealed terms are already `ℱ_κ`-measurable, so conditioning leaves them unchanged. -/
 theorem condExp_degenTerm_of_mem (hU : ∀ v, Measurable (U v)) (hg : Measurable g) {t : T}
     (hint : Integrable (degenTerm U coord g t) μ) {κ : ℕ}
     (ht : t ∈ fullyRevealed coord step κ) :
@@ -416,7 +416,7 @@ theorem degenSum_eq_sum_degenDiff [Nonempty ι] (hU : ∀ v, Measurable (U v))
   simp [degenSum_apply]
 
 /-- **Lemma SM.C.2.** For independent latent variables, a square-integrable completely
-degenerate kernel `g`, nonrandom weights `c` and any ordering `step`: `(D_κ)` is a
+degenerate kernel `g`, nonrandom weights `c` and any ordering `step`, `(D_κ)` is a
 martingale-difference sequence, `T = ∑_κ D_κ`, `D_κ = ∑_{t ∈ R_κ} c_t g(U_t)`, and each
 `t ∈ 𝒯_e` belongs to exactly one `R_κ`. -/
 theorem martingale_representation [Nonempty ι] (hU : ∀ v, Measurable (U v))
@@ -444,7 +444,7 @@ end Main
 The components `γ` may have levels `ι γ` and sub-tuple types `T γ` of different sizes, but share
 the latent index type `V` and the ordering `step`, so `∑_γ T^γ` is a single martingale. Each
 statement below is the sum over `γ` of the corresponding single-component statement, using
-linearity of `condExp`; complete degeneracy is required of each component for its own level.
+linearity of `condExp`; complete degeneracy is required of each component at its level.
 -/
 
 section Multi
@@ -538,7 +538,7 @@ theorem condExp_multiDegenDiff_eq_zero (hU : ∀ v, Measurable (U v)) (κ : ℕ)
   filter_upwards [h2] with ω hω2
   simp only [Pi.sub_apply, hω2, sub_self, Pi.zero_apply]
 
-/-- `D_κ = ∑_γ∑_{t ∈ R^γ_κ}c^γ_tg_γ(U_t)`, with each component's own completion sets. -/
+/-- `D_κ = ∑_γ∑_{t ∈ R^γ_κ}c^γ_tg_γ(U_t)`, where `R^γ_κ` are the completion sets of component `γ`. -/
 theorem multiDegenDiff_eq_sum_completedAt (hU : ∀ v, Measurable (U v))
     (hindep : iIndepFun U μ) (hg : ∀ γ : Γ, Measurable (g γ))
     (hint : ∀ (γ : Γ) (t : T γ), Integrable (degenTerm U (coord γ) (g γ) t) μ)

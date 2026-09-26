@@ -23,7 +23,7 @@ system `{ψ_r}` evaluated at independent latent variables, the entries
 `γ ≠ γ'`, and (b) `Var(∑_{γ,γ'} λ_γ λ_{γ'} X_{γγ'}) ≤ C(M, B_0, |Γ|) max_γ cut(γ) max_γ tot(γ)`
 when `∑_γ λ_γ² ≤ 1`. Here `tot(γ) = ‖V^{(γ)}‖_F²` and `cut(γ)` is the largest Frobenius norm of
 a contraction `V^{(γ)} ⊠_A V^{(γ)}` over proper nonempty `A`. Arrays enter through their
-matricizations, which are ordinary rectangular matrices: `V ⊠_A V` is `Fᵀ * F`.
+matricizations `F`, and `V ⊠_A V` is `Fᵀ * F`.
 
 ## Main results
 
@@ -86,9 +86,9 @@ theorem rectFrobSq_reindex {α' β' : Type*} [Fintype α'] [Fintype β'] (F : Ma
   rw [hF, hG]
   exact Fintype.sum_equiv e _ _ fun p => by rw [h p]
 
-/-! ### Cauchy--Schwarz in the Frobenius inner product -/
+/-! ### Cauchy–Schwarz in the Frobenius inner product -/
 
-/-- The squared Cauchy--Schwarz inequality for the Frobenius inner product `tr(S'T)`. -/
+/-- The squared Cauchy–Schwarz inequality for the Frobenius inner product `tr(S'T)`. -/
 theorem sq_trace_transpose_mul_le (S T : Matrix α β ℝ) :
     ((Sᵀ * T).trace) ^ 2 ≤ rectFrobSq S * rectFrobSq T := by
   have htr : (Sᵀ * T).trace = ∑ p : α × β, S p.1 p.2 * T p.1 p.2 := by
@@ -102,7 +102,7 @@ theorem sq_trace_transpose_mul_le (S T : Matrix α β ℝ) :
   rw [htr, hS, hT]
   exact Finset.sum_mul_sq_le_sq_mul_sq Finset.univ _ _
 
-/-- **Cauchy--Schwarz in the Frobenius inner product**, `|tr(S'T)| ≤ ‖S‖_F ‖T‖_F`. -/
+/-- **Cauchy–Schwarz in the Frobenius inner product**, `|tr(S'T)| ≤ ‖S‖_F ‖T‖_F`. -/
 theorem abs_trace_transpose_mul_le (S T : Matrix α β ℝ) :
     |(Sᵀ * T).trace| ≤ rectFrobNorm S * rectFrobNorm T := by
   calc |(Sᵀ * T).trace| = Real.sqrt (((Sᵀ * T).trace) ^ 2) := (Real.sqrt_sq_eq_abs _).symm
@@ -196,9 +196,9 @@ theorem rectFrobSq_transpose_mul_le (F : Matrix α β ℝ) (G : Matrix α δ ℝ
   rw [hid]
   exact (le_abs_self _).trans (abs_trace_transpose_mul_le (F * Fᵀ) (G * Gᵀ))
 
-/-! ### Cauchy--Schwarz along an involution that respects a fibration -/
+/-! ### Cauchy–Schwarz along an involution that respects a fibration -/
 
-/-- Cauchy--Schwarz along an involution `τ` of `P` that preserves `d : P → Q`, applied fibre
+/-- Cauchy–Schwarz along an involution `τ` of `P` that preserves `d : P → Q`, applied fibre
 by fibre: `∑_a |∑_{d x = a} H x · H (τ x)| ≤ ∑_x (H x)²`. -/
 theorem sum_fiber_abs_involution_le {P Q : Type*} [Fintype P] [DecidableEq P] [Fintype Q]
     [DecidableEq Q] (H : P → ℝ) (τ : P → P) (d : P → Q)
@@ -270,8 +270,8 @@ theorem exists_multiIndex_ne_of_injective {K Γ : Type*} [DecidableEq K]
 The product `π^γ_s = ∏_{k ∈ f_γ} ψ_{r_k(γ)}(U^{(k)}_{s_k})` is written as a product over the
 sites `(k, s_k)` of the sub-tuple `s`: `sites γ s : Finset V` is its site set and
 `rIdx γ : V → R` reads the multi-index at a site. The basis is indexed by an arbitrary type `R`
-with a subset `Rpos` of mean-zero indices (`R = ℕ`, `Rpos = {r | r ≠ 0}` is the usual case), and
-only orthonormality, not completeness, is assumed. In clause (a) the bound `|ψ_r| ≤ B_0` is used
+with a subset `Rpos` of mean-zero indices (`R = ℕ`, `Rpos = {r | r ≠ 0}` is the usual case). Only
+orthonormality of the system is assumed. In clause (a) the bound `|ψ_r| ≤ B_0` is used
 only for integrability. -/
 
 section ClauseA
@@ -380,8 +380,8 @@ section Components
 variable {Γ : Type*} {S : Γ → Type*} [∀ γ, Fintype (S γ)]
   {I : Type*} [Fintype I] {τ : Type*} [DecidableEq τ]
 
-/-- `π^γ_s := ∏_{k ∈ f_γ} ψ_{r_k(γ)}(U^{(k)}_{s_k})`, written as a product over the sites the
-sub-tuple `s` carries. -/
+/-- `π^γ_s := ∏_{k ∈ f_γ} ψ_{r_k(γ)}(U^{(k)}_{s_k})`, written as a product over the site set
+of the sub-tuple `s`. -/
 noncomputable def basisProd (U : V → Ω → ℝ) (ψ : R → ℝ → ℝ)
     (sites : ∀ γ, S γ → Finset V) (rIdx : Γ → V → R) (γ : Γ) (s : S γ) : Ω → ℝ :=
   fun ω => ∏ w ∈ sites γ s, ψ (rIdx γ w) (U w ω)
@@ -393,8 +393,8 @@ noncomputable def blockSum (U : V → Ω → ℝ) (ψ : R → ℝ → ℝ)
   fun ω => ∑ s : S γ, arr γ s i * basisProd U ψ sites rIdx γ s ω
 
 /-- `X_{γγ'} := ∑_i A^γ_i A^{γ'}_i` when `k^⋆_γ = k^⋆_{γ'}` and
-`r_{k^⋆}(γ) = r_{k^⋆}(γ')`, and `0` otherwise. The side condition is carried by `tag`, the pair
-`(k^⋆_γ, r_{k^⋆_γ}(γ))`. -/
+`r_{k^⋆}(γ) = r_{k^⋆}(γ')`, and `0` otherwise. The side condition is `tag γ = tag γ'`, where `tag`
+is the pair `(k^⋆_γ, r_{k^⋆_γ}(γ))`. -/
 noncomputable def cvarEntry (U : V → Ω → ℝ) (ψ : R → ℝ → ℝ)
     (sites : ∀ γ, S γ → Finset V) (rIdx : Γ → V → R) (arr : ∀ γ, S γ → I → ℝ)
     (tag : Γ → τ) (γ γ' : Γ) : Ω → ℝ :=
@@ -629,14 +629,14 @@ variable {K : Type*} [Fintype K] [DecidableEq K] {N : K → Type*}
   [∀ k, Fintype (N k)] [∀ k, DecidableEq (N k)]
 variable {Γ : Type*} (f : Γ → Finset K)
 
-/-- A sub-tuple `t ∈ 𝒯_{f_γ}` of the component `γ`, encoded by its site set: a finite set of
-sites meeting exactly the dimensions of `f_γ`. -/
+/-- A sub-tuple `t ∈ 𝒯_{f_γ}` of the component `γ`, encoded by its site set, a finite set of
+sites whose image under `Sigma.fst` is `f_γ`. -/
 abbrev SubTuple (γ : Γ) := {E : Finset (Site K N) // E.image Sigma.fst = f γ}
 
 variable {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
 
 /-- **Lemma SM.C.3(a) in the tuple model.** `hlevelinj` is the injectivity of
-`γ ↦ (e_γ, 𝐫(γ))` with `e_γ = insert k^⋆_γ f_γ`, and `hpos` asks `r_k(γ)` to be a mean-zero index
+`γ ↦ (e_γ, 𝐫(γ))` with `e_γ = insert k^⋆_γ f_γ`, and `hpos` requires `r_k(γ)` to be a mean-zero index
 for `k ∈ f_γ`. The index `i` runs over all sites, with `arr γ` extended by zero outside
 `𝒩_{k^⋆_γ}`. -/
 theorem concentration_clause_a_tuples
@@ -688,16 +688,16 @@ instance : IsProbabilityMeasure signLaw := by
   simp [signLaw]
   exact ENNReal.inv_two_add_inv_two
 
-/-- The witness probability space: two independent fair signs. -/
+/-- The probability space of the model, two independent fair signs. -/
 noncomputable def wμ : Measure (Fin 2 → ℝ) := Measure.pi fun _ => signLaw
 
 instance : IsProbabilityMeasure wμ := by
   unfold wμ; infer_instance
 
-/-- The two latent variables: the coordinates. -/
+/-- The two latent variables are the coordinate projections. -/
 def wU (v : Fin 2) (ω : Fin 2 → ℝ) : ℝ := ω v
 
-/-- The orthonormal system: the constant and the sign `if 0 ≤ x then 1 else -1`, which is
+/-- The orthonormal system formed by the constant and the sign `if 0 ≤ x then 1 else -1`, which is
 bounded by `1` on all of `ℝ`. -/
 noncomputable def wψ (r : Fin 2) (x : ℝ) : ℝ := if r = 0 then 1 else if 0 ≤ x then 1 else -1
 
@@ -711,7 +711,7 @@ theorem measurable_wψ (r : Fin 2) : Measurable (wψ r) := by
     exact Measurable.ite (measurableSet_le measurable_const measurable_id)
       measurable_const measurable_const
 
-/-- `𝔼[f(U_v)] = (f(1) + f(-1))/2`: the coordinate push-forward of `wμ` is `signLaw`. -/
+/-- `𝔼[f(U_v)] = (f(1) + f(-1))/2`, since the coordinate push-forward of `wμ` is `signLaw`. -/
 theorem wintegral {f : ℝ → ℝ} (hf : Measurable f) (v : Fin 2) :
     ∫ ω, f (wU v ω) ∂wμ = (f 1 + f (-1)) / 2 := by
   have hmap : wμ.map (fun ω : Fin 2 → ℝ => ω v) = signLaw :=
@@ -940,7 +940,7 @@ theorem variance_weighted_sum_le {P : Type*} [Fintype P] [IsFiniteMeasure μ]
         refine Finset.sum_congr rfl fun p _ => ?_
         rw [Finset.mul_sum, Finset.sum_mul]
 
-/-- `Var(A+B) ≤ 2 Var(A) + 2 𝔼[B²]`: the split of `X` into its matched and unmatched parts. -/
+/-- `Var(A+B) ≤ 2 Var(A) + 2 𝔼[B²]`, applied to the split of `X` into its matched and unmatched parts. -/
 theorem variance_add_le_two_mul [IsProbabilityMeasure μ] {A B : Ω → ℝ}
     (hA : MemLp A 2 μ) (hB : MemLp B 2 μ) :
     variance (fun ω => A ω + B ω) μ ≤ 2 * variance A μ + 2 * ∫ ω, (B ω) ^ 2 ∂μ := by
@@ -1664,9 +1664,9 @@ end Assembly
 
 /-! ### The unmatched part when every site set is a singleton
 
-When `|e_γ| = 2`, each sub-tuple carries exactly one site (hypothesis `hst`). A quadruple
+When `|e_γ| = 2`, the site set of each sub-tuple is a singleton (hypothesis `hst`). A quadruple
 `(s,s',u,u')` with nonzero coefficient and nonzero moment is then either the diagonal one
-`(u,u') = (s,s')` or the transposed one `(u,u') = (s',s)`, and both are bounded by Cauchy--Schwarz
+`(u,u') = (s,s')` or the transposed one `(u,u') = (s',s)`, and both are bounded by Cauchy–Schwarz
 and the trace bound. -/
 
 section SingletonSites
@@ -1699,7 +1699,7 @@ theorem quadMoment_eq_prod (h : IsBasisSystem μ U ψ Rpos B₀) (w : Fin 4 → 
   exact h.indep.integral_fun_prod_comp (fun v => (h.measurable_latent v).aemeasurable)
     (fun v => (hmeas v).aestronglyMeasurable)
 
-/-- The four-fold moment vanishes if some site carries exactly one of the four factors. -/
+/-- The four-fold moment vanishes if some site is met by exactly one of the four slots. -/
 theorem quadMoment_eq_zero_of_isolated (h : IsBasisSystem μ U ψ Rpos B₀)
     {w : Fin 4 → V} {r : Fin 4 → R} {j : Fin 4}
     (hiso : ∀ j', j' ≠ j → w j' ≠ w j) (hr : r j ∈ Rpos) :
@@ -1770,8 +1770,8 @@ theorem integrable_quadProd (h : IsBasisSystem μ U ψ Rpos B₀) (w : Fin 4 →
           (fun j _ => le_trans (h.bound _ _) (le_max_left _ _))
     _ = max B₀ 1 ^ 4 := by simp
 
-/-- The contrapositive of `quadMoment_eq_zero_of_isolated`: a surviving quadruple has no
-singleton site. -/
+/-- The contrapositive of `quadMoment_eq_zero_of_isolated`. A quadruple with nonzero moment
+has no singleton site. -/
 theorem exists_eq_of_quadMoment_ne_zero (h : IsBasisSystem μ U ψ Rpos B₀)
     {w : Fin 4 → V} {r : Fin 4 → R} (hr : ∀ j, r j ∈ Rpos)
     (hne : quadMoment μ U ψ w r ≠ 0) (j : Fin 4) : ∃ j', j' ≠ j ∧ w j' = w j := by
@@ -1779,7 +1779,7 @@ theorem exists_eq_of_quadMoment_ne_zero (h : IsBasisSystem μ U ψ Rpos B₀)
   exact hne (quadMoment_eq_zero_of_isolated h (j := j)
     (fun j' hj' hEq => hcon ⟨j', hj', hEq⟩) (hr j))
 
-/-- **Surviving quadruples for singleton site sets.** `w 0, w 1, w 2, w 3` are the sites of
+/-- Quadruples with nonzero moment when every site set is a singleton. `w 0, w 1, w 2, w 3` are the sites of
 `s, s', u, u'`; `hum` says `(s,s')` is unmatched and `hdiag` excludes the diagonal quadruple. A
 quadruple with nonzero moment is then the transposed one, `w 3 = w 0` and `w 2 = w 1`. -/
 theorem quad_pattern_of_ne_zero (h : IsBasisSystem μ U ψ Rpos B₀)
@@ -1900,9 +1900,9 @@ theorem integral_sq_double_sum {A B : Type*} [Fintype A] [Fintype B] (c : A → 
   rw [integral_finsetSum _ fun b' _ => hint' a b a' b']
   exact Finset.sum_congr rfl fun b' _ => integral_const_mul _ _
 
-/-! #### Cauchy--Schwarz over quadruples -/
+/-! #### Cauchy–Schwarz over quadruples -/
 
-/-- Cauchy--Schwarz over a set `T` of quadruples each determined by either of its two pairs:
+/-- Cauchy–Schwarz over a set `T` of quadruples each determined by either of its two pairs:
 `|∑_{q ∈ T} c_{q_1} c_{q_2} Q_q| ≤ M₀ ∑ c²` when `|Q| ≤ M₀`. -/
 theorem abs_sum_quad_pairs_le {A B : Type*} [Fintype A] [Fintype B] [DecidableEq A]
     [DecidableEq B] (c : A → B → ℝ) (Q : A → B → A → B → ℝ) {M₀ : ℝ} (hM : 0 ≤ M₀)
@@ -2039,7 +2039,7 @@ variable {Γ : Type*} {S : Γ → Type*} [∀ γ, Fintype (S γ)] {I : Type*} [F
 variable {sites : ∀ γ, S γ → Finset V} {rIdx : Γ → V → R} {arr : ∀ γ, S γ → I → ℝ}
   {tag : Γ → τ}
 
-/-- `G_{ss'}` restricted to the unmatched pairs, which is the coefficient array `Ξᵘ` carries. -/
+/-- `G_{ss'}` restricted to the unmatched pairs, the coefficient array of `Ξᵘ`. -/
 noncomputable def unmCoef (sites : ∀ γ, S γ → Finset V) (rIdx : Γ → V → R)
     (arr : ∀ γ, S γ → I → ℝ) (γ γ' : Γ) (s : S γ) (s' : S γ') : ℝ :=
   if IsMatched sites rIdx γ γ' s s' then 0 else gramEntry arr γ γ' s s'
@@ -2217,7 +2217,7 @@ theorem sq_sum_of_subsingleton {A : Type*} (F : Finset A) (g : A → ℝ)
     rw [hs]; simp
 
 /-- The matched-part bound when every site set is a singleton: the fibre sums are the
-diagonal Gram entries `G_{ss}`, so `sum_sq_diag_le_rectFrobSq` applies directly. -/
+diagonal Gram entries `G_{ss}`, so `sum_sq_diag_le_rectFrobSq` applies. -/
 theorem variance_matchedPart_le_of_singleton_ofCard (h : IsBasisSystem μ U ψ Rpos B₀)
     {M : ℕ} (hlev : ∀ (g : Γ) (x : S g), (sites g x).card ≤ M)
     {st : ∀ γ, S γ → V} (hst : ∀ (γ : Γ) (s : S γ), sites γ s = {st γ s})
@@ -2269,7 +2269,7 @@ theorem variance_matchedPart_le_of_singleton (h : IsBasisSystem μ U ψ Rpos B�
       | exact fun _ _ => Finset.card_le_univ _
       | exact fun _ => Finset.card_le_univ _
 /-- **Lemma SM.C.3(b) when `|e_γ| = 2`.** `hst` says every site set is a singleton, and
-`hcut`, `htot` bound `cut(γ)` and `tot(γ)`. The constant is explicit. -/
+`hcut`, `htot` bound `cut(γ)` and `tot(γ)`, with explicit constant. -/
 theorem concentration_clause_b_singleton_ofCard [Fintype Γ] [DecidableEq Γ]
     (h : IsBasisSystem μ U ψ Rpos B₀) {M : ℕ}
     (hlev : ∀ (g : Γ) (x : S g), (sites g x).card ≤ M)
@@ -2373,9 +2373,9 @@ end SingletonSites
 
 /-! ### The unmatched part at general level size
 
-Sub-tuples carry coordinates: `lev γ` is `f_γ`, `pt γ s k` is the site of `s` at coordinate `k`,
+Sub-tuples are indexed by coordinates. `lev γ` is `f_γ`, `pt γ s k` is the site of `s` at coordinate `k`,
 `hsite` says `sites γ s = (lev γ).image (pt γ s)`, and `hptc` says a site determines its
-coordinate. At a common coordinate `k`, a quadruple `(s,s',u,u')` with nonzero moment carries one
+coordinate. At a common coordinate `k`, a quadruple `(s,s',u,u')` with nonzero moment has one
 of the patterns (A) `s_k = s'_k`, `u_k = u'_k`; (B) `s_k = u_k`, `s'_k = u'_k`;
 (C) `s_k = u'_k`, `s'_k = u_k`; (D) all four equal. With `ℬ` the set of pattern-(A) coordinates
 and `A_𝒫 = ℬ ∪ {k^⋆}`, Class 1 is `ℬ = ∅`, Class 3 is `A_𝒫 = e_γ = e_{γ'}`, and Class 2 is the
@@ -2385,8 +2385,8 @@ section GeneralSites
 
 /-! #### The four-fold moment for site sets -/
 
-/-- The four-fold moment `𝔼[π^γ_sπ^{γ'}_{s'}π^γ_uπ^{γ'}_{u'}]` when each slot carries a site
-set; `quadMoment` is the case of singleton sets. -/
+/-- The four-fold moment `𝔼[π^γ_sπ^{γ'}_{s'}π^γ_uπ^{γ'}_{u'}]` for four slots with arbitrary
+site sets; `quadMoment` is the case of singleton sets. -/
 noncomputable def multiMoment (μ : Measure Ω) (U : V → Ω → ℝ) (ψ : R → ℝ → ℝ)
     (E : Fin 4 → Finset V) (r : Fin 4 → V → R) : ℝ :=
   ∫ ω, ∏ j : Fin 4, ∏ w ∈ E j, ψ (r j w) (U w ω) ∂μ
@@ -2494,7 +2494,7 @@ theorem abs_multiMoment_le (h : IsBasisSystem μ U ψ Rpos B₀) (E : Fin 4 → 
       | exact fun _ _ => Finset.card_le_univ _
       | exact fun _ => Finset.card_le_univ _
 omit [Fintype V] in
-/-- If four elements carry none of the patterns (A), (B), (C), then one of them occurs exactly
+/-- If four elements satisfy none of the patterns (A), (B), (C), then one of them occurs exactly
 once. -/
 theorem exists_isolated_of_not_pattern {x y z w : V}
     (hA : ¬(x = y ∧ z = w)) (hB : ¬(x = z ∧ y = w)) (hC : ¬(x = w ∧ y = z)) :
@@ -2533,7 +2533,7 @@ def quadSites (sites : ∀ γ, S γ → Finset V) (γ γ' : Γ) (s : S γ) (s' :
   if j = 0 then sites γ s else if j = 1 then sites γ' s' else
     if j = 2 then sites γ u else sites γ' u'
 
-/-- The basis indices of the four slots: the `γ`-side ones read `𝐫(γ)`, the `γ'`-side ones
+/-- The basis indices of the four slots; the `γ`-side ones read `𝐫(γ)` and the `γ'`-side ones
 read `𝐫(γ')`. -/
 def quadIdx (rIdx : Γ → V → R) (γ γ' : Γ) (j : Fin 4) : V → R :=
   if j = 0 then rIdx γ else if j = 1 then rIdx γ' else
@@ -2629,7 +2629,7 @@ theorem integrable_basisProd_four (h : IsBasisSystem μ U ψ Rpos B₀) (γ γ' 
 
 /-! #### Coordinates and patterns -/
 
-/-- The pattern a quadruple carries at coordinate `k`, read exclusively: `0`, `1`, `2` are
+/-- The pattern of a quadruple at coordinate `k`, read exclusively: `0`, `1`, `2` are
 (A), (B), (C) without (D), and `3` covers (D) and the configurations with vanishing moment. -/
 def patAt (pt : ∀ γ, S γ → K → V) (γ γ' : Γ) (s : S γ) (s' : S γ') (u : S γ) (u' : S γ')
     (k : K) : Fin 4 :=
@@ -2672,8 +2672,8 @@ theorem eq_of_patAt_eq_two {γ γ' : Γ} {s : S γ} {s' : S γ'} {u : S γ} {u' 
   · exact absurd hp (by decide)
 
 omit [Fintype V] [(γ : Γ) → Fintype (S γ)] [Fintype K] [DecidableEq K] in
-/-- A surviving coordinate carrying none of the exclusive patterns (A), (B), (C) has all four
-indices equal. -/
+/-- At a coordinate with nonzero moment and none of the exclusive patterns (A), (B), (C), all
+four indices are equal. -/
 theorem all_eq_of_patAt_eq_three {γ γ' : Γ} {s : S γ} {s' : S γ'} {u : S γ} {u' : S γ'} {k : K}
     (hp : patAt pt γ γ' s s' u u' k = 3)
     (hsurv : (pt γ s k = pt γ' s' k ∧ pt γ u k = pt γ' u' k) ∨
@@ -2700,7 +2700,7 @@ theorem all_eq_of_patAt_eq_three {γ γ' : Γ} {s : S γ} {s' : S γ'} {u : S γ
       exact ⟨hxy, hxy.trans e2, e1⟩
 
 omit [Fintype V] [(γ : Γ) → Fintype (S γ)] [Fintype K] [DecidableEq K] in
-/-- A site of coordinate `k` lies in a sub-tuple's site set exactly when `k` is in its level
+/-- A site of coordinate `k` lies in a sub-tuple's site set if and only if `k` is in its level
 and the sub-tuple occupies that site there. -/
 theorem mem_sites_iff (hsite : ∀ (g : Γ) (x : S g), sites g x = (lev g).image (pt g x))
     (hptc : ∀ (g g' : Γ) (x : S g) (y : S g') (k k' : K), pt g x k = pt g' y k' → k = k')
@@ -2847,13 +2847,13 @@ theorem pattern_of_mem_inter (h : IsBasisSystem μ U ψ Rpos B₀)
 
 /-! #### The three classes -/
 
-/-- The pattern-(A) set `ℬ` of the configuration a quadruple carries. -/
+/-- The pattern-(A) set `ℬ` of the configuration of a quadruple. -/
 def patAset (lev : Γ → Finset K) (pt : ∀ γ, S γ → K → V) (γ γ' : Γ) (s : S γ) (s' : S γ')
     (u : S γ) (u' : S γ') : Finset K :=
   (lev γ ∩ lev γ').filter (fun k => patAt pt γ γ' s s' u u' k = 0)
 
 omit [Fintype V] [(γ : Γ) → Fintype (S γ)] [Fintype K] in
-/-- On a Class-1 configuration no common coordinate carries pattern (A). -/
+/-- On a Class-1 configuration no common coordinate has pattern (A). -/
 theorem patAt_ne_zero_of_patAset_empty {γ γ' : Γ} {s : S γ} {s' : S γ'} {u : S γ} {u' : S γ'}
     (hB : patAset lev pt γ γ' s s' u u' = ∅) {k : K} (hk : k ∈ lev γ) (hk' : k ∈ lev γ') :
     patAt pt γ γ' s s' u u' k ≠ 0 := by
@@ -2885,7 +2885,7 @@ noncomputable def classTwoSum (μ : Measure Ω) (U : V → Ω → ℝ) (ψ : R �
     else 0
 
 omit [(γ : Γ) → Fintype (S γ)] [Fintype K] in
-/-- **Class 3.** If every coordinate of `f_γ = f_{γ'}` carries pattern (A) and the moment is
+/-- **Class 3.** If every coordinate of `f_γ = f_{γ'}` has pattern (A) and the moment is
 nonzero, then `(s,s')` is matched, so its coefficient in `Ξᵘ` vanishes. -/
 theorem isMatched_of_patAset_eq (h : IsBasisSystem μ U ψ Rpos B₀)
     (hsite : ∀ (g : Γ) (x : S g), sites g x = (lev g).image (pt g x))
@@ -3082,7 +3082,7 @@ theorem integral_sq_unmatchedPart_le_of_classTwo_ofCard (h : IsBasisSystem μ U 
       rw [hFdef]
       simp only [Fintype.sum_prod_type]
     rw [hflat]
-    -- split off the Class-2 part, pointwise rather than by filtering
+    -- split off the Class-2 part pointwise
     set A1 : Finset ((S γ × S γ') × (S γ × S γ')) :=
       Finset.univ.filter
         (fun q => ¬ IsClassTwo lev pt γ γ' q.1.1 q.1.2 q.2.1 q.2.2 ∧ F q ≠ 0) with hA1def
@@ -3095,7 +3095,7 @@ theorem integral_sq_unmatchedPart_le_of_classTwo_ofCard (h : IsBasisSystem μ U 
         Qf q.1.1 q.1.2 q.2.1 q.2.2 ≠ 0 := by
       intro q hq h0
       exact hq (by rw [hFdef]; simp [h0])
-    -- every surviving quadruple outside Class 2 is Class 1
+    -- every quadruple with nonzero moment outside Class 2 is Class 1
     have hBempty : ∀ q ∈ A1, patAset lev pt γ γ' q.1.1 q.1.2 q.2.1 q.2.2 = ∅ := by
       intro q hq
       rw [hA1def, Finset.mem_filter] at hq
@@ -3244,7 +3244,7 @@ theorem integral_sq_unmatchedPart_le_of_classTwo (h : IsBasisSystem μ U ψ Rpos
       | exact fun _ _ => Finset.card_le_univ _
       | exact fun _ => Finset.card_le_univ _
 omit [Fintype K] in
-/-- Class 2 is empty when every level has at most one coordinate: a nonempty
+/-- Class 2 is empty when every level has at most one coordinate, since a nonempty
 `ℬ ⊆ f_γ ∩ f_{γ'}` is then `f_γ = f_{γ'}`. -/
 theorem classTwoSum_eq_zero_of_card_le_one (hcard : ∀ g : Γ, (lev g).card ≤ 1) (γ γ' : Γ) :
     classTwoSum μ U ψ sites rIdx arr lev pt γ γ' = 0 := by
@@ -3374,11 +3374,11 @@ theorem concentration_clause_b_general_of_classTwo_uniform [Fintype Γ] [Decidab
 
 /-! ### The key encoding of a sub-tuple at a contraction set `Bs` -/
 
-/-- The **row key** of a sub-tuple at the contraction set `Bs`: its coordinates inside `Bs`. -/
+/-- The row key of a sub-tuple at the contraction set `Bs`, its coordinates inside `Bs`. -/
 def bKey (pt : ∀ γ, S γ → K → V) (Bs : Finset K) (g : Γ) (x : S g) : K → Option V :=
   fun k => if k ∈ Bs then some (pt g x k) else none
 
-/-- The **column key**: the sub-tuple's coordinates in `lev g \ Bs`. -/
+/-- The column key of a sub-tuple, its coordinates in `lev g \ Bs`. -/
 def cKey (lev : Γ → Finset K) (pt : ∀ γ, S γ → K → V) (Bs : Finset K) (g : Γ) (x : S g) :
     K → Option V :=
   fun k => if k ∈ lev g \ Bs then some (pt g x k) else none
@@ -3422,7 +3422,7 @@ theorem eq_of_keys (hsite : ∀ (g : Γ) (x : S g), sites g x = (lev g).image (p
 
 /-! ### The `A_𝒫`-matricization `F^γ_{Bs ∪ {k^⋆}}` -/
 
-/-- **The matricization of `V^{(g)}` at the coordinate set `Bs ∪ {k^⋆}`**: rows indexed by a
+/-- The matricization of `V^{(g)}` at the coordinate set `Bs ∪ {k^⋆}`. Rows are indexed by a
 `Bs`-key together with the `k^⋆`-index `i`, columns by a `lev g \ Bs`-key. The fibres of the key
 pair are subsingletons, so each entry is a single array value or zero. -/
 noncomputable def levMat (lev : Γ → Finset K) (pt : ∀ γ, S γ → K → V) (Bs : Finset K) (g : Γ)
@@ -3467,7 +3467,7 @@ theorem sum_over_keys {g : Γ} {Bs : Finset K} (f : S g -> Real) :
   ext x
   simp [Prod.ext_iff]
 
-/-- The matricization carries each array entry once, so its squared Frobenius norm is
+/-- Each array entry appears once in the matricization, so its squared Frobenius norm is
 `tot(g)`. -/
 theorem rectFrobSq_levMat (hsite : ∀ (g : Γ) (x : S g), sites g x = (lev g).image (pt g x))
     (hinj : ∀ (g : Γ) (x y : S g), sites g x = sites g y -> x = y)
@@ -3574,7 +3574,7 @@ theorem sum2_const_mul {C : Type*} [Fintype C] (a : Real) (F : C -> C -> Real) :
 /-! ### Masking rows of a matricization -/
 
 /-- Masking rows by a `{0,1}` weight does not increase the Frobenius norm of the Gram
-matrix: with `A` the masked Gram and `A'` its complement,
+matrix. With `A` the masked Gram and `A'` its complement,
 `∑_{v,v'}A_{vv'}A'_{vv'} = ∑_{p,q}(∑_vN_{pv}N_{qv})² ≥ 0`, so `‖A‖_F² ≤ ‖A+A'‖_F²`. -/
 theorem rectFrobSq_gram_filter_le {P C : Type*} [Fintype P] [DecidableEq P] [Fintype C]
     (N : P -> C -> Real) (Msk : Finset P) :
@@ -3707,7 +3707,7 @@ theorem rectFrobSq_contrEntry_masked_le (Bs : Finset K) (γ γ' : Γ)
   rw [hid]
   refine le_trans (rectFrobSq_transpose_mul_le (Matrix.of Fm) (Matrix.of G)) ?_
   refine mul_le_mul_of_nonneg_right ?_ (rectFrobNorm_nonneg _)
-  -- the row mask is what the Gram-mask lemma absorbs; the column mask is entrywise
+  -- the Gram-mask lemma absorbs the row mask; the column mask acts entrywise
   have hgram : ∀ v v' : K -> Option V,
       ((Matrix.of Fm)ᵀ * (Matrix.of Fm)) v v'
         = mcol v * mcol v' *
@@ -3763,7 +3763,7 @@ def keyIdxOK (rIdx : Γ -> V -> R) (γ γ' : Γ) (c : K -> Option V) : Prop :=
   ∀ (k : K) (w : V), c k = some w -> rIdx γ w = rIdx γ' w
 
 open Classical in
-/-- The `{0,1}` weight that `keyIdxOK` carries. -/
+/-- `keyIdxOK` as a `{0,1}` weight. -/
 noncomputable def keyMask (rIdx : Γ -> V -> R) (γ γ' : Γ) (c : K -> Option V) : Real :=
   if keyIdxOK rIdx γ γ' c then 1 else 0
 
@@ -3935,7 +3935,7 @@ theorem contrEntry_sub (Bs : Finset K) (γ γ' : Γ) (c₁ c₂ : S γ -> S γ' 
   split_ifs <;> ring
 
 /-- The contraction of the unmatched coefficient array obeys the trace bound up to a factor
-of four: the matched part is itself a masked contraction, and `(a-b)² ≤ 2a²+2b²`. -/
+of four. The matched part is itself a masked contraction, and `(a-b)² ≤ 2a²+2b²`. -/
 theorem rectFrobSq_contrEntry_unm_le
     (hsite : ∀ (g : Γ) (x : S g), sites g x = (lev g).image (pt g x))
     (hptc : ∀ (g g' : Γ) (x : S g) (y : S g') (k k' : K), pt g x k = pt g' y k' -> k = k')
@@ -4045,7 +4045,7 @@ theorem rectFrobSq_contrEntry_unm_le
       (Matrix.of (levMat lev pt Bs γ' (arr γ')))ᵀ) := rectFrobNorm_nonneg _
   linarith [hsplit, hMsq, hGb, hMb]
 
-/-! ### Cauchy--Schwarz for Class 2 -/
+/-! ### Cauchy–Schwarz for Class 2 -/
 
 open Classical in
 omit [Fintype I] in
@@ -4150,7 +4150,7 @@ theorem sum_quad_eq_contr (Bs : Finset K) (γ γ' : Γ) (c : S γ -> S γ' -> Re
 
 open Classical in
 omit [Fintype I] in
-/-- Cauchy--Schwarz for one configuration: if `(v,v') ↦ τ(v,v')` is injective and the
+/-- Cauchy–Schwarz for one configuration. If `(v,v') ↦ τ(v,v')` is injective and the
 coefficient is bounded by `M₀`, the sum is at most `M₀‖H‖_F²`. -/
 theorem abs_sum_quad_contrEntry_le (Bs : Finset K) (γ γ' : Γ) (c : S γ -> S γ' -> Real)
     (σ : (K -> Option V) -> (K -> Option V) -> (K -> Option V) × (K -> Option V))
@@ -4299,8 +4299,8 @@ theorem card_keyQuadSites_le {M : ℕ} (hkey : ∀ c : K -> Option V, (keySites 
   · exact hkey z
   · exact hkey w
 
-/-- The pattern-(A) sites contribute only the factors `𝔼[ψ_{r_k(γ)}ψ_{r_k(γ')}]`: the site
-`s_k = s'_k` carries slots `0, 1`, the site `u_k = u'_k` carries slots `2, 3`, and the remaining
+/-- The pattern-(A) sites contribute only the factors `𝔼[ψ_{r_k(γ)}ψ_{r_k(γ')}]`. The site
+`s_k = s'_k` is met by slots `0, 1` and the site `u_k = u'_k` by slots `2, 3`; the remaining
 sites give the reduced four-slot moment. -/
 theorem multiMoment_split (h : IsBasisSystem μ U ψ Rpos B₀)
     (hsite : ∀ (g : Γ) (x : S g), sites g x = (lev g).image (pt g x))
@@ -4410,7 +4410,7 @@ theorem multiMoment_split (h : IsBasisSystem μ U ψ Rpos B₀)
       rw [hE j, Finset.mem_sdiff]
       tauto
     simp [hL'def, hempty]
-  -- the pattern-(A) sites of `s` carry slots 0 and 1 only
+  -- the pattern-(A) sites of `s` are met by slots 0 and 1 only
   have hLs : ∀ k ∈ Bs, L (pt γ s k)
       = (if rIdx γ (pt γ s k) = rIdx γ' (pt γ s k) then (1:Real) else 0) := by
     intro k hk
@@ -4535,7 +4535,7 @@ theorem abs_keyMaskOn_le (J : Finset K) (rIdx : Γ -> V -> R) (γ γ' : Γ)
   unfold keyMaskOn
   split_ifs <;> simp
 
-/-! ### The pattern-(C) coordinates carry `s_k ≠ s'_k` -/
+/-! ### `s_k ≠ s'_k` at the pattern-(C) coordinates -/
 
 omit [Fintype V] [(γ : Γ) -> Fintype (S γ)] [Fintype K] [DecidableEq K] in
 theorem ne_of_patAt_eq_two {γ γ' : Γ} {s : S γ} {s' : S γ'} {u : S γ} {u' : S γ'} {k : K}
@@ -4611,7 +4611,7 @@ theorem pt_u'_eq_of_patAt (h : IsBasisSystem μ U ψ Rpos B₀)
 
 /-! ### The Class-2 configuration, its quadruple set and its surrogate summand -/
 
-/-- The configuration a quadruple carries, as the pair (pattern-(A) set, pattern-(C) set). -/
+/-- The configuration of a quadruple, as the pair (pattern-(A) set, pattern-(C) set). -/
 def clsFib (lev : Γ -> Finset K) (pt : ∀ γ, S γ -> K -> V) (γ γ' : Γ) (s : S γ) (s' : S γ')
     (u : S γ) (u' : S γ') : Finset K × Finset K :=
   (patAset lev pt γ γ' s s' u u',
@@ -4909,8 +4909,8 @@ theorem keyMaskOn_cKey {J Bs : Finset K} {γ γ' : Γ} (hJ : ∀ k ∈ J, k ∈ 
     exact hc k hk
 
 set_option linter.unusedSectionVars false in
-/-- `𝟙{r = r'}` over `ℬ` splits into the part the row key sees and the part the column key
-sees. -/
+/-- `𝟙{r = r'}` over `ℬ` splits into a factor that depends on the row key and a factor that
+depends on the column key. -/
 theorem keyMask_bKey_split {Bee J : Finset K} (hJ : J ⊆ Bee) {γ γ' : Γ} (x : S γ)
     (hJlev : ∀ k ∈ J, k ∈ lev γ) :
     keyMask rIdx γ γ' (bKey pt Bee γ x)
@@ -4944,8 +4944,8 @@ theorem keyMask_bKey_split {Bee J : Finset K} (hJ : J ⊆ Bee) {γ γ' : Γ} (x 
 
 open Classical in
 /-- The contribution of a Class-2 configuration beyond the two coefficient arrays, as a
-function of the column keys `(v,v')`: the orthonormality factors on `J`, the side conditions on
-`(s,s')`, and the reduced moment. -/
+function of the column keys `(v,v')`. It is the product of the orthonormality factors on `J`, the
+side conditions on `(s,s')` and the reduced moment. -/
 noncomputable def clsTheta (μ : Measure Ω) (U : V -> Ω -> Real) (ψ : R -> Real -> Real)
     (rIdx : Γ -> V -> R) (γ γ' : Γ) (Bee J D : Finset K) (x y : K -> Option V) : Real :=
   (if (∀ k ∈ J, x k = y k) ∧ (∀ k ∈ D, x k ≠ y k) then (1:Real) else 0) *
@@ -5109,7 +5109,7 @@ theorem clsGood_term_eq {γ γ' : Γ} {Bee J D : Finset K} (hJ : J ⊆ Bee)
     · rw [if_neg hshape]
 
 set_option linter.unusedSectionVars false in
-/-- The bound for one relaxed configuration, by Cauchy--Schwarz on the contraction of the
+/-- The bound for one relaxed configuration, by Cauchy–Schwarz on the contraction of the
 masked unmatched coefficient array. -/
 theorem clsGood_sum_bound_ofCard (h : IsBasisSystem μ U ψ Rpos B₀) {M : ℕ}
     (hkey : ∀ c : K -> Option V, (keySites c).card <= M)
@@ -5148,9 +5148,9 @@ theorem clsGood_sum_bound (h : IsBasisSystem μ U ψ Rpos B₀) {γ γ' : Γ} {B
       | exact fun _ _ => Finset.card_le_univ _
       | exact fun _ => Finset.card_le_univ _
 
-/-! ### Inclusion--exclusion over the pattern-(A) set -/
+/-! ### Inclusion–exclusion over the pattern-(A) set -/
 
-/-- Inclusion--exclusion over the subsets `J ⊆ ℬ`: the side condition
+/-- Inclusion–exclusion over the subsets `J ⊆ ℬ`. The side condition
 `∏_{k ∈ ℬ}(1 − 𝟙{P k})` expands into `2^{|ℬ|}` signed terms. -/
 theorem sum_powerset_sign {κ : Type*} [Fintype κ] [DecidableEq κ] (Bee : Finset κ) (P : κ -> Prop)
     [DecidablePred P] :
@@ -5185,7 +5185,8 @@ theorem sum_powerset_sign {κ : Type*} [Fintype κ] [DecidableEq κ] (Bee : Fins
   exact Finset.sum_congr rfl hR
 
 set_option linter.unusedSectionVars false in
-/-- The relaxed configurations are nested exactly as inclusion--exclusion needs. -/
+/-- A quadruple lies in the relaxed configuration at `J` if and only if it lies in the one at
+`J = ∅` and `s_k = u_k` for every `k ∈ J`. -/
 theorem clsGood_iff_relax {γ γ' : Γ} {Bee J D : Finset K} (hJ : J ⊆ Bee)
     (hBee : Bee ⊆ lev γ ∩ lev γ') (hD : D ⊆ (lev γ ∩ lev γ') \ Bee)
     (s : S γ) (s' : S γ') (u : S γ) (u' : S γ') :
@@ -5277,7 +5278,7 @@ theorem clsTgt_eq_sum {γ γ' : Γ} {Bee D : Finset K}
 /-! ### The Class-2 bound -/
 
 set_option linter.unusedSectionVars false in
-/-- The trace bound at `A_𝒫 = ℬ ∪ {k^⋆}`: `A_𝒫` is a proper subset of `e_γ` or `e_{γ'}`, and
+/-- The trace bound at `A_𝒫 = ℬ ∪ {k^⋆}`, where `A_𝒫` is a proper subset of `e_γ` or `e_{γ'}`, and
 the other factor is bounded through `‖V ⊠_A V‖_F ≤ tot`. -/
 theorem clsCutTot (hsite : ∀ (g : Γ) (x : S g), sites g x = (lev g).image (pt g x))
     (hinj : ∀ (g : Γ) (x y : S g), sites g x = sites g y -> x = y)
@@ -5356,7 +5357,7 @@ theorem abs_clsFib_sum_le_ofCard (h : IsBasisSystem μ U ψ Rpos B₀) {M : ℕ}
     rw [← hD0, hP0]
     exact Finset.filter_subset _ _
   by_cases hC2 : Bee.Nonempty ∧ ¬ (lev γ = lev γ' ∧ Bee = lev γ)
-  · -- the configuration really is Class 2
+  · -- the configuration is Class 2
     have hprop : Bee ⊂ lev γ ∨ Bee ⊂ lev γ' := by
       have hsγ : Bee ⊆ lev γ := fun k hk => (Finset.mem_inter.1 (hBee hk)).1
       have hsγ2 : Bee ⊆ lev γ' := fun k hk => (Finset.mem_inter.1 (hBee hk)).2
@@ -5416,7 +5417,7 @@ theorem abs_clsFib_sum_le_ofCard (h : IsBasisSystem μ U ψ Rpos B₀) {M : ℕ}
     calc ((2 ^ Bee.card : ℕ) : Real) = (2:Real) ^ Bee.card := by push_cast; ring
       _ <= (2:Real) ^ Fintype.card K := by
           exact pow_le_pow_right₀ (by norm_num) hcard
-  · -- not a Class-2 configuration: every term vanishes
+  · -- otherwise every term vanishes
     have hzero : ∀ q ∈ Finset.univ.filter (fun q : (S γ × S γ') × (S γ × S γ') =>
         clsFib lev pt γ γ' q.1.1 q.1.2 q.2.1 q.2.2 = (Bee, D)),
         (if IsClassTwo lev pt γ γ' q.1.1 q.1.2 q.2.1 q.2.2 then
@@ -5702,7 +5703,7 @@ end GeneralSites
 With `A = {k}`, the diagonal entries of `F^γ_{{k}}(F^γ_{{k}})'` are the fibre sums
 `Σ^{(γ,k)}_j = ∑_{t : t_k = j} v^{(γ)2}_t`, so `∑_j(Σ^{(γ,k)}_j)² ≤ ‖V ⊠_{{k}} V‖_F² ≤ cut(γ)²`.
 The matricization used is `levMat` at `Bs = (lev γ).erase k`, transposed, so that the index `I`
-sits on the column side. The hypothesis `hptf` says that a site of coordinate `k ∈ lev g` lies in
+is on the column side. The hypothesis `hptf` says that a site of coordinate `k ∈ lev g` lies in
 `𝒩_k`. -/
 
 section StepTwoClosed
@@ -5749,7 +5750,7 @@ theorem cKey_erase (γ : Γ) {k : K} (hk : k ∈ lev γ) (s : S γ) :
   · simp [h]
 
 set_option linter.unusedSectionVars false in
-/-- `⟨k,j⟩ ∈ sites γ s` exactly when the column key of `s` at `(lev γ).erase k` is
+/-- `⟨k,j⟩ ∈ sites γ s` if and only if the column key of `s` at `(lev γ).erase k` is
 `siteKey k j`. -/
 theorem cKey_erase_eq_siteKey_iff
     (hsite : ∀ (g : Γ) (x : S g), sites g x = (lev g).image (pt g x))
@@ -5976,7 +5977,7 @@ theorem variance_matchedPart_le_cutA
       | exact fun _ _ => Finset.card_le_univ _
       | exact fun _ => Finset.card_le_univ _
 set_option linter.unusedSectionVars false in
-/-- The same, in the `cut·tot` shape the assembly of clause (b) consumes. -/
+/-- The same, in the `cut·tot` form used for clause (b). -/
 theorem variance_matchedPart_le_cut_tot_ofCard
     (h : IsBasisSystem μ U ψ Rpos B₀) {M : ℕ}
     (hlev : ∀ (g : Γ) (x : S g), (sites g x).card ≤ M)
@@ -6152,7 +6153,7 @@ theorem wlam_sq_le : ∑ γ : Fin 2, wlam γ ^ 2 ≤ 1 := by
   simp [wlam]
   norm_num
 
-/-- Every basis function of the witness system is a sign, so its square is `1`. -/
+/-- Every basis function of the two-sign model is a sign, so its square is `1`. -/
 theorem wψ_sq (x : ℝ) : wψ 1 x ^ 2 = 1 := by
   simp only [wψ]
   split_ifs <;> norm_num
@@ -6299,7 +6300,7 @@ open scoped ENNReal
 
 namespace StepTwoWitness
 
-/-- A **biased** two-point law: `2` with probability `1/5`, `-1/2` with probability `4/5`. -/
+/-- A biased two-point law: `2` with probability `1/5`, `-1/2` with probability `4/5`. -/
 noncomputable def bLaw : Measure ℝ :=
   (1/5 : ℝ≥0∞) • Measure.dirac (2:ℝ) + (4/5 : ℝ≥0∞) • Measure.dirac (-1/2:ℝ)
 
@@ -6312,7 +6313,7 @@ instance : IsProbabilityMeasure bLaw := by
   have h5' : (5 : ℝ≥0∞) ≠ ⊤ := by norm_num
   exact ENNReal.div_self h5 h5'
 
-/-- The witness probability space: one biased latent variable. -/
+/-- The probability space of the model, one biased latent variable. -/
 noncomputable def bμ : Measure (Fin 1 → ℝ) := Measure.pi fun _ => bLaw
 
 instance : IsProbabilityMeasure bμ := by
@@ -6442,12 +6443,12 @@ open ClauseAWitness ClauseBWitness
 namespace SingletonWitness
 
 omit [MeasurableSpace Ω] [Fintype V] [DecidableEq V] [DecidableEq R] in
-/-- `tot(γ) = ‖V^{(γ)}‖_F² = 1` on the witness model. -/
+/-- `tot(γ) = ‖V^{(γ)}‖_F² = 1` on the clause-(a) model. -/
 theorem wtot (γ : Fin 2) : rectFrobSq (warr γ) ≤ 1 := by
   simp [rectFrobSq, warr]
 
 omit [MeasurableSpace Ω] [Fintype V] [DecidableEq V] [DecidableEq R] in
-/-- `‖V^{(γ)} ⊠ V^{(γ)}‖_F = 1` on the witness model, so `cut(γ) = 1`. -/
+/-- `‖V^{(γ)} ⊠ V^{(γ)}‖_F = 1` on the clause-(a) model, so `cut(γ) = 1`. -/
 theorem wcut (γ : Fin 2) :
     rectFrobNorm (Matrix.of (warr γ) * (Matrix.of (warr γ))ᵀ) ≤ 1 := by
   have hone : rectFrobSq (Matrix.of (warr γ) * (Matrix.of (warr γ))ᵀ) = 1 := by
@@ -6498,8 +6499,8 @@ end WitnessSingleton
 /-! ### A model with `|e_γ| = 3`
 
 Two interaction coordinates: `K = Fin 2`, sites `V = Fin 2 × Fin 2` of the form
-`(coordinate, index)`, and `sites γ = {(0,γ),(1,γ)}`, so `|f_γ| = 2`. The surviving quadruple
-carries pattern (B) at both coordinates, so Class 2 is empty, and `𝔼[(Ξᵘ_{01})²] = 1`. The basis
+`(coordinate, index)`, and `sites γ = {(0,γ),(1,γ)}`, so `|f_γ| = 2`. The quadruple with nonzero
+moment has pattern (B) at both coordinates, so Class 2 is empty, and `𝔼[(Ξᵘ_{01})²] = 1`. The basis
 system is the fair-sign system over a finite site type. -/
 
 section WitnessGeneral
@@ -6518,7 +6519,7 @@ instance instIsProbabilityMeasureGmu (W : Type*) [Fintype W] :
   unfold gmu
   infer_instance
 
-/-- The latent variables: the coordinates. -/
+/-- The latent variables are the coordinate projections. -/
 def gU (W : Type*) (v : W) (ω : W → ℝ) : ℝ := ω v
 
 theorem gintegral {W : Type*} [Fintype W] {f : ℝ → ℝ} (hf : Measurable f) (v : W) :
@@ -6592,7 +6593,7 @@ theorem gHpos : ∀ (g : Fin 2) (x : Unit), ∀ w ∈ gsites g x,
 theorem gHinj : ∀ (g : Fin 2) (x y : Unit), gsites g x = gsites g y → x = y :=
   fun _ _ _ _ => rfl
 
-/-- Class 2 is empty on this model: both coordinates carry pattern (B). -/
+/-- Class 2 is empty on this model, since both coordinates have pattern (B). -/
 theorem gNotClassTwo : ¬ IsClassTwo glev gpt 0 1 () () () () := by decide
 
 theorem gclassTwoSum_eq_zero :
@@ -6694,10 +6695,10 @@ abbrev rSite : Type := Fin 2 × Fin 2
 /-- `f_γ = {0, 1}`, so `|e_γ| = 3`. -/
 def rLev : Fin 1 -> Finset (Fin 2) := fun _ => Finset.univ
 
-/-- `pt γ x k` = the site the sub-tuple `x` occupies at coordinate `k`. -/
+/-- `pt γ x k` is the site the sub-tuple `x` occupies at coordinate `k`. -/
 def rPt : ∀ _γ : Fin 1, Fin 2 -> Fin 2 -> rSite := fun _ x k => (k, if k = 0 then x else 0)
 
-/-- With `s = s' = 0` and `u = u' = 1`, coordinate `0` carries pattern (A) and coordinate `1`
+/-- With `s = s' = 0` and `u = u' = 1`, coordinate `0` has pattern (A) and coordinate `1`
 pattern (D), so `ℬ = {0}` and the configuration is Class 2. -/
 theorem isClassTwo_reachable : IsClassTwo rLev rPt 0 0 (0 : Fin 2) (0 : Fin 2) 1 1 := by decide
 

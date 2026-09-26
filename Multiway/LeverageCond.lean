@@ -58,8 +58,8 @@ theorem residualMaker_apply_of_regimeOne_pointwise {D Ω : Type*} {dims : Finset
     residualMaker S x (ν ω) = residualMaker S x (ε ω) :=
   residualMaker_apply_of_regimeOne (fun m hm => ha m hm ω) (hν ω)
 
-/-- Under the model and the Regime 1 decomposition, the fixed-effects residual sees only the
-idiosyncratic component: `ν̂_FE = Rε`. -/
+/-- Under the model and the Regime 1 decomposition, the fixed-effects residual depends only on the
+idiosyncratic component, `ν̂_FE = Rε`. -/
 theorem feResidual_eq_residualMaker_idiosyncratic [Fintype ι] {D : Type*} {dims : Finset D}
     {a : D → E} {y c ν ε : E} {β b : ι → ℝ} (hc : c ∈ S)
     (hy : y = (∑ k, β k • x k) + c + ν)
@@ -101,12 +101,12 @@ theorem eq_sum_single (z : EuclideanSpace ℝ O) :
   rw [euclSum_apply]
   simp
 
-/-- The entry `R_{oo'}` of an operator on `EuclideanSpace ℝ O`: the `o`-th coordinate of its
-value at the `o'`-th standard basis vector. -/
+/-- The entry `R_{oo'}` of an operator on `EuclideanSpace ℝ O`, defined as the `o`-th coordinate
+of its value at the `o'`-th standard basis vector. -/
 noncomputable def opEntry (R : EuclideanSpace ℝ O →L[ℝ] EuclideanSpace ℝ O) (o o' : O) : ℝ :=
   R (EuclideanSpace.single o' (1 : ℝ)) o
 
-/-- `R_{oo'} = ⟪R e_{o'}, e_o⟫`, the form the symmetry step uses. -/
+/-- `R_{oo'} = ⟪R e_{o'}, e_o⟫`, the form used in the symmetry argument. -/
 theorem opEntry_eq_inner (R : EuclideanSpace ℝ O →L[ℝ] EuclideanSpace ℝ O) (o o' : O) :
     opEntry R o o' = ⟪R (EuclideanSpace.single o' (1 : ℝ)), EuclideanSpace.single o (1 : ℝ)⟫ :=
   coord_eq_inner_single _ _
@@ -179,8 +179,8 @@ variable {O : Type*} [Fintype O] [DecidableEq O]
 variable {Ω : Type*} (𝒟 : MeasurableSpace Ω) {mΩ : MeasurableSpace Ω} {μ : Measure Ω}
 
 omit [DecidableEq O] in
-/-- The square of a linear combination, expanded into the double sum the conditional
-expectation is taken over term by term. -/
+/-- The square of a linear combination equals a double sum, to which the conditional expectation
+is applied term by term. -/
 theorem sq_sum_eq_double_sum (c eps : O → Ω → ℝ) :
     (fun ω => (∑ o' : O, c o' ω * eps o' ω) ^ 2)
       = ∑ o' : O, ∑ o'' : O,
@@ -235,8 +235,8 @@ theorem condExp_sq_linearCombination {c eps sig : O → Ω → ℝ}
   simp only [mul_ite, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   ring
 
-/-- The square of a residual coordinate is integrable as soon as the products `ε_{o'} ε_{o''}`
-are: it is a finite combination of them with constant coefficients. -/
+/-- The square of a residual coordinate is integrable when the products `ε_{o'} ε_{o''}` are,
+since it is a finite combination of them with constant coefficients. -/
 theorem integrable_feResidual_sq (R : EuclideanSpace ℝ O →L[ℝ] EuclideanSpace ℝ O)
     {epsv : Ω → EuclideanSpace ℝ O}
     (hint : ∀ o' o'', Integrable (fun ω => epsv ω o' * epsv ω o'') μ) (o : O) :
@@ -368,7 +368,7 @@ theorem condExp_meatLC_sub_meat {R : EuclideanSpace ℝ O →L[ℝ] EuclideanSpa
   rw [sum_sq_split (sum_opEntry_sq hsym hidem o) (fun o' => sig o' ω) o, mul_add, hcancel]
   ring
 
-/-- **Proposition SM.D.4(b).** Under homoskedasticity `E[M̂^{LC} | 𝒟] = M_n`: the
+/-- **Proposition SM.D.4(b).** Under homoskedasticity `E[M̂^{LC} | 𝒟] = M_n`, so the
 leverage-corrected estimator is conditionally unbiased for the score variance. -/
 theorem condExp_meatLC_of_homoskedastic {R : EuclideanSpace ℝ O →L[ℝ] EuclideanSpace ℝ O}
     (hsym : ∀ u v : EuclideanSpace ℝ O, ⟪R u, v⟫ = ⟪u, R v⟫)
@@ -398,7 +398,7 @@ end Conditional
 
 /-! ## Satisfiability of the hypotheses
 
-Concrete models satisfying every hypothesis of the two claims of Proposition SM.D.4. -/
+The following models satisfy the hypotheses of the two parts of Proposition SM.D.4. -/
 
 section Witness
 

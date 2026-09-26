@@ -15,7 +15,7 @@ variables): if `ε_1, …, ε_n` are, conditionally on `𝒟`, independent with 
 `E[ε_o⁴ | 𝒟] ≤ C`, and `W` is a `𝒟`-measurable random matrix, not necessarily symmetric, then
 `Var(ε'Wε | 𝒟) ≤ 3C‖W‖_F²`.
 
-The general statements take the needed four-index conditional moment identities (`hvar`,
+The general statements take the four-index conditional moment identities (`hvar`,
 `hcross`, `hpair`, `hmixed`, `hquad`) as hypotheses; section `FromCondIndep` derives them from
 `ProbabilityTheory.iCondIndepFun`. The `𝒟`-measurability of `W` enters through the pull-out
 property in `condExp_sum_mul`.
@@ -234,10 +234,10 @@ theorem condExp_quadForm {W : Ω → Matrix O O ℝ} {eps sig : O → Ω → ℝ
 
 /-! ### The conditional second moment, by the four-index classification -/
 
-/-- `E[(ε'Wε)² | 𝒟]`, block by block: the diagonal-diagonal block splits into
-`∑_o W²_{oo}E[ε_o⁴|𝒟]` and `∑_{o≠o'} W_{oo}W_{o'o'}σ²_ε(o)σ²_ε(o')`; the two mixed blocks
-vanish by `hmixed`; and in the off-diagonal block only the patterns `(o,o')` and `(o',o)`
-survive, by `hquad`. -/
+/-- `E[(ε'Wε)² | 𝒟]`, computed block by block. The diagonal-diagonal block splits into
+`∑_o W²_{oo}E[ε_o⁴|𝒟]` and `∑_{o≠o'} W_{oo}W_{o'o'}σ²_ε(o)σ²_ε(o')`, the two mixed blocks
+vanish by `hmixed`, and in the off-diagonal block only the patterns `(o,o')` and `(o',o)` have
+a nonzero conditional expectation, by `hquad`. -/
 theorem condExp_quadForm_sq {W : Ω → Matrix O O ℝ} {eps sig : O → Ω → ℝ}
     (hW : ∀ o o', StronglyMeasurable[𝒟] fun ω => W ω o o')
     (hi4 : ∀ r : (O × O) × (O × O),
@@ -279,7 +279,7 @@ theorem condExp_quadForm_sq {W : Ω → Matrix O O ℝ} {eps sig : O → Ω → 
     (a := fun r ω => W ω r.1.1 r.1.2 * W ω r.2.1 r.2.2)
     (Z := fun r ω => eps r.1.1 ω * eps r.1.2 ω * (eps r.2.1 ω * eps r.2.2 ω))
     (fun r => (hW r.1.1 r.1.2).mul (hW r.2.1 r.2.2)) hi4 hiW4
-  -- the three a.e. families the classification consumes
+  -- the three a.e. families used in the classification
   have hp4 : ∀ᵐ ω ∂μ, ∀ p : O × O, p.1 ≠ p.2 →
       μ[fun ω => eps p.1 ω * eps p.1 ω * (eps p.2 ω * eps p.2 ω) | 𝒟] ω
         = sig p.1 ω * sig p.2 ω := by
@@ -353,7 +353,7 @@ theorem condExp_quadForm_sq {W : Ω → Matrix O O ℝ} {eps sig : O → Ω → 
     · refine Finset.sum_congr rfl fun p hp => ?_
       rw [Finset.mem_offDiag] at hp
       rw [ep p hp.2.2]
-  -- block 4: the off-diagonal-off-diagonal block, two surviving patterns per pair
+  -- block 4: the off-diagonal-off-diagonal block, two nonvanishing patterns per pair
   have hb4 : ∑ p ∈ (Finset.univ : Finset O).offDiag,
         ∑ q ∈ (Finset.univ : Finset O).offDiag, W ω p.1 p.2 * W ω q.1 q.2
           * μ[fun ω => eps p.1 ω * eps p.2 ω * (eps q.1 ω * eps q.2 ω) | 𝒟] ω
@@ -727,9 +727,9 @@ theorem condVar_quadForm_le_of_condIndep [StandardBorelSpace Ω] [IsFiniteMeasur
 
 end FromCondIndep
 
-/-! ## Non-vacuity
+/-! ## Examples
 
-A deterministic model on a one-point space satisfying every hypothesis of
+A deterministic model on a one-point space satisfies every hypothesis of
 `condVar_quadForm_le`. -/
 
 section Witness
@@ -771,7 +771,7 @@ theorem witnessEps_mul_eq_zero {O : Type*} [DecidableEq O] (o₀ : O) {o o' : O}
     simp [witnessEps, h2]
   · simp [witnessEps, h1]
 
-/-- The all-ones matrix, the witness's `W`. -/
+/-- The all-ones matrix, the `W` of the example. -/
 def witnessW (O : Type*) : Matrix O O ℝ := fun _ _ => (1 : ℝ)
 
 /-- `condVar_quadForm_le` on the model `Ω = Unit`, `μ = dirac ()`, `𝒟 = ⊥`, `W ≡ 1`,
@@ -828,7 +828,7 @@ namespace CondIndepWitness
 open MeasureTheory ProbabilityTheory
 open Multiway.GeneralWitness
 
-/-- Truncation to `[-1,1]`: the identity on `{-1, 1}`, and bounded. -/
+/-- Truncation to `[-1,1]`, which is bounded and is the identity on `{-1, 1}`. -/
 def clamp (x : ℝ) : ℝ := max (-1) (min 1 x)
 
 theorem measurable_clamp : Measurable clamp := by
@@ -989,7 +989,7 @@ theorem wFour (o : O) :
   have hmono := condExp_mono (m := wD O) hi (integrable_const (1 : ℝ)) hle
   rwa [condExp_const (wD_le O)] at hmono
 
-/-! ### The remaining side conditions, all from boundedness -/
+/-! ### The remaining side conditions, which follow from boundedness -/
 
 theorem pow4_eq (x : ℝ) : x ^ 4 = x * x * (x * x) := by ring
 
@@ -1130,9 +1130,9 @@ theorem wEps_second_moment (o : O) :
 
 /-! ### Main theorem -/
 
-/-- Non-vacuity of `condVar_quadForm_le_of_condIndep` with a non-trivial `𝒟`. The four
-conjuncts: the conclusion holds on this model; `𝒟` is a proper sub-σ-algebra; `‖W‖_F²` is a
-non-constant function of `ω`; and `E[ε_o²] = 1 ≠ 0`. On this model the innovations are
+/-- An example for `condVar_quadForm_le_of_condIndep` with a non-trivial `𝒟`. The conclusion
+holds on this model, `𝒟` is a proper sub-σ-algebra, `‖W‖_F²` is a non-constant function of `ω`,
+and `E[ε_o²] = 1 ≠ 0`. On this model the innovations are
 independent of `𝒟`. -/
 theorem condVar_quadForm_le_of_condIndep_witness (o₀ : O) :
     ProbabilityTheory.condVar (wD O) (quadForm (wMat O) (wEps O)) (wP O)

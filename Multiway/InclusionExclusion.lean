@@ -11,7 +11,7 @@ import Mathlib.Tactic.Linarith
 # Inclusion–exclusion identity for the multiway meat
 
 This file formalizes Lemma SM.B.7 of the paper (Inclusion–exclusion identity for the multiway
-meat): for `v ∈ ℝⁿ`,
+meat). For `v ∈ ℝⁿ`,
 `∑_{∅ ≠ A ⊆ {1,…,J}} (-1)^{|A|+1} ∑_{g ∈ 𝒢_A} (∑_{o ∈ g} x̃_o v_o)(∑_{o ∈ g} x̃_o v_o)'`
 equals `∑_{o,o' ∈ 𝒪} 𝟙{o ∼ o'} x̃_o x̃_{o'}' v_o v_{o'}`. It is a finite-sample combinatorial
 identity.
@@ -84,7 +84,7 @@ lemma sameOn_symm {o o' : O} (h : SameOn c A o o') : SameOn c A o' o :=
 lemma sameOn_trans {o o' o'' : O} (h : SameOn c A o o') (h' : SameOn c A o' o'') :
     SameOn c A o o'' := fun j hj => (h j hj).trans (h' j hj)
 
-/-- Two observations have the same cell exactly when they are `∼_A`-equivalent. -/
+/-- Two observations have the same cell if and only if they are `∼_A`-equivalent. -/
 lemma cellOf_eq_iff {o o' : O} : cellOf c A o = cellOf c A o' ↔ SameOn c A o o' := by
   constructor
   · intro h
@@ -141,7 +141,7 @@ section Weight
 variable [Fintype O] [DecidableEq O] [DecidableEq D] [DecidableEq L]
 variable {c : D → O → L} {dims : Finset D}
 
-/-- `o ∼_A o'` exactly when `A ⊆ J(o,o')`, for `A` a set of maintained dimensions. -/
+/-- `o ∼_A o'` if and only if `A ⊆ J(o,o')`, for `A` a set of maintained dimensions. -/
 lemma sameOn_iff_subset {A : Finset D} (hA : A ⊆ dims) {o o' : O} :
     SameOn c A o o' ↔ A ⊆ sharedDims c dims o o' := by
   constructor
@@ -158,7 +158,7 @@ lemma weight_eq (o o' : O) :
   classical
   set E : Finset D := sharedDims c dims o o' with hEdef
   have hEsub : E ⊆ dims := Finset.filter_subset _ _
-  -- only the subsets of `E` survive, and on them the indicator is `1`
+  -- only the subsets of `E` contribute, and on them the indicator is `1`
   have hstep :
       ∑ A ∈ dims.powerset.filter (fun A => A.Nonempty),
           (-1 : ℝ) ^ (A.card + 1) * (if SameOn c A o o' then (1 : ℝ) else 0)

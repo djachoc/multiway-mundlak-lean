@@ -1,11 +1,11 @@
 import Multiway.CLT
 
 /-!
-# A `K = 2` witness for Theorem 4(a)
+# Theorem 4(a) at `K = 2`
 
-This file exhibits a design on which every hypothesis of Theorem 4(a) of the paper (asymptotic
-normality of the joint-projection Mundlak estimator) holds at `K = 2`, with a limit map that
-mixes the two coordinates. The observations are `Fin n`, the fixed-effect space is spanned by
+The hypotheses of Theorem 4(a) of the paper (asymptotic normality of the joint-projection
+Mundlak estimator) hold at `K = 2` on the following design, with a limit map that mixes the two
+coordinates. The observations are `Fin n`, the fixed-effect space is spanned by
 the indicator `d_n` of the first observation, and the regressors are `v_n(o) = 1{o ≠ 0}` and the
 ramp `r_n(o) = o/n`. The Gram limit is the `2 × 2` Hilbert matrix
 `H = ((1, 1/2), (1/2, 1/3))`, the errors are i.i.d. Rademacher so `S = H`, and
@@ -304,7 +304,7 @@ noncomputable def H2 : EuclideanSpace ℝ (Fin 2) →L[ℝ] EuclideanSpace ℝ (
 noncomputable def Hinv2 : EuclideanSpace ℝ (Fin 2) →L[ℝ] EuclideanSpace ℝ (Fin 2) :=
   op2 4 (-6) (-6) 12
 
-/-- `S`, equal to `H` here because the errors are homoskedastic with unit variance. -/
+/-- `S`, equal to `H` on this design because the errors are homoskedastic with unit variance. -/
 noncomputable def Smat2 : Matrix (Fin 2) (Fin 2) ℝ := Matrix.of ![![1, 1 / 2], ![1 / 2, 1 / 3]]
 
 theorem Smat2_apply_01 : Smat2 0 1 = 1 / 2 := rfl
@@ -575,7 +575,7 @@ theorem measurable_bW2 {ξ : ℕ × ℕ → Ω → ℝ} (hξ : ∀ i, Measurable
   exact (((Ring.inverse (gramCLM (⨆ m, feSpace n m) (X2 n))).continuous.measurable).comp
     h).const_add β
 
-/-! ### The witnesses -/
+/-! ### Examples -/
 
 /-- **Theorem 4(a) at `K = 2`.** On this design `β̂_n` is both a joint-projection Mundlak slope
 and a multiway fixed-effects slope, `√n(β̂_n − β)` converges in distribution to

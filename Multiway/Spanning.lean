@@ -39,7 +39,7 @@ variable [AddCommGroup F] [Module ℝ F]
 
 /-! ### The joint within transformation `Q_[Δ] = I_n - P_[Δ]` -/
 
-/-- `I_n - P_S`, the residual maker of a subspace: `Q_[Δ]` at `S = 𝒮` and `M_𝒞` at
+/-- The residual maker `I_n - P_S` of a subspace `S`, which is `Q_[Δ]` at `S = 𝒮` and `M_𝒞` at
 `S = col(𝒞)`. -/
 noncomputable def jointWithin (S : Submodule ℝ E) : E →L[ℝ] E :=
   ContinuousLinearMap.id ℝ E - S.starProjection
@@ -55,7 +55,7 @@ lemma jointWithin_sub (S : Submodule ℝ E) (u v : E) :
 lemma jointWithin_mem_orthogonal (S : Submodule ℝ E) (u : E) : jointWithin S u ∈ Sᗮ :=
   S.sub_starProjection_mem_orthogonal u
 
-/-- `Q_[Δ]u = 0` exactly when `u ∈ 𝒮`. -/
+/-- `Q_[Δ]u = 0` if and only if `u ∈ 𝒮`. -/
 lemma jointWithin_eq_zero_iff {S : Submodule ℝ E} {u : E} :
     jointWithin S u = 0 ↔ u ∈ S := by
   rw [jointWithin_apply, sub_eq_zero, eq_comm, Submodule.starProjection_eq_self_iff]
@@ -65,7 +65,7 @@ lemma starProjection_add_jointWithin (S : Submodule ℝ E) (u : E) :
     S.starProjection u + jointWithin S u = u := by
   rw [jointWithin_apply, add_sub_cancel]
 
-/-- Anything in `𝒮` is orthogonal to any joint within component. -/
+/-- Every element of `𝒮` is orthogonal to every joint within component `Q_[Δ]u`. -/
 lemma inner_jointWithin_left {S : Submodule ℝ E} {s : E} (hs : s ∈ S) (u : E) :
     ⟪s, jointWithin S u⟫ = 0 :=
   Submodule.inner_right_of_mem_orthogonal hs (jointWithin_mem_orthogonal S u)
@@ -85,7 +85,7 @@ lemma inner_split_right (S : Submodule ℝ E) (u v : E) :
   conv_lhs => rw [← starProjection_add_jointWithin S v]
   rw [inner_add_right]
 
-/-- `u'v = (P_[Δ]u)'v` whenever `v ∈ 𝒮`: only the joint between component of `u` matters. -/
+/-- `u'v = (P_[Δ]u)'v` whenever `v ∈ 𝒮`. -/
 lemma inner_eq_inner_starProjection {S : Submodule ℝ E} {v : E} (hv : v ∈ S) (u : E) :
     ⟪u, v⟫ = ⟪S.starProjection u, v⟫ := by
   rw [inner_split_left S u v, inner_jointWithin_right hv u, add_zero]
@@ -126,13 +126,12 @@ theorem identified_iff_inner_pos (S : Submodule ℝ E) (X : F →ₗ[ℝ] E) :
 
 /-! ### The two estimators, by their normal equations -/
 
-/-- `b` is a multiway fixed-effects slope at `y`: the normal equations
-`X'Q_[Δ](y - Xb) = 0`. -/
+/-- `b` is a multiway fixed-effects slope at `y`, that is, `X'Q_[Δ](y - Xb) = 0`. -/
 def IsMFESlope (S : Submodule ℝ E) (X : F →ₗ[ℝ] E) (y : E) (b : F) : Prop :=
   ∀ a : F, ⟪X a, jointWithin S (y - X b)⟫ = 0
 
-/-- `b` is the coefficient on `X` in the OLS regression of `y` on `(X, 𝒞)`: there is a
-control fit `w ∈ col(𝒞)` making the residual `y - Xb - w` orthogonal to `col(X)` and to
+/-- `b` is the coefficient on `X` in the OLS regression of `y` on `(X, 𝒞)`, that is, for some
+control fit `w ∈ col(𝒞)` the residual `y - Xb - w` is orthogonal to `col(X)` and to
 `col(𝒞)`. -/
 def IsAugSlope (W : Submodule ℝ E) (X : F →ₗ[ℝ] E) (y : E) (b : F) : Prop :=
   ∃ w ∈ W, (∀ a : F, ⟪X a, y - X b - w⟫ = 0) ∧ (∀ v ∈ W, ⟪v, y - X b - w⟫ = 0)
@@ -219,7 +218,8 @@ theorem augSlope_existsUnique {S W : Submodule ℝ E} {X : F →ₗ[ℝ] E} (hid
 
 /-! ### The spanning condition -/
 
-/-- `col(P_[Δ]X) ⊆ col(𝒞)` as a submodule inclusion is the pointwise condition used below. -/
+/-- The submodule inclusion `col(P_[Δ]X) ⊆ col(𝒞)` is equivalent to `P_[Δ]Xa ∈ col(𝒞)` for
+every `a`. -/
 theorem spanning_condition_iff (S W : Submodule ℝ E) (X : F →ₗ[ℝ] E) :
     (LinearMap.range X).map (S.starProjection : E →L[ℝ] E).toLinearMap ≤ W ↔
       ∀ a : F, S.starProjection (X a) ∈ W := by

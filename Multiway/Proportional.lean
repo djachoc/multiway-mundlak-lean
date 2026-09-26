@@ -30,9 +30,9 @@ variable {O : Type*} [Fintype O] {L : Type*} [DecidableEq L]
 
 /-! ### The bipartite support graph -/
 
-/-- Adjacency in the bipartite support graph: the categories of the first dimension on one
-side (`Sum.inl`) and those of the second on the other (`Sum.inr`), with an edge between `i`
-and `t` whenever `n_{it} > 0`. The graph is undirected, so both orientations are edges. -/
+/-- Adjacency in the bipartite support graph. The categories of the first dimension form one
+side (`Sum.inl`) and those of the second the other (`Sum.inr`), and `i` and `t` are adjacent
+whenever `n_{it} > 0`. The graph is undirected, so both orientations are edges. -/
 def supportAdj (f g : O → L) : L ⊕ L → L ⊕ L → Prop
   | Sum.inl i, Sum.inr t => 0 < pairCount f g i t
   | Sum.inr t, Sum.inl i => 0 < pairCount f g i t
@@ -51,26 +51,26 @@ def supportAdj (f g : O → L) : L ⊕ L → L ⊕ L → Prop
 @[simp] lemma supportAdj_inr_inr (f g : O → L) (s t : L) :
     ¬ supportAdj f g (Sum.inr s) (Sum.inr t) := id
 
-/-- The vertices of the bipartite support graph, `𝒩_1 ⊔ 𝒩_2`: the realized categories. -/
+/-- The vertex set `𝒩_1 ⊔ 𝒩_2` of the bipartite support graph, formed by the realized categories. -/
 def IsSupportVertex (f g : O → L) : L ⊕ L → Prop
   | Sum.inl i => i ∈ Set.range f
   | Sum.inr t => t ∈ Set.range g
 
-/-- The bipartite support graph is connected: every vertex can be reached from every other one
-through a sequence of edges. -/
+/-- The bipartite support graph is connected, that is, every vertex can be reached from every
+other one through a sequence of edges. -/
 def SupportConnected (f g : O → L) : Prop :=
   ∀ u v : L ⊕ L, IsSupportVertex f g u → IsSupportVertex f g v →
     Relation.ReflTransGen (supportAdj f g) u v
 
-/-- `Realizes f g u o`: the observation `o` carries the category the vertex `u` stands for.
+/-- `Realizes f g u o` holds when the observation `o` has the category that the vertex `u`
+stands for.
 Every observation realizes exactly one vertex on each side, and the two vertices it realizes
 are adjacent. -/
 def Realizes (f g : O → L) : L ⊕ L → O → Prop
   | Sum.inl i, o => f o = i
   | Sum.inr t, o => g o = t
 
-/-- An edge of the support graph is an occupied cell, which holds an observation carrying both
-endpoints' categories. -/
+/-- For every edge of the support graph, some observation has the categories of both endpoints. -/
 lemma exists_realizes_of_supportAdj (f g : O → L) {u v : L ⊕ L} (h : supportAdj f g u v) :
     ∃ o : O, Realizes f g u o ∧ Realizes f g v o := by
   cases u with
@@ -90,7 +90,7 @@ lemma exists_realizes_of_supportAdj (f g : O → L) {u v : L ⊕ L} (h : support
       | inr t => exact absurd h (supportAdj_inr_inr f g s t)
 
 omit [Fintype O] [DecidableEq L] in
-/-- Two observations realizing the *same* vertex agree under any function that is constant
+/-- Two observations realizing the same vertex agree under any function that is constant
 within every row category and within every column category. -/
 lemma eq_of_realizes (f g : O → L) {z : O → ℝ}
     (hf : ∀ o o', f o = f o' → z o = z o') (hg : ∀ o o', g o = g o' → z o = z o')
@@ -147,7 +147,7 @@ lemma transpose_proj (f : O → L) : (proj f)ᵀ = proj f := by
   · have h' : ¬ f o' = f o := fun hh => h hh.symm
     simp [h, h']
 
-/-- `P_mι_n = ι_n`: every row of a marginal projector sums to one. -/
+/-- `P_mι_n = ι_n`, that is, every row of a marginal projector sums to one. -/
 lemma sum_proj_row (f : O → L) (o : O) : ∑ o' : O, proj f o o' = 1 := by
   have hrw : ∀ o' : O, proj f o o'
       = if f o' = f o then (margCount f (f o) : ℝ)⁻¹ else 0 := by
@@ -162,7 +162,7 @@ lemma sum_proj_row (f : O → L) (o : O) : ∑ o' : O, proj f o o' = 1 := by
   rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul, ← margCount_eq_card,
     mul_inv_cancel₀ hT]
 
-/-- The row margin is the sum of the cells along its row: `T_i = ∑_t n_{it}`. -/
+/-- `T_i = ∑_t n_{it}`. -/
 lemma margCount_eq_sum_pairCount (f g : O → L) (i : L) :
     margCount f i = ∑ t ∈ Finset.univ.image g, pairCount f g i t := by
   classical
@@ -175,7 +175,7 @@ lemma margCount_eq_sum_pairCount (f g : O → L) (i : L) :
   ext o
   simp only [Finset.mem_filter, Finset.mem_univ, true_and]
 
-/-- The sample size is the sum of the margins: `n = ∑_i T_i`. -/
+/-- `n = ∑_i T_i`. -/
 lemma card_eq_sum_margCount (f : O → L) :
     Fintype.card O = ∑ i ∈ Finset.univ.image f, margCount f i := by
   classical
@@ -193,7 +193,7 @@ lemma mem_range_of_mem_univ_image (f : O → L) {i : L} (h : i ∈ Finset.univ.i
   obtain ⟨o, -, rfl⟩ := Finset.mem_image.mp h
   exact ⟨o, rfl⟩
 
-/-! ### The direction that needs connectedness -/
+/-! ### Commutation implies proportionality -/
 
 /-- The entry `(P_1P_2)_{o,o'}` depends on `o` only through `i_1(o)` and on `o'` only through
 `i_2(o')` (Lemma SM.B.3). -/
@@ -252,7 +252,7 @@ theorem proj_mul_proj_eq_grandMeanProj_of_commute (f g : O → L) (hconn : Suppo
       fun a => hsymm a o'
     simp only [hswap]
     exact sum_proj_mul_proj_row f g o'
-  -- and it is constant, so each of its `n` entries is `1/n`
+  -- it is constant, so each of its `n` entries is `1/n`
   have hconst : ∑ a : O, (proj f * proj g) a o'
       = (Fintype.card O : ℝ) * (proj f * proj g) o o' := by
     have hc : ∀ a : O, (proj f * proj g) a o' = (proj f * proj g) o o' :=
@@ -266,7 +266,7 @@ theorem proj_mul_proj_eq_grandMeanProj_of_commute (f g : O → L) (hconn : Suppo
     _ = (Fintype.card O : ℝ)⁻¹ * 1 := by rw [hsum]
     _ = (Fintype.card O : ℝ)⁻¹ := mul_one _
 
-/-! ### The direction that does not -/
+/-! ### Proportionality implies commutation -/
 
 /-- If `n_{it} = T_iC_t/n` for every realized pair, then `P_1P_2 = P_0`. Connectedness is not
 needed. -/

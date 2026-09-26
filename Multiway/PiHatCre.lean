@@ -79,7 +79,7 @@ theorem condExp_piHat_sub_eq_zero_of_components {M : Matrix O O ℝ} {Z : Matrix
 
 end Sibling
 
-/-! ## A witness
+/-! ## An example
 
 On the fair-sign model of `Multiway.Quadform`, where `𝒟` is a proper sub-σ-field, take `Δη_o`
 to be the sign at site `o` and `ν_o = -2 Δη_o`. Both components have vanishing conditional mean
@@ -91,11 +91,11 @@ open Multiway.Quadform.CondIndepWitness
 
 variable (O : Type*) [Fintype O] [DecidableEq O]
 
-/-- `Δη_o`, the correlated-effect component of the witness: the fair sign at site `o`. -/
+/-- `Δη_o`, the correlated-effect component of the example, is the fair sign at site `o`. -/
 noncomputable def detaW (ω : Option O → ℝ) (o : O) : ℝ := wEps O o ω
 
-/-- `ν_o`, the disturbance of the witness: minus twice the same sign, so that `u_o = -sign_o` is
-nonzero and the two components do not cancel to the zero model. -/
+/-- `ν_o`, the disturbance of the example, is minus twice the same sign, so that `u_o = -sign_o`
+is nonzero. -/
 noncomputable def nuW (ω : Option O → ℝ) (o : O) : ℝ := -2 * wEps O o ω
 
 /-- `u_o = Δη_o + ν_o = -sign_o`. -/
@@ -117,8 +117,8 @@ theorem condExp_smul_eq_zero (a : ℝ) (o : O) :
   simp only [Pi.smul_apply, smul_eq_mul]
   rw [h2, mul_zero]
 
-/-- A model of `condExp_add_eq_zero`: `𝒟` is a proper sub-σ-field, both components and `u` have
-vanishing conditional mean, and `∫ u_o² = 1`. -/
+/-- On this model `𝒟` is a proper sub-σ-field, both components and `u` have vanishing
+conditional mean, and `∫ u_o² = 1`. -/
 theorem condExp_add_eq_zero_witness (o₀ : O) :
     (∃ B : Set (Option O → ℝ), MeasurableSet B ∧ ¬ MeasurableSet[wD O] B)
     ∧ (∀ o, (wP O)[fun ω => detaW O ω o | wD O] =ᵐ[wP O] 0)

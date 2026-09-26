@@ -95,7 +95,7 @@ theorem residualMaker_apply_eq_zero {v : E} (hv : v ∈ fittedSpace S x) :
   rw [residualMaker, Submodule.starProjection_orthogonal_val,
     Submodule.starProjection_eq_self_iff.mpr hv, sub_self]
 
-/-- `RΔ = 0`: `R` annihilates the joint fixed-effects space `𝒮`. -/
+/-- `RΔ = 0`, that is, `R` annihilates the joint fixed-effects space `𝒮`. -/
 theorem residualMaker_apply_of_mem_fixedEffects {v : E} (hv : v ∈ S) :
     residualMaker S x v = 0 :=
   residualMaker_apply_eq_zero (mem_fittedSpace_of_mem hv)
@@ -167,8 +167,7 @@ theorem trace_residualMaker [Fintype ι] (S : Submodule ℝ E) (x : ι → E)
 
 /-! ### `ν̂_FE = Rν` -/
 
-/-- Under the model `y = Xβ + Δα + ν`, the residual maker sees only the disturbance:
-`Ry = Rν`. -/
+/-- Under the model `y = Xβ + Δα + ν`, `Ry = Rν`. -/
 theorem residualMaker_apply_model [Fintype ι] {y a ν : E} {β : ι → ℝ} (ha : a ∈ S)
     (hy : y = (∑ k, β k • x k) + a + ν) :
     residualMaker S x y = residualMaker S x ν := by
@@ -210,7 +209,7 @@ theorem withinResidual_eq_residualMaker [Fintype ι] {y : E} {b : ι → ℝ}
   refine (Submodule.eq_starProjection_of_mem_orthogonal' hrP
     (Submodule.le_orthogonal_orthogonal _ hyr) (by abel)).symm
 
-/-- **Lemma SM.B.6**, last clause of the first sentence: under the model, the fixed-effects
+/-- **Lemma SM.B.6**, last clause of the first sentence. Under the model, the fixed-effects
 residual is `ν̂_FE = Rν`. -/
 theorem feResidual_eq_residualMaker_apply [Fintype ι] {y a ν : E} {β b : ι → ℝ} (ha : a ∈ S)
     (hy : y = (∑ k, β k • x k) + a + ν)
@@ -221,8 +220,8 @@ theorem feResidual_eq_residualMaker_apply [Fintype ι] {y a ν : E} {β b : ι �
 /-! ## Proposition SM.D.2: sufficient conditions for Assumption 3(iv)
 
 Suppose `sup_o ‖x_o‖ ≤ C` almost surely and `n⁻¹ tr(X'Q_[Δ]X) ⟶^p tr(H) > 0`. Then the
-leverage ratio `max_o ‖x̃_o‖² / ∑_o ‖x̃_o‖²` tends to `0` in probability: (a) if `M = 1`, and the
-ratio is then `O_p(1/n)`; (b) for general `M`, if `max_o (P_[Δ])_{oo} → 0`.
+leverage ratio `max_o ‖x̃_o‖² / ∑_o ‖x̃_o‖²` tends to `0` in probability (a) if `M = 1`, in which
+case the ratio is `O_p(1/n)`, and (b) for general `M` if `max_o (P_[Δ])_{oo} → 0`.
 
 The designs form a sequence on one probability space `(Ω, P)` with observation type `O n`;
 `X n` is the regressor matrix, `Pm n` a symmetric idempotent matrix playing the role of
@@ -235,7 +234,7 @@ the vectors constant on categories.
 
 * `tendstoInProb_leverageRatio`: the convergence step shared by both clauses.
 * `leverage_clause_a`, `leverage_clause_a_bigO`, `leverage_clause_b`: the two clauses.
-* `leverage_clause_a_witness`, `leverage_clause_b_witness`: models of the hypotheses.
+* `leverage_clause_a_witness`, `leverage_clause_b_witness`: examples satisfying the hypotheses.
 -/
 
 namespace SuffLeverage
@@ -392,7 +391,7 @@ theorem tendstoInProb_leverageRatio
 
 end Skeleton
 
-/-! ### Clause (b): the Cauchy--Schwarz leverage bound -/
+/-! ### Clause (b): the Cauchy–Schwarz leverage bound -/
 
 section ClauseB
 
@@ -477,7 +476,7 @@ omit [DecidableEq O] in
 theorem fibre_congr {i : O → N} {o o' : O} (h : i o = i o') : fibre i (i o) = fibre i (i o') := by
   rw [h]
 
-/-- `P_1`, the category-average projector of a one-way design: it replaces each column of a
+/-- `P_1`, the category-average projector of a one-way design, which replaces each column of a
 matrix by its category averages. -/
 noncomputable def avgProj (i : O → N) : Matrix O O ℝ :=
   fun o o' => if i o' = i o then ((fibre i (i o)).card : ℝ)⁻¹ else 0
@@ -545,13 +544,13 @@ theorem avgProj_mul_self (i : O → N) : avgProj i * avgProj i = avgProj i := by
     simp only [avgProj, h, reduceIte]
 
 omit [DecidableEq O] [Fintype ι] in
-/-- `col(P_1) ⊆ 𝒮_1`: the image of `P_1` is constant on categories. -/
+/-- `col(P_1) ⊆ 𝒮_1`, that is, every vector in the image of `P_1` is constant on categories. -/
 theorem avgProj_mul_constant_on_fibre (i : O → N) (V : Matrix O ι ℝ) {o o' : O}
     (h : i o = i o') (j : ι) : (avgProj i * V) o j = (avgProj i * V) o' j := by
   rw [avgProj_mul_apply, avgProj_mul_apply, fibre_congr h]
 
 omit [DecidableEq O] [Fintype ι] in
-/-- `P_1Δ_1 = Δ_1`: `P_1` fixes every vector that is constant on categories. -/
+/-- `P_1Δ_1 = Δ_1`, that is, `P_1` fixes every vector that is constant on categories. -/
 theorem avgProj_mul_of_constant_on_fibre (i : O → N) (V : Matrix O ι ℝ) (j : ι)
     (h : ∀ o o' : O, i o = i o' → V o j = V o' j) (o : O) :
     (avgProj i * V) o j = V o j := by
@@ -671,8 +670,8 @@ section BigO
 
 variable {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
 
-/-- `max_o ‖x̃_o‖² / ∑_o ‖x̃_o‖² = O_p(1/n)`, in the eventual form: there is `c` such that the
-bound holds with high probability for all sufficiently large `n`. -/
+/-- `max_o ‖x̃_o‖² / ∑_o ‖x̃_o‖² = O_p(1/n)` in the eventual form, in which there is `c`
+such that the bound holds with high probability for all sufficiently large `n`. -/
 theorem bigO_leverageRatio
     {O : ℕ → Type*} [∀ n, Fintype (O n)] {ι : Type*} [Fintype ι]
     {Xt : ∀ n, Ω → Matrix (O n) ι ℝ} {b t : ℝ} {T : ℕ → Ω → ℝ} (ht : 0 < t) (hb0 : 0 ≤ b)
@@ -813,7 +812,7 @@ theorem leverage_clause_a [DecidableEq ι]
     exact sumRowNormSq_eq_card_mul (X n ω)
       (avgProj_transpose (idx n ω)) (avgProj_mul_self (idx n ω)) hnz
 
-/-- **Proposition SM.D.2(a)**, second sentence: at `M = 1`, the leverage ratio is `O_p(1/n)`. -/
+/-- **Proposition SM.D.2(a)**, second sentence. At `M = 1`, the leverage ratio is `O_p(1/n)`. -/
 theorem leverage_clause_a_bigO [DecidableEq ι]
     {O : ℕ → Type*} [∀ n, Fintype (O n)] [∀ n, DecidableEq (O n)]
     {N : ℕ → Type*} [∀ n, DecidableEq (N n)]
@@ -844,7 +843,7 @@ theorem leverage_clause_a_bigO [DecidableEq ι]
 
 end Main
 
-/-! ### Witnesses -/
+/-! ### Examples -/
 
 section Witness
 
@@ -864,12 +863,12 @@ theorem tendstoInProb_of_eventually_eq {Ω : Type*} [MeasurableSpace Ω] {P : Me
   rw [hempty, measure_empty]
   exact zero_le
 
-/-- The witness design for clause (a): `2n` observations in one category and one regressor
+/-- The example design for clause (a), with `2n` observations in one category and one regressor
 taking the values `±1` in balanced pairs, so that the within transformation is the identity. -/
 noncomputable def witnessX (n : ℕ) : Unit → Matrix (Fin n × Fin 2) (Fin 1) ℝ :=
   fun _ o _ => if o.2 = 0 then 1 else -1
 
-/-- The single category of the witness design. -/
+/-- The single category of the example design. -/
 def witnessIdx (n : ℕ) : Unit → (Fin n × Fin 2) → Fin 1 := fun _ _ => 0
 
 theorem witness_rowNormSq (n : ℕ) (o : Fin n × Fin 2) :
@@ -904,7 +903,7 @@ theorem witness_sumRowNormSq (n : ℕ) : sumRowNormSq (witnessX n ()) = 2 * (n :
     Fintype.card_fin, Fintype.card_fin]
   push_cast; ring
 
-/-- A model of the hypotheses of `leverage_clause_a`, with `tr(H) = 2`. -/
+/-- The hypotheses of `leverage_clause_a` hold on the example design, with `tr(H) = 2`. -/
 theorem leverage_clause_a_witness :
     TendstoInMeasure (Measure.dirac ()) (fun (n : ℕ) (ω : Unit) =>
       leverageRatio (((1 : Matrix (Fin n × Fin 2) (Fin n × Fin 2) ℝ)
@@ -926,7 +925,7 @@ theorem leverage_clause_a_witness :
     rw [h1, witness_within, witness_sumRowNormSq]
     field_simp
 
-/-- On the clause (a) witness the leverage ratio equals `1/(2n)` for every `n ≥ 1`. -/
+/-- On the clause (a) example the leverage ratio equals `1/(2n)` for every `n ≥ 1`. -/
 theorem leverage_clause_a_witness_ratio {n : ℕ} (hn : 1 ≤ n) :
     leverageRatio (((1 : Matrix (Fin n × Fin 2) (Fin n × Fin 2) ℝ)
       - avgProj (witnessIdx n ())) * witnessX n ()) = 1 / (2 * (n : ℝ)) := by
@@ -934,7 +933,7 @@ theorem leverage_clause_a_witness_ratio {n : ℕ} (hn : 1 ≤ n) :
   rw [witness_within, leverageRatio, witness_sumRowNormSq, maxRowNormSq]
   simp only [witness_rowNormSq, ciSup_const]
 
-/-- The witness design for clause (b): `n` observations, one regressor equal to `1`, and
+/-- The example design for clause (b), with `n` observations, one regressor equal to `1`, and
 `P_[Δ] = 0`. -/
 noncomputable def witnessXb (n : ℕ) : Unit → Matrix (Fin n) (Fin 1) ℝ := fun _ _ _ => 1
 
@@ -946,7 +945,7 @@ theorem witnessXb_sumRowNormSq (n : ℕ) : sumRowNormSq (witnessXb n ()) = (n : 
   simp only [witnessXb_rowNormSq]
   rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, Fintype.card_fin, mul_one]
 
-/-- A model of the hypotheses of `leverage_clause_b`, with `tr(H) = 1`. -/
+/-- The hypotheses of `leverage_clause_b` hold on the example design, with `tr(H) = 1`. -/
 theorem leverage_clause_b_witness :
     TendstoInMeasure (Measure.dirac ()) (fun (n : ℕ) (ω : Unit) =>
       leverageRatio (((1 : Matrix (Fin n) (Fin n) ℝ) - (0 : Matrix (Fin n) (Fin n) ℝ))
@@ -971,7 +970,7 @@ theorem leverage_clause_b_witness :
     rw [h1, sub_zero, Matrix.one_mul, witnessXb_sumRowNormSq]
     field_simp
 
-/-- On the clause (b) witness the leverage ratio equals `1/n` for every `n ≥ 1`. -/
+/-- On the clause (b) example the leverage ratio equals `1/n` for every `n ≥ 1`. -/
 theorem leverage_clause_b_witness_ratio {n : ℕ} (hn : 1 ≤ n) :
     leverageRatio (((1 : Matrix (Fin n) (Fin n) ℝ) - (0 : Matrix (Fin n) (Fin n) ℝ))
       * witnessXb n ()) = 1 / (n : ℝ) := by

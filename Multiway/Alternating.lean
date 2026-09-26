@@ -43,7 +43,7 @@ theorem norm_sweepList_le (P : D → Submodule ℝ E) (l : List D) (x : E) :
       rw [sweepList_cons]
       exact le_trans (ih _) ((P m)ᗮ.norm_starProjection_apply_le x)
 
-/-! ## Step 2: a sweep that loses no norm fixes every block -/
+/-! ## Step 2: a vector whose norm a sweep preserves is annihilated by every `P_m` -/
 
 /-- By Pythagoras `‖x‖² = ‖P_m x‖² + ‖Q_m x‖²`, so `‖Q_m x‖ = ‖x‖` forces `P_m x = 0`. -/
 theorem starProjection_eq_zero_of_norm_orthogonal (K : Submodule ℝ E) {x : E}
@@ -185,8 +185,8 @@ theorem sweepIter_of_mem_orthogonal (hPS : ∀ m, P m ≤ S) (l : List D) (k : �
   | zero => rfl
   | succ k ih => rw [sweepIter_succ, sweepList_of_mem_orthogonal hPS l hx, ih]
 
-/-- `Γ_k` is additive in its argument, which is how the decomposition
-`Γ_0 = P_[Δ]Γ_0 + Q_[Δ]Γ_0` passes through it. -/
+/-- `Γ_k` is additive in its argument, so it respects the decomposition
+`Γ_0 = P_[Δ]Γ_0 + Q_[Δ]Γ_0`. -/
 theorem sweepIter_add (P : D → Submodule ℝ E) (l : List D) (k : ℕ) (x y : E) :
     sweepIter P l k (x + y) = sweepIter P l k x + sweepIter P l k y := by
   induction k generalizing x y with

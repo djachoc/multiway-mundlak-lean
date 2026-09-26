@@ -69,8 +69,8 @@ theorem mulVec_proj_apply (f : O → L) (z : O → ℝ) (o : O) :
   · have h' : f o ≠ f o' := fun hh => h hh.symm
     simp [h, h']
 
-/-- An intermediate observation `o''` contributes to `(P_m P_ℓ)_{o,o'}` exactly when it lies
-in the `m`-category of `o` and in the `ℓ`-category of `o'`, and it then contributes
+/-- An intermediate observation `o''` contributes to `(P_m P_ℓ)_{o,o'}` if and only if it lies
+in the `m`-category of `o` and in the `ℓ`-category of `o'`, and its contribution is then
 `(T^{(m)}_{i_m(o)})⁻¹ (T^{(ℓ)}_{i_ℓ(o')})⁻¹`. -/
 lemma proj_mul_proj_summand (f g : O → L) (o o' o'' : O) :
     proj f o o'' * proj g o'' o'

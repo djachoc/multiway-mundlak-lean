@@ -41,8 +41,8 @@ variable {Ω : Type*} [MeasurableSpace Ω]
 lemma integral_pow_zero (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → ℝ) :
     (∫ ω, X ω ^ 0 ∂μ) = 1 := by simp
 
-/-- Counting: the subsets of `s` containing a marked point `i₀`, graded by cardinality.  There
-are `C (#s - 1, r)` of them with `r + 1` elements. -/
+/-- A sum over the subsets of `s` containing a marked point `i₀`, grouped by cardinality. There
+are `C (#s - 1, r)` such subsets with `r + 1` elements. -/
 lemma sum_filter_mem_card {ι : Type*} [DecidableEq ι] {s : Finset ι} {i₀ : ι} (hi : i₀ ∈ s)
     (F : ℕ → ℝ) :
     ∑ D ∈ s.powerset.filter (fun D => i₀ ∈ D), F #D
@@ -88,14 +88,15 @@ lemma partSum_mixedCumulant_const (μ : Measure Ω) [IsProbabilityMeasure μ] (X
     partSum_mixedCumulant μ (fun _ : ι => X) t, jointMoment_const_fun]
 
 /-- The right-hand side of the block recursion once every proper block cumulant has been
-replaced by the univariate cumulant of the corresponding order: a function of `#s` alone. -/
+replaced by the univariate cumulant of the corresponding order. It depends on `s` only through
+`#s`. -/
 noncomputable def constFormula (μ : Measure Ω) (X : Ω → ℝ) (n : ℕ) : ℝ :=
   (∫ ω, X ω ^ n ∂μ)
     - (∑ r ∈ Finset.range n,
         ((n - 1).choose r : ℝ) * (cumulant X (r + 1) μ * ∫ ω, X ω ^ (n - (r + 1)) ∂μ)
       - cumulant X n μ)
 
-/-- **The block recursion for a constant family**, with the top block isolated.  This is
+/-- **The block recursion for a constant family**, with the top block isolated. This is
 `partSum_recursion` read through `partSum_mixedCumulant`: the joint moment of `#s` copies of
 `X` is the cumulant of `s` plus the contributions of the proper blocks through `i₀`. -/
 lemma moment_eq_mixedCumulant_add (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → ℝ)
@@ -117,7 +118,7 @@ lemma moment_eq_mixedCumulant_add (μ : Measure Ω) [IsProbabilityMeasure μ] (X
   rw [Finset.card_sdiff_of_subset hD.2.1]
 
 /-- With every proper block cumulant replaced by the univariate cumulant of its order, the
-cumulant of `s` is `constFormula μ X #s` — **a function of the cardinality alone**. -/
+cumulant of `s` is `constFormula μ X #s`, which depends on `s` only through its cardinality. -/
 lemma mixedCumulant_const_of_ih (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → ℝ)
     {ι : Type*} [DecidableEq ι] {s : Finset ι} (hs : s.Nonempty)
     (hIH : ∀ D : Finset ι, D ⊆ s → D ≠ s → mixedCumulant μ (fun _ : ι => X) D
@@ -148,7 +149,7 @@ lemma mixedCumulant_const_of_ih (μ : Measure Ω) [IsProbabilityMeasure μ] (X :
   linarith [hkey]
 
 /-- A mixed cumulant of a constant family is the univariate cumulant of the corresponding
-order. The index type lives in `Type 0`. -/
+order. The index type is in `Type 0`. -/
 theorem mixedCumulant_const_fun (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → ℝ) :
     ∀ (n : ℕ) {ι : Type} [DecidableEq ι] (s : Finset ι), #s = n →
       mixedCumulant μ (fun _ : ι => X) s = cumulant X n μ := by
@@ -560,7 +561,7 @@ lemma iteratedDeriv_exp_poly_succ (Q : Polynomial ℂ) (n : ℕ) :
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [iteratedDeriv_polynomial_zero]
 
-/-- Two entire functions with the same iterated derivatives at the origin are equal.  This is
+/-- Two entire functions with the same iterated derivatives at the origin are equal. This is
 Mathlib's Taylor expansion of an entire function, read as a uniqueness statement. -/
 lemma eq_of_iteratedDeriv_zero {G H : ℂ → ℂ} (hG : Differentiable ℂ G) (hH : Differentiable ℂ H)
     (h : ∀ n, iteratedDeriv n G 0 = iteratedDeriv n H 0) (z : ℂ) : G z = H z := by
@@ -744,8 +745,8 @@ theorem cumulant_eq_zero_of_three_le [IsProbabilityMeasure μ]
     exact_mod_cast h2
   · exact hzero j h
 
-/-- Once the cumulants vanish from order `3` on, the cumulant polynomial collapses to its two
-Gaussian terms. -/
+/-- If the cumulants vanish from order `3` on, the cumulant polynomial reduces to its linear and
+quadratic terms. -/
 lemma eval_charPoly_of_cumulant_eq_zero {m₀ : ℕ} (hm₀ : 1 ≤ m₀)
     (hzero : ∀ j, m₀ ≤ j → cumulant id j μ = 0)
     (h3 : ∀ j, 3 ≤ j → cumulant id j μ = 0) (t : ℂ) :
@@ -946,10 +947,10 @@ theorem cumulant_gaussianReal (m : ℝ) (v : ℝ≥0) :
 
 end Converse
 
-/-! ### Non-vacuity
+/-! ### Examples
 
-The main theorems are applied to `N (2, 3)` at `m₀ = 5`, so that the case `j = 3 < m₀` of the
-Marcinkiewicz step is exercised, and to the skewed law `SkewWitness.skewLaw`.
+The main theorems are applied to `N (2, 3)` at `m₀ = 5`, so that the Marcinkiewicz step is used
+at `j = 3 < m₀`, and to the skewed law `SkewWitness.skewLaw`.
 -/
 
 section Witness
@@ -1064,15 +1065,15 @@ end Witness
 /-! ### Multilinearity of the mixed cumulant
 
 Each summand `∏_B E ∏_{i ∈ B} X_i` of the set-partition formula contains `X_{i₀}` in exactly
-one factor, so the mixed cumulant is linear in `X_{i₀}`. Additivity needs integrability of the
-two partial products; homogeneity needs none.
+one factor, so the mixed cumulant is linear in `X_{i₀}`. Additivity requires integrability of
+the two partial products; homogeneity does not.
 -/
 
 section Multilinear
 
 variable {Ω : Type*} [MeasurableSpace Ω] {ι : Type*} [DecidableEq ι]
 
-/-- A joint moment over a block that misses `i₀` does not see an update at `i₀`. -/
+/-- A joint moment over a block that misses `i₀` is unchanged by an update at `i₀`. -/
 lemma jointMoment_update_of_notMem (μ : Measure Ω) (X : ι → Ω → ℝ) (i₀ : ι) (f : Ω → ℝ)
     {B : Finset ι} (h : i₀ ∉ B) :
     jointMoment μ (Function.update X i₀ f) B = jointMoment μ X B := by
@@ -1099,8 +1100,8 @@ lemma jointMoment_update_of_mem (μ : Measure Ω) (X : ι → Ω → ℝ) (i₀ 
     rw [Function.update_of_ne (Finset.ne_of_mem_erase hi) f X]
   simp only [jointMoment, hpt]
 
-/-- Splitting the product over the blocks of `π` at the block containing `i₀`.  Every other
-factor is blind to an update at `i₀`. -/
+/-- The product over the blocks of `π`, split at the block containing `i₀`. Every other factor
+is unchanged by an update at `i₀`. -/
 lemma prod_parts_update (μ : Measure Ω) (X : ι → Ω → ℝ) {i₀ : ι} {s : Finset ι} (hi : i₀ ∈ s)
     (π : Finpartition s) (f : Ω → ℝ) :
     ∏ B ∈ π.parts, jointMoment μ (Function.update X i₀ f) B
@@ -1175,7 +1176,7 @@ theorem skew_multilinear_witness :
   rw [h2]
   norm_num
 
-/-- The scaling half, at `a = 2`, on the same configuration: `κ (2X, X) = 2 κ_2 = 6`. -/
+/-- Homogeneity at `a = 2` on the same configuration, `κ (2X, X) = 2 κ_2 = 6`. -/
 theorem skew_multilinear_smul_witness :
     mixedCumulant SkewWitness.skewLaw
         (Function.update (fun _ : Fin 2 => (id : ℝ → ℝ)) 0 (fun x : ℝ => 2 * id x))

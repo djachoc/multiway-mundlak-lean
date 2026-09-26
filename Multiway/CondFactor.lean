@@ -20,7 +20,7 @@ measurable functions, one slot at a time.
 
 * `condExp_prod_eq_prod_condExp`, `condExp_prod_eq_prod_condExp_real`: the factorization.
 * `condCharFun_sum_eq_prod_condCharFun`: the conditional characteristic function of a sum.
-* `condCharFun_sum_eq_prod_condCharFun_witness`: a non-degenerate instance of the hypotheses.
+* `condCharFun_sum_eq_prod_condCharFun_witness`: a model on which the hypotheses hold.
 
 The ambient σ-algebra `mΩ` is an implicit variable and measures are written `@Measure Ω mΩ`, so
 that they refer to the ambient σ-algebra rather than to `𝒟`.
@@ -36,7 +36,7 @@ namespace CondFactor
 -- `𝒟` is declared before `mΩ`, so that `mΩ` is the default `MeasurableSpace Ω` instance.
 variable {Ω : Type*} (𝒟 : MeasurableSpace Ω) {mΩ : MeasurableSpace Ω}
 
-/-! ## Small tools: bounds, integrability, and the real-to-complex bridge -/
+/-! ## Auxiliary lemmas -/
 
 /-- A measurable function bounded almost everywhere is integrable, on a finite measure. -/
 theorem integrable_of_ae_bound {F : Type*} [NormedAddCommGroup F] {P : @Measure Ω mΩ}
@@ -188,7 +188,7 @@ theorem integral_comp_mul_eq_zero {β : Type*} [MeasurableSpace β] (P : @Measur
 
 /-! ## The one-slot lift: from indicators to bounded measurable functions -/
 
-/-- **One slot lifted.** Let `G` be bounded measurable, let `H` be bounded and `𝒟`-measurable, and
+/-- Let `G` be bounded measurable, let `H` be bounded and `𝒟`-measurable, and
 suppose that for every measurable `s`,
 
 `P[1_s(Y) · G | 𝒟] =ᵐ P[1_s(Y) | 𝒟] · H`.
@@ -304,7 +304,7 @@ theorem condExp_mul_of_indicator (h𝒟 : 𝒟 ≤ mΩ) (P : @Measure Ω mΩ)
     have hrf := hrepr f hf ⟨Cf, hfb⟩
     rw [h0] at hrf
     exact sub_eq_zero.1 hrf.symm
-  -- and finally the defining property of the conditional expectation
+  -- the defining property of the conditional expectation
   have hgint : Integrable (fun ω => condExp 𝒟 P (fun ω => f (Y ω)) ω * H ω) P :=
     (integrable_condExp (m := 𝒟) (μ := P) (f := fun ω => f (Y ω) * H ω)).congr
       (hpull f hf ⟨Cf, hfb⟩)
@@ -318,8 +318,8 @@ theorem condExp_mul_of_indicator (h𝒟 : 𝒟 ≤ mΩ) (P : @Measure Ω mΩ)
 
 /-! ## The two-dimensional induction -/
 
-/-- Let the slots in `T` carry bounded measurable functions and the slots in the disjoint set `S`
-carry indicators. Then the conditional expectation of the whole product factorizes. The proof is
+/-- Suppose the slots in `T` hold bounded measurable functions and the slots in the disjoint set
+`S` hold indicators. Then the conditional expectation of the whole product factorizes. The proof is
 by induction on `T`, applying the inductive hypothesis with `S` replaced by `insert a S`. -/
 theorem condExp_prod_mul_prod_indicator [StandardBorelSpace Ω] {ι : Type*} {β : ι → Type*}
     [mβ : ∀ i, MeasurableSpace (β i)] (h𝒟 : 𝒟 ≤ mΩ)
@@ -361,7 +361,7 @@ theorem condExp_prod_mul_prod_indicator [StandardBorelSpace Ω] {ι : Type*} {β
   | empty =>
     intro S _ sets hsets
     simp only [Finset.prod_empty, one_mul]
-    -- the intersection whose indicator the product of indicators is
+    -- the product of indicators is the indicator of the intersection
     have hcap : MeasurableSet (⋂ i ∈ S, X i ⁻¹' sets i) :=
       S.measurableSet_biInter fun i _ => (hX i) (hsets i)
     have hprodC : (fun ω => ∏ i ∈ S, Set.indicator (sets i) (fun _ => (1 : ℂ)) (X i ω))
@@ -568,11 +568,11 @@ theorem condExp_prod_eq_prod_condExp_real [StandardBorelSpace Ω] {ι : Type*} {
     exact Finset.prod_congr rfl fun i hi => h3 i hi
   exact_mod_cast h4
 
-/-! ## The consumer: the conditional characteristic function of a conditionally independent sum -/
+/-! ## The conditional characteristic function of a conditionally independent sum -/
 
-/-- **`E[exp(i t ∑_{i ∈ S} X i) ∣ 𝒟] = ∏_{i ∈ S} E[exp(i t X i) ∣ 𝒟]`.** The conditional
-characteristic function of a conditionally independent sum is the product of the conditional
-characteristic functions. -/
+/-- The conditional characteristic function of a conditionally independent sum is the product of
+the conditional characteristic functions,
+`E[exp(i t ∑_{i ∈ S} X i) ∣ 𝒟] = ∏_{i ∈ S} E[exp(i t X i) ∣ 𝒟]`. -/
 theorem condCharFun_sum_eq_prod_condCharFun [StandardBorelSpace Ω] {ι : Type*}
     (h𝒟 : 𝒟 ≤ mΩ) (P : @Measure Ω mΩ) [IsProbabilityMeasure P]
     {X : ι → Ω → ℝ} (hX : ∀ i, Measurable (X i))
@@ -593,7 +593,7 @@ theorem condCharFun_sum_eq_prod_condCharFun [StandardBorelSpace Ω] {ι : Type*}
     (fun i => by fun_prop)
     (fun i => ⟨1, fun x => le_of_eq (Complex.norm_exp_ofReal_mul_I _)⟩) S
 
-/-! ## Witnesses
+/-! ## Examples
 
 Two models satisfying all hypotheses of `condCharFun_sum_eq_prod_condCharFun`, to which the
 theorem is applied. -/
@@ -641,9 +641,8 @@ theorem iCondIndepFun_bot_dirac [StandardBorelSpace Ω] [MeasurableSingletonClas
   simp only [condExp_bot, Finset.prod_apply, integral_dirac]
   rw [prod_indicator_const_apply, hpow]
 
-/-- A standard Gaussian on `ℝ` with `X i ω = ω / (i + 1)`: every hypothesis of
-`condCharFun_sum_eq_prod_condCharFun` holds (with `𝒟` the ambient σ-algebra), and its conclusion
-follows. -/
+/-- Under a standard Gaussian on `ℝ` with `X i ω = ω / (i + 1)` and `𝒟` the ambient σ-algebra,
+every hypothesis of `condCharFun_sum_eq_prod_condCharFun` holds, and the theorem applies. -/
 theorem condCharFun_sum_eq_prod_condCharFun_witness (S : Finset ℕ) (t : ℝ) :
     condExp (inferInstance : MeasurableSpace ℝ) (gaussianReal 0 1)
         (fun ω => Complex.exp (((t * ∑ i ∈ S, ω / (i + 1) : ℝ) : ℂ) * Complex.I))

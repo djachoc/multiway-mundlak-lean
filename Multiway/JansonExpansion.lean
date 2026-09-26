@@ -9,8 +9,8 @@ import Multiway.CumulantCharFun
 
 This file proves Janson's (1988) identity `(4.2)`,
 `κ_j (S) = ∑_{i₁} ⋯ ∑_{i_j} κ (X_{i₁}, …, X_{i_j})` for `S = ∑ X_i`, expanding the mixed
-cumulant simultaneously in every slot. The summands are assumed almost surely bounded, which
-makes every integrability side condition automatic.
+cumulant simultaneously in every slot. The summands are assumed almost surely bounded, so
+every integrability side condition holds.
 
 ## Main results
 
@@ -24,7 +24,7 @@ open Finset MeasureTheory ProbabilityTheory
 
 namespace Cumulant
 
-/-! ### A `Fintype.piFinset` toolkit -/
+/-! ### Sums over `Fintype.piFinset` -/
 
 section PiFinset
 
@@ -98,8 +98,8 @@ section Expansion
 variable {Ω : Type*} [MeasurableSpace Ω] {ι : Type*} [DecidableEq ι] [Fintype ι]
   {α : Type*} [DecidableEq α]
 
-/-- The intermediate family of the expansion: the slots in `u` carry the whole sum
-`∑_{a ∈ t} Z a`, the slots outside carry the single summand selected by `base`. -/
+/-- The intermediate family of the expansion, with the whole sum `∑_{a ∈ t} Z a` in the slots in
+`u` and the summand selected by `base` in the other slots. -/
 noncomputable def mixFam (Z : α → Ω → ℝ) (t : Finset α) (u : Finset ι) (base : ι → α) :
     ι → Ω → ℝ :=
   fun i => if i ∈ u then (fun ω => ∑ a ∈ t, Z a ω) else Z (base i)

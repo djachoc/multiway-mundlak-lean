@@ -14,7 +14,7 @@ This file formalizes Lemma SM.C.1 of the paper (Parallel images): if `A, B` are 
 an arbitrary real vector space, with no finite-dimensionality or inner product, and then
 specialised to `Fin n → ℝ`.
 
-The proof runs pointwise: a fixed `x₀` with `B x₀ ≠ 0` determines `λ`, and each `x` with
+The proof is pointwise. A fixed `x₀` with `B x₀ ≠ 0` determines `λ`, and each `x` with
 `B x ≠ 0` is handled according to whether `B x` and `B x₀` are linearly dependent (using that
 `B x = B y` forces `A x = A y`) or independent (comparing coefficients).
 
@@ -52,11 +52,11 @@ theorem apply_eq_of_apply_eq {A B : V →ₗ[ℝ] V}
   exact hA
 
 /-- **Lemma SM.C.1.** If `A x` lies on the line through `B x` for every `x`, then `A = λ B` for a
-single scalar `λ`. Stated for an arbitrary real vector space. -/
+single scalar `λ`, on an arbitrary real vector space. -/
 theorem exists_smul_eq_of_forall_mem_span_singleton {A B : V →ₗ[ℝ] V}
     (h : ∀ x, A x ∈ Submodule.span ℝ {B x}) :
     ∃ lam : ℝ, A = lam • B := by
-  -- `B = 0`: then `A` vanishes too
+  -- if `B = 0`, then `A = 0`
   by_cases hB : ∀ x, B x = 0
   · refine ⟨0, ?_⟩
     ext x
@@ -71,7 +71,7 @@ theorem exists_smul_eq_of_forall_mem_span_singleton {A B : V →ₗ[ℝ] V}
   refine ⟨lam, ?_⟩
   ext x
   simp only [LinearMap.smul_apply]
-  -- `B x = 0`: the kernel inclusion
+  -- if `B x = 0`, use the kernel inclusion
   by_cases hBx : B x = 0
   · have hAx : A x = 0 :=
       LinearMap.mem_ker.mp
@@ -83,10 +83,10 @@ theorem exists_smul_eq_of_forall_mem_span_singleton {A B : V →ₗ[ℝ] V}
     have hBeq : B x = B (μ • x₀) := by rw [map_smul]; exact hμ
     have hA : A x = A (μ • x₀) := apply_eq_of_apply_eq h hBeq
     rw [hA, map_smul, ← hlam, hμ, smul_smul, smul_smul, mul_comm]
-  · -- `B x` and `B x₀` are independent: compare coefficients
+  · -- if `B x` and `B x₀` are independent, compare coefficients
     obtain ⟨c, hc⟩ := Submodule.mem_span_singleton.mp (h x)
     obtain ⟨d, hd⟩ := Submodule.mem_span_singleton.mp (h (x + x₀))
-    -- linearity: `c • B x + lam • B x₀ = d • B x + d • B x₀`
+    -- by linearity, `c • B x + lam • B x₀ = d • B x + d • B x₀`
     have h1 : d • B x + d • B x₀ = c • B x + lam • B x₀ := by
       simp only [map_add, smul_add] at hd
       rw [← hc, ← hlam] at hd

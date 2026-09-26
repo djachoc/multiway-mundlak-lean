@@ -12,12 +12,12 @@ import Mathlib.MeasureTheory.Measure.TightNormed
 This file formalizes Lemma 1 of Janson (1988): if `κ_j (X_n) → c_j` for every `j ≥ 1`, there is
 a random variable `X` with `κ_j (X) = c_j`, and if these determine the law of `X`, then
 `X_n →_d X` with convergence of all moments. Moments are passed to the weak limit through the
-truncation bound `|x ^ j - clamp R x ^ j| ≤ (2 / R) |x| ^ (j + 1)`, which costs one extra moment.
+truncation bound `|x ^ j - clamp R x ^ j| ≤ (2 / R) |x| ^ (j + 1)`, which requires one extra moment.
 Every moment of every law in the sequence is assumed finite (`hint : ∀ n p, …`).
 
 ## Main results
 
-* `Janson.exists_limit_of_tendsto_moments`: a subsequence and a limit law carrying the limiting
+* `Janson.exists_limit_of_tendsto_moments`: a subsequence and a limit law with the limiting
   moments (tightness and Prokhorov).
 * `Janson.tendsto_of_tendsto_moments`: convergence of the whole sequence under determinacy.
 * `Janson.momentOf`, `Janson.tendsto_integral_pow_of_tendsto_cumulant`: Janson's `p_j`, given by
@@ -107,8 +107,8 @@ lemma abs_pow_le_one_add {p : ℕ} (x : ℝ) : |x| ^ p ≤ 1 + x ^ (2 * p) := by
     have : |x| ^ p ≤ |x| ^ (2 * p) := pow_le_pow_right₀ h.le (by omega)
     linarith
 
-/-- The absolute moments are uniformly bounded as soon as every ordinary moment converges:
-`|x| ^ p ≤ 1 + x ^ {2 p}` and a convergent real sequence is bounded. -/
+/-- The absolute moments are uniformly bounded as soon as every ordinary moment converges,
+since `|x| ^ p ≤ 1 + x ^ {2 p}` and a convergent real sequence is bounded. -/
 theorem exists_abs_moment_bound {P : ℕ → ProbabilityMeasure ℝ}
     (hint : ∀ n p, Integrable (fun x : ℝ => x ^ p) (P n : Measure ℝ))
     {α : ℕ → ℝ}
@@ -137,7 +137,7 @@ end Bounds
 
 section Tight
 
-/-- **Chebyshev.** A uniform second-moment bound makes a family of laws on `ℝ` tight. -/
+/-- By Chebyshev's inequality, a uniform second-moment bound makes a family of laws on `ℝ` tight. -/
 theorem isTightMeasureSet_of_moment_bound {P : ℕ → ProbabilityMeasure ℝ}
     (hint : ∀ n, Integrable (fun x : ℝ => x ^ 2) (P n : Measure ℝ))
     {C : ℝ} (hC0 : 0 ≤ C) (hC : ∀ n, ∫ x, x ^ 2 ∂(P n : Measure ℝ) ≤ C) :
@@ -245,7 +245,8 @@ theorem lintegral_abs_pow_le_of_tendsto (hPQ : Tendsto P atTop (𝓝 Q)) {p : �
           (Eventually.of_forall fun x => le_min (by positivity) (Nat.cast_nonneg k))]
         exact ENNReal.ofReal_le_ofReal (hstep k)
 
-/-- The weak limit has the moment the uniform bound gives it. -/
+/-- If the absolute `p`-th moments of `P n` are bounded by `C`, then `x ^ p` is integrable under
+the weak limit. -/
 theorem integrable_pow_of_tendsto (hPQ : Tendsto P atTop (𝓝 Q)) {p : ℕ} {C : ℝ}
     (hint : ∀ n, Integrable (fun x : ℝ => |x| ^ p) (P n : Measure ℝ))
     (hC : ∀ n, ∫ x, |x| ^ p ∂(P n : Measure ℝ) ≤ C) :
@@ -257,7 +258,7 @@ theorem integrable_pow_of_tendsto (hPQ : Tendsto P atTop (𝓝 Q)) {p : ℕ} {C 
   refine lintegral_congr fun x => ?_
   rw [Real.norm_eq_abs, abs_pow]
 
-/-- …and the bound itself. -/
+/-- Under the same hypotheses, the absolute `p`-th moment of the weak limit is at most `C`. -/
 theorem integral_abs_pow_le_of_tendsto (hPQ : Tendsto P atTop (𝓝 Q)) {p : ℕ} {C : ℝ}
     (hC0 : 0 ≤ C) (hint : ∀ n, Integrable (fun x : ℝ => |x| ^ p) (P n : Measure ℝ))
     (hC : ∀ n, ∫ x, |x| ^ p ∂(P n : Measure ℝ) ≤ C) :
@@ -351,7 +352,7 @@ theorem tendsto_integral_pow_of_tendsto (hPQ : Tendsto P atTop (𝓝 Q)) (p : �
 end Transfer
 
 
-/-! ### Lemma 1 in moment form: Prokhorov, and the determinate case
+/-! ### Lemma 1 in moment form
 
 The existence half yields a limit along a subsequence; the whole sequence converges under a
 determinacy hypothesis, via `tendsto_of_subseq_tendsto`.
@@ -388,8 +389,8 @@ theorem exists_limit_of_moment_bound (P : ℕ → ProbabilityMeasure ℝ)
   · obtain ⟨C, hC0, hC⟩ := hb (p + 1)
     exact tendsto_integral_pow_of_tendsto hQ' p hC0 (fun k q => hint (φ k) q) (fun k => hC (φ k))
 
-/-- **Janson's Lemma 1, existence half, in moment form.** Convergent moments force a
-subsequence converging weakly to a law that carries exactly those moments. -/
+/-- **Janson's Lemma 1, existence half, in moment form.** If the moments converge, a
+subsequence converges weakly to a law whose moments are the limits. -/
 theorem exists_limit_of_tendsto_moments (P : ℕ → ProbabilityMeasure ℝ)
     (hint : ∀ n p, Integrable (fun x : ℝ => x ^ p) (P n : Measure ℝ))
     {α : ℕ → ℝ}
@@ -423,10 +424,10 @@ theorem tendsto_of_tendsto_moments (P : ℕ → ProbabilityMeasure ℝ)
 
 end Lemma1
 
-/-! ### Janson's `p_j`: the moment sequence a semiinvariant sequence generates
+/-! ### Janson's `p_j`
 
-Janson writes `alpha_j = p_j (kappa_1, ..., kappa_j)` for a polynomial `p_j`; here `p_j` is the
-moment–cumulant recursion `Cumulant.moment_recursion`, read as the definition `Janson.momentOf`.
+Janson writes `alpha_j = p_j (kappa_1, ..., kappa_j)` for a polynomial `p_j`. The definition
+`Janson.momentOf` gives `p_j` by the moment–cumulant recursion `Cumulant.moment_recursion`.
 -/
 
 section MomentOf
@@ -478,7 +479,7 @@ theorem cumulant_eq_of_integral_pow_eq {Q : Measure ℝ} [IsProbabilityMeasure Q
   simp only [h]
   exact momentOf_succ c n
 
-/-- The semiinvariant is a continuous function of the moments: the `i = n` summand of
+/-- The semiinvariant is a continuous function of the moments, since the `i = n` summand of
 `Cumulant.moment_recursion` is `kappa_{n+1}` alone. Hence convergence of the moments along a
 subsequence gives convergence of every semiinvariant. -/
 theorem tendsto_cumulant_of_tendsto_integral_pow {P : ℕ → ProbabilityMeasure ℝ}
@@ -563,9 +564,9 @@ noncomputable def gaussPM (mu s2 : ℝ) : ProbabilityMeasure ℝ :=
 lemma gaussPM_toMeasure (mu s2 : ℝ) :
     (gaussPM mu s2 : Measure ℝ) = gaussianReal mu s2.toNNReal := rfl
 
-/-- **Gaussian determinacy.** A law with all moments whose semiinvariants past the second
-vanish is that Gaussian (from
-`Cumulant.eq_gaussianReal_of_cumulant_eq_zero`). -/
+/-- A law with finite moments of all orders, first two semiinvariants `mu` and `s2`, and
+vanishing semiinvariants of order three and higher is `gaussPM mu s2`
+(`Cumulant.eq_gaussianReal_of_cumulant_eq_zero`). -/
 theorem eq_gaussPM_of_cumulant_eq {Q : ProbabilityMeasure ℝ} {mu s2 : ℝ}
     (hint : ∀ p, Integrable (fun x : ℝ => x ^ p) (Q : Measure ℝ))
     (h1 : Cumulant.cumulant id 1 (Q : Measure ℝ) = mu)
@@ -577,8 +578,8 @@ theorem eq_gaussPM_of_cumulant_eq {Q : ProbabilityMeasure ℝ} {mu s2 : ℝ}
     (m₀ := 3) (by norm_num) h3
   rw [gaussPM_toMeasure, h, h1, h2]
 
-/-- **Method of moments for the Gaussian.** Semiinvariants converging to the Gaussian ones force
-weak convergence to that Gaussian. -/
+/-- If the semiinvariants of `P n` converge to those of `gaussPM mu s2`, then `P n` converges
+weakly to `gaussPM mu s2`. -/
 theorem tendsto_gaussPM_of_tendsto_cumulant {P : ℕ → ProbabilityMeasure ℝ}
     (hint : ∀ n p, Integrable (fun x : ℝ => x ^ p) (P n : Measure ℝ))
     {mu s2 : ℝ}

@@ -370,7 +370,7 @@ end Conditional
 
 section CgmLimit
 
-/-- The majorant delivered by `Cgm.xiMat_opNorm_le`, divided by `n`. -/
+/-- The majorant of `Cgm.xiMat_opNorm_le`, divided by `n`. -/
 noncomputable def xiBound (B aT lT tT G N : ℝ) : ℝ :=
   B ^ 2 * (Real.sqrt (aT * (G * N)) + Real.sqrt (lT * (G * N)) + tT) / N
 
@@ -472,7 +472,7 @@ theorem tendstoInProb_xiMat_div_card {Ω : Type*} [MeasurableSpace Ω] {P : Meas
 
 end CgmLimit
 
-/-! ## Witness for `tendsto_xiMat_div_card`
+/-! ## Example for `tendsto_xiMat_div_card`
 
 `𝒪_j = {1,…,j+1} × {1,2}` with a single cluster, `K = 1`, `x̃_{(o,s)} = ±1` according to `s`,
 `P_m = (2(j+1))^{-1}ιι'`, `Π = P_m`, `A^{(m)} = Λ = 0`, `R = I − P_m`, `B = 1` and
@@ -482,23 +482,23 @@ grows.
 
 section Witness
 
-/-- The `P_m` of the witness at index `j`: a single cluster of size `2(j+1)`, every entry
+/-- The `P_m` of the example at index `j`: a single cluster of size `2(j+1)`, every entry
 equal to `(2(j+1))^{-1}`. -/
 noncomputable def witnessPm (j : ℕ) : Matrix (Fin (j + 1) × Fin 2) (Fin (j + 1) × Fin 2) ℝ :=
   Matrix.of fun _ _ => ((2 * (j + 1) : ℕ) : ℝ)⁻¹
 
-/-- The within regressors of the witness at index `j`: `+1` and `−1` on each pair, so they
+/-- The within regressors of the example at index `j`: `+1` and `−1` on each pair, so they
 sum to zero over the cluster. -/
 def witnessX (j : ℕ) : Matrix (Fin (j + 1) × Fin 2) (Fin 1) ℝ :=
   Matrix.of fun o _ => if o.2 = 0 then 1 else -1
 
-/-- The witness's cluster has `2(j+1)` members. -/
+/-- The cluster of the example has `2(j+1)` members. -/
 theorem witness_clusterCard (j : ℕ) :
     Cgm.clusterCard (fun _ : Fin (j + 1) × Fin 2 => (0 : Fin 1)) 0 = 2 * (j + 1) := by
   rw [Cgm.clusterCard, Finset.filter_true_of_mem (fun _ _ => rfl)]
   simp [Finset.card_univ, Nat.mul_comm]
 
-/-- The witness's `tr(Π_n)` is `1` at every index. -/
+/-- In the example, `tr(Π_n) = 1` at every index. -/
 theorem witness_trace (j : ℕ) : (witnessPm j).trace = 1 := by
   rw [Matrix.trace]
   simp only [Matrix.diag_apply, witnessPm, Matrix.of_apply, Finset.sum_const, Finset.card_univ,
@@ -576,7 +576,7 @@ theorem tendsto_xiMat_div_card_witness :
 
 end Witness
 
-/-! ## Witness for `tendstoInProb_zero_of_le_sqrt_mul`
+/-! ## Example for `tendstoInProb_zero_of_le_sqrt_mul`
 
 On a point mass, with `S_n(ω) = (1 + |ω|/(1+|ω|))/(n+1)` and `T_n ≡ 2`, the quantity
 `√(2S_n)` equals `√(2/(n+1))` at the atom.
@@ -584,7 +584,7 @@ On a point mass, with `S_n(ω) = (1 + |ω|/(1+|ω|))/(n+1)` and `T_n ≡ 2`, the
 
 section SqrtWitness
 
-/-- The null factor of the witness, bounded by `2/(n+1)` for every `ω`. -/
+/-- The null factor of the example, bounded by `2/(n+1)` for every `ω`. -/
 noncomputable def witnessS (n : ℕ) (ω : ℝ) : ℝ := (1 + |ω| / (1 + |ω|)) / ((n : ℝ) + 1)
 
 theorem witnessS_nonneg (n : ℕ) (ω : ℝ) : 0 ≤ witnessS n ω := by

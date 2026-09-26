@@ -11,10 +11,11 @@ import Multiway.JansonLemma4
 This file proves the two limit theorems of Janson (1988), building on `Multiway/Cumulant.lean`,
 `Multiway/CumulantCharFun.lean` and the `Multiway/Janson*.lean` files.
 
-* **Theorem 1.** If `kappa_1 (X_n) -> mu`, `kappa_2 (X_n) -> sigma ^ 2` and `kappa_j (X_n) -> 0`
-  for every `j >= m`, then `X_n -> N (mu, sigma ^ 2)` in distribution and all moments converge.
-* **Theorem 2.** For variables bounded by `A_n` with a dependency graph of maximal degree `M_n`,
-  if `(N_n / M_n) ^ (1/m) M_n A_n / sigma_n -> 0` for some integer `m >= 3`, then
+* Theorem 1 states that if `kappa_1 (X_n) -> mu`, `kappa_2 (X_n) -> sigma ^ 2` and
+  `kappa_j (X_n) -> 0` for every `j >= m`, then `X_n -> N (mu, sigma ^ 2)` in distribution and
+  all moments converge.
+* Theorem 2 states that, for variables bounded by `A_n` with a dependency graph of maximal
+  degree `M_n`, if `(N_n / M_n) ^ (1/m) M_n A_n / sigma_n -> 0` for some integer `m >= 3`, then
   `(S_n - E S_n) / sigma_n -> N (0, 1)` in distribution.
 
 Theorem 1 assumes all moments of every `X_n` are finite. The proof of Theorem 1 scales the
@@ -73,7 +74,7 @@ end Scale
 
 /-! ### Section 2. `Theorem 1`
 
-Under `(1.1)`-`(1.3)` the cumulants vanish in the limit at every order `>= 3`
+Under `(1.1)`–`(1.3)` the cumulants vanish in the limit at every order `>= 3`
 (`Janson.cumulant_tendsto_zero`); Theorem 1 then follows from
 `Janson.tendsto_gaussPM_of_tendsto_cumulant`.
 -/
@@ -85,7 +86,7 @@ lemma exists_abs_bound_of_tendsto {f : ℕ → ℝ} {L : ℝ} (h : Tendsto f atT
   obtain ⟨C, hC⟩ := h.abs.bddAbove_range
   exact ⟨C, fun n => hC ⟨n, rfl⟩⟩
 
-/-- Under `(1.1)`-`(1.3)`, `kappa_j (X_n) -> 0` for every `j >= 3`, not only for `j >= m`. -/
+/-- Under `(1.1)`–`(1.3)`, `kappa_j (X_n) -> 0` for every `j >= 3`. -/
 theorem cumulant_tendsto_zero {P : ℕ → ProbabilityMeasure ℝ}
     (hint : ∀ n p, Integrable (fun x : ℝ => x ^ p) (P n : Measure ℝ))
     {m : ℕ} {mu s2 : ℝ}
@@ -254,7 +255,7 @@ theorem cumulant_tendsto_zero {P : ℕ → ProbabilityMeasure ℝ}
   rw [← hlq] at hlt
   exact absurd (hjjeq (φ l)) (ne_of_lt hlt)
 
-/-- **Janson, Theorem 1**, conclusion `(1.4)`: `(1.1)`-`(1.3)` give convergence in
+/-- **Janson, Theorem 1**, conclusion `(1.4)`: `(1.1)`–`(1.3)` give convergence in
 distribution to `N (mu, sigma ^ 2)`; `sigma ^ 2 = 0` is allowed. -/
 theorem tendsto_gaussPM {P : ℕ → ProbabilityMeasure ℝ}
     (hint : ∀ n p, Integrable (fun x : ℝ => x ^ p) (P n : Measure ℝ))
