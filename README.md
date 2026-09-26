@@ -94,9 +94,8 @@ Each result is also applied to an explicit example, in a declaration whose name 
 `_witness`: every object in the hypotheses is given a specific value, and the declaration proves
 that all the hypotheses hold together. Lean would also accept a theorem whose hypotheses cannot
 all hold at once, and such a theorem would apply to no case. In a few examples one dimension is
-set to one (one regressor, one
-observation, or identity matrices), which shows that the hypotheses are consistent but does not
-exercise the matrix algebra.
+set to one (one regressor, one observation, or identity matrices), which shows that the
+hypotheses are consistent but does not exercise the matrix algebra.
 
 Two results from outside the paper are formalized here because its proofs use them. Theorem 2 of
 Janson (1988, p. 307), the central limit theorem for sums over a dependency graph, is in
