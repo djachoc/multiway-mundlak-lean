@@ -48,18 +48,25 @@ No declaration reports [`sorryAx`](https://leanprover-community.github.io/mathli
 directives print under a name other than the one asked for, because `Multiway/Wald.lean`
 re-exports them from `Multiway/Sqrt.lean` and `#print axioms` resolves an alias to the original.
 
-### For readers new to Lean
-
-Lean accepts a proof only when every step follows from its rules of logic and from a short list of axioms, and `#print axioms` lists the axioms a result
-rests on. The word `sorry` stands in for a step that has not been proved. Lean accepts it with
-a warning and counts it as an axiom named `sorryAx`, so a result with an unproved step shows
-`sorryAx` in its list. `propext`, `Classical.choice` and `Quot.sound` are the three axioms of
-Lean's standard logic, used by Mathlib and by almost every development built on it. The first
-says that two statements that imply each other are equal, the second that an element can be
-chosen from any nonempty collection, and the third that two elements identified by a relation
-are equal in the quotient it defines. Together they amount to ordinary mathematics, classical
-logic with the axiom of choice, so a result that depends only on these three is proved from those
-foundations.
+> **For readers new to Lean**
+>
+> Lean accepts a proof only when every step follows from its rules of logic and from a short
+> list of axioms, the basic facts that are assumed rather than proved. `#print axioms` lists the
+> axioms a result depends on.
+>
+> The word `sorry` marks a step that has not been proved. Lean accepts it with a warning and
+> records it as an axiom named `sorryAx`, so a result with an unproved step shows `sorryAx` in
+> that list. None of the results here does.
+>
+> `propext`, `Classical.choice` and `Quot.sound` are the three axioms of Lean's standard logic,
+> used by Mathlib and by almost every development built on it. `propext` says that two
+> statements that are logically equivalent, each implying the other, can replace each other
+> anywhere. `Classical.choice` is the axiom of choice: from any collection known to have a
+> member, one member can be picked, even when no rule says which. `Quot.sound` says that when
+> objects are grouped into classes, as the fractions 1/2 and 2/4 are treated as one number,
+> two objects in the same class are equal. Together these three give ordinary mathematics,
+> classical logic with the axiom of choice, so a result that depends only on them is proved from
+> the same foundations as a result in a textbook.
 
 ## Finding a result
 
