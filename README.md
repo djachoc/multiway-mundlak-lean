@@ -88,12 +88,15 @@ lake-manifest.json       the pinned Mathlib revision
 Each Lean statement transcribes a printed one. Some hypotheses
 are measurability or nonemptiness conditions that the paper leaves implicit. Where the paper
 writes convergence in probability, a few statements give almost everywhere convergence along a
-realization of the conditioning variables. A handful of results are exercised on a model that
-holds one index at one, so the matrix algebra is not tested by that example.
+realization of the conditioning variables.
 
-Each result is also exhibited on a concrete model, by a declaration whose name ends in `_witness`
-and proves that its hypotheses hold together. A theorem with contradictory hypotheses compiles
-and proves nothing, and these declarations rule that out.
+Each result is also applied to an explicit example, in a declaration whose name ends in
+`_witness`: every object in the hypotheses is given a specific value, and the declaration proves
+that all the hypotheses hold together. Lean would also accept a theorem whose hypotheses cannot
+all hold at once, and such a theorem would apply to no case. In a few examples one dimension is
+set to one (one regressor, one
+observation, or identity matrices), which shows that the hypotheses are consistent but does not
+exercise the matrix algebra.
 
 Two results from outside the paper are formalized here because its proofs use them. Theorem 2 of
 Janson (1988, p. 307), the central limit theorem for sums over a dependency graph, is in
