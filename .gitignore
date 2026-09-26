@@ -1,0 +1,11 @@
+# Lake build directory: compiled oleans, the Mathlib checkout and its cache.
+# Never committed; `lake exe cache get` rebuilds it.
+/.lake
+
+# LaTeX intermediates from rebuilding the proof map.
+results/*.aux
+results/*.log
+results/*.pdf
+
+# The documentation build: its own Lake package, its own .lake.
+docbuild/.lake
