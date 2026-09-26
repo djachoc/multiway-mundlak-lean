@@ -149,8 +149,12 @@ explanatory comments.
 
 ```bibtex
 @unpublished{HarrisonEtAl2026_mundlak,
-  author = {Harrison, Benjamin O. and Canavire Bacarreza, Gustavo and Jacho-Chavez, David T. and Rios-Avila, Fernando},
-  title  = {Mundlak regressions in multiway panels with irregular support: Failure, repair, and inference},
+  author = {Harrison, Benjamin O. and
+            Canavire Bacarreza, Gustavo and
+            Jacho-Chavez, David T. and
+            Rios-Avila, Fernando},
+  title  = {Mundlak regressions in multiway panels with irregular support:
+            Failure, repair, and inference},
   note   = {Unpublished manuscript},
   year   = {2026}
 }
