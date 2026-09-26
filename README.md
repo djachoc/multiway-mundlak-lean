@@ -97,9 +97,10 @@ and proves nothing, and these declarations rule that out.
 
 Two results from outside the paper are formalized here because its proofs use them. Theorem 2 of
 Janson (1988, p. 307), the central limit theorem for sums over a dependency graph, is in
-`Multiway/JansonCLT.lean` with his Theorem 1 and Lemmas 1 to 4. Remark 3 of that paper, which
-extends the theorem to unbounded summands by truncation, is stated there without proof and is not
-formalized here; the manuscript writes out a truncation argument instead. Marcinkiewicz's
+`Multiway/JansonCLT.lean` with his Theorem 1 and Lemmas 1 to 4. Janson states Remark 3, which
+extends the theorem to unbounded summands by truncation, without proof. The paper does not use
+it: the proof of Theorem 5(b) truncates the summands itself and applies Theorem 2 to the truncated
+array, and that argument is formalized in `Multiway/ClusterJansonB.lean`. Marcinkiewicz's
 Théorème 2 bis is in `Multiway/Marcinkiewicz.lean`.
 
 ## Ported modules
