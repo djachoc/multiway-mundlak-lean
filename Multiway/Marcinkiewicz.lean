@@ -17,8 +17,8 @@ import Mathlib.Tactic.ComputeDegree
 # Marcinkiewicz's theorem (1939, Théorème 2^bis)
 
 If a probability measure on `ℝ` has characteristic function `exp ∘ p` for a polynomial `p`,
-then `deg p ≤ 2`, so the measure is Gaussian (possibly degenerate). This is the external input
-to the proof of Janson (1988, Theorem 2). It is unrelated to the Marcinkiewicz interpolation
+then `deg p ≤ 2`, so the measure is Gaussian (possibly degenerate). It is used in the proof of
+Janson (1988, Theorem 2). It is unrelated to the Marcinkiewicz interpolation
 theorem.
 
 The proof is the classical one. The characteristic function extends to the entire function
@@ -85,8 +85,8 @@ private lemma rayPoly_eval (p : Polynomial ℂ) (w₁ w₂ : ℂ) (r : ℝ) :
     Polynomial.eval_pow, Polynomial.eval_X, ← Finset.sum_sub_distrib]
   exact Finset.sum_congr rfl fun k _ ↦ by ring
 
-/-- A real polynomial that is nonnegative on all of `ℝ` has nonnegative coefficient in every
-degree at or above its own degree. -/
+/-- If a real polynomial `P` is nonnegative on `ℝ` and `deg P ≤ n` with `n > 0`, then the
+coefficient of `X ^ n` in `P` is nonnegative. -/
 private lemma coeff_nonneg_of_eval_nonneg {P : Polynomial ℝ} {n : ℕ} (hn : 0 < n)
     (hdeg : P.degree ≤ (n : WithBot ℕ)) (hpos : ∀ r : ℝ, 0 ≤ P.eval r) : 0 ≤ P.coeff n := by
   by_contra hlt
@@ -327,7 +327,7 @@ end Ridge
 
 /-! ### The analytic characteristic function theorem: moments
 
-The induction works directly with the oscillating integrals
+The induction uses the oscillating integrals
 `momInt μ (2 n) t = ∫ x ^ (2 n) exp (i t x) dμ`, which `MeasureTheory.iteratedDeriv_charFun`
 identifies with `± iteratedDeriv (2 n) (charFun μ) t`. -/
 
@@ -336,7 +336,7 @@ section StepA
 open MeasureTheory ProbabilityTheory
 
 /-- The second difference quotient `(2 - 2 cos (h x)) / h ^ 2` converges to `x ^ 2` as
-`h ↓ 0`, with the quantitative rate supplied by `Real.cos_bound`. -/
+`h ↓ 0`, with the rate given by `Real.cos_bound`. -/
 lemma tendsto_two_sub_two_cos_div_sq (x : ℝ) :
     Filter.Tendsto (fun h : ℝ ↦ (2 - 2 * Real.cos (h * x)) / h ^ 2)
       (nhdsWithin 0 (Set.Ioi (0 : ℝ))) (nhds (x ^ 2)) := by
@@ -572,8 +572,8 @@ private lemma momInt_second_difference {μ : Measure ℝ} {n : ℕ}
   rfl
 
 
-/-- From `Integrable (x ^ (2 m))` to `MemLp id (2 m)`, the form
-`MeasureTheory.iteratedDeriv_charFun` takes. -/
+/-- `Integrable (x ^ (2 m))` implies `MemLp id (2 m)`, the hypothesis of
+`MeasureTheory.iteratedDeriv_charFun`. -/
 private lemma memLp_id_of_integrable_pow {μ : Measure ℝ} {m : ℕ}
     (hint : Integrable (fun x : ℝ ↦ x ^ (2 * m)) μ) : MemLp id ((2 * m : ℕ) : ℝ≥0∞) μ := by
   rcases Nat.eq_zero_or_pos m with rfl | hm
@@ -739,7 +739,7 @@ theorem hasAllExpMoments_of_charFun_eq_exp [IsProbabilityMeasure μ]
           = fun s : ℝ ↦ iteratedDeriv k G (s : ℂ) := funext ih
       rw [hfe]
       exact (((hGd k) (t : ℂ)).hasDerivAt.comp_ofReal).deriv
-  -- the even moments are exactly the derivatives of `G` at `0`
+  -- the even moments are the derivatives of `G` at `0`
   have hmom : ∀ n : ℕ, ∫ x : ℝ, x ^ (2 * n) ∂μ = ‖iteratedDeriv (2 * n) G 0‖ := by
     intro n
     have hnn : (0 : ℝ) ≤ ∫ x : ℝ, x ^ (2 * n) ∂μ := by
@@ -827,8 +827,8 @@ end Gap
 
 /-! ### Examples
 
-The theorems above applied to the standard Gaussian, and a function that is not a
-characteristic function. -/
+The theorems above are applied to the standard Gaussian, and `exp (- t ^ 4)` is shown not to
+be a characteristic function. -/
 
 section Witness
 
@@ -842,7 +842,7 @@ lemma gaussPoly_eval (t : ℂ) : gaussPoly.eval t = -t ^ 2 / 2 := by
   simp [gaussPoly]; ring
 
 /-- `degree_le_two_of_hasAllExpMoments` applied to the standard Gaussian, with the exponential
-moments supplied by `ProbabilityTheory.integrable_exp_mul_gaussianReal`. -/
+moments from `ProbabilityTheory.integrable_exp_mul_gaussianReal`. -/
 theorem gaussian_witness : gaussPoly.degree ≤ 2 := by
   refine degree_le_two_of_hasAllExpMoments (μ := gaussianReal 0 1) ?_ ?_
   · intro c

@@ -4,11 +4,11 @@ import Multiway.Quadform
 /-!
 # A model for the Regime-1 fourth-moment bounds
 
-This file exhibits a single model satisfying every hypothesis of the three Regime-1 forms of
-Lemma SM.B.5 (Fourth moments pass to the idiosyncratic component) in `Multiway.Moments`, and
-derives their conclusions through those theorems. The model has three independent fair signs:
-site `0` carries `ε_o`, sites `1` and `2` carry the shocks `a^{(1)}`, `a^{(2)}`, and the design
-σ-field `𝒟` is a proper sub-σ-field. Both conditional-independence hypotheses are derived from
+A single model satisfies every hypothesis of the three Regime-1 forms of Lemma SM.B.5 (Fourth
+moments pass to the idiosyncratic component) in `Multiway.Moments`, and their conclusions are
+derived through those theorems. The model has three independent fair signs, `ε_o` at site `0` and
+the shocks `a^{(1)}`, `a^{(2)}` at sites `1` and `2`, and the design σ-field `𝒟` is a proper
+sub-σ-field. Both conditional-independence hypotheses are derived from
 mutual conditional independence given `𝒟`, and `∫ ε_o⁴ = 1`, so the bounds are non-degenerate.
 
 ## Main results
@@ -25,7 +25,7 @@ open Multiway.Quadform.CondIndepWitness
 
 /-! ### The model -/
 
-/-- The three sites: `0` carries `ε_o`, `1` and `2` carry the two category-level shocks. -/
+/-- The three sites, `0` for `ε_o` and `1`, `2` for the two category-level shocks. -/
 abbrev Site : Type := Fin 3
 
 /-- The sample space: one fair sign per site, plus the design coordinate `none`. -/
@@ -168,7 +168,7 @@ theorem integral_epsW_pow_four : ∫ ω, epsW ω ^ 4 ∂(wP Site) = 1 := by
   norm_num at hg
   simpa [wP, epsW, wEps, gU] using hg
 
-/-! ### The witness -/
+/-! ### Example -/
 
 /-- Every hypothesis of `Moments.condExp_fourth_idiosyncratic_le_regime1`,
 `Moments.condExp_fourth_idiosyncratic_le_const_regime1` and

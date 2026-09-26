@@ -7,15 +7,15 @@ import Mathlib.Tactic.FieldSimp
 # Variance of a quadratic form under interaction dependence
 
 This file formalizes Lemma SM.C.6 of the paper (variance of a quadratic form under interaction
-dependence): for symmetric `W`,
-`Var(ζ'Wζ | 𝒟) ≤ 2 tr(W Ω' W Ω') + C(M) G_max c_max ‖W‖_F²`.
+dependence), which states `Var(ζ'Wζ | 𝒟) ≤ 2 tr(W Ω' W Ω') + C(M) G_max c_max ‖W‖_F²` for
+symmetric `W`.
 
 The conditional expectation is an abstract linear functional `E : (Ω → ℝ) →ₗ[ℝ] ℝ`, standing
 for `E[· | 𝒟]` along a fixed design realization, and `W` is a constant matrix. The fourth
 joint cumulant is defined by the moment formula for mean-zero variables, so multilinearity and
 vanishing under a split into independent groups are immediate. The moment identities used by
 the proof enter as hypotheses (`hOmdef`, `hsupp`, `hbdd`); they are derived from a product-law
-model of Regime 2 in `Multiway.QuadformE2Indep`. The bulk of the file is the site counting.
+model of Regime 2 in `Multiway.QuadformE2Indep`.
 
 ## Main results
 
@@ -24,7 +24,7 @@ model of Regime 2 in `Multiway.QuadformE2Indep`. The bulk of the file is the sit
   hypothesis.
 * `var_quadForm_le_levels`: the bound from the level decomposition.
 
-The names `Linked` and `quadForm` here are distinct from `Multiway.Linked` and
+`Linked` and `quadForm` in this namespace are distinct from `Multiway.Linked` and
 `Multiway.Quadform.quadForm`.
 -/
 
@@ -68,7 +68,7 @@ theorem cum4_add_four (E : (Ω → ℝ) →ₗ[ℝ] ℝ) (a b c x y : Ω → ℝ
 theorem cum4_zero_one (E : (Ω → ℝ) →ₗ[ℝ] ℝ) (b c d : Ω → ℝ) : cum4 E 0 b c d = 0 := by
   simp [cum4]
 
-/-- Multilinearity in the first slot: a finite sum may be expanded inside a cumulant. -/
+/-- Linearity over a finite sum in the first slot. -/
 theorem cum4_sum_one {ι : Type*} (E : (Ω → ℝ) →ₗ[ℝ] ℝ) (s : Finset ι) (f : ι → Ω → ℝ)
     (b c d : Ω → ℝ) : cum4 E (∑ i ∈ s, f i) b c d = ∑ i ∈ s, cum4 E (f i) b c d := by
   classical
@@ -140,8 +140,8 @@ theorem cum4_eq_zero_of_indep_pair (E : (Ω → ℝ) →ₗ[ℝ] ℝ) {a b c d :
     (ha : E a = 0) (hb : E b = 0) : cum4 E a b c d = 0 := by
   simp [cum4, h4, hac, had, hbc, hbd, ha, hb]
 
-/-- The same, in the singleton-versus-triple case `{a} ⊥ {b,c,d}`: every term of the
-moment formula carries `E[a] = 0`. -/
+/-- The same in the singleton-versus-triple case `{a} ⊥ {b,c,d}`, where every term of the
+moment formula has the factor `E[a] = 0`. -/
 theorem cum4_eq_zero_of_indep_single (E : (Ω → ℝ) →ₗ[ℝ] ℝ) {a b c d : Ω → ℝ}
     (h4 : E (a * (b * c * d)) = E a * E (b * c * d))
     (hab : E (a * b) = E a * E b) (hac : E (a * c) = E a * E c)
@@ -357,7 +357,7 @@ end Identity
 /-! ## 4. The site combinatorics
 
 A *site* is a pair `(k, j)` with `k` a fixed-effect dimension and `j` a category of it; argument
-`i`, carrying level `e i` and observation `o i`, occupies the site `(k, idx k (o i))` for each
+`i`, with level `e i` and observation `o i`, occupies the site `(k, idx k (o i))` for each
 `k ∈ e i`. -/
 
 section Counting
@@ -403,9 +403,9 @@ instance [DecidableEq D] [DecidableEq L] (idx : D → O → L) (e : Fin 4 → Fi
     (o : Fin 4 → O) : Decidable (Linked idx e o) := by
   unfold Linked; infer_instance
 
-/-- The determination step: if two quadruples agree off `i₀` and are both admissible, the
-remaining argument is determined at every coordinate `k ∈ e i₀`. Proved by counting: two
-admissible values would need four distinct partners among the other three arguments. -/
+/-- The determination step. If two quadruples agree off `i₀` and are both admissible, the
+remaining argument is determined at every coordinate `k ∈ e i₀`. The proof is by counting, since
+two admissible values would need four distinct partners among the other three arguments. -/
 theorem sameOn_of_admissible {idx : D → O → L} {e : Fin 4 → Finset D} {o o' : Fin 4 → O}
     {i₀ : Fin 4} (hagree : ∀ i, i ≠ i₀ → o i = o' i)
     (h : Admissible idx e o) (h' : Admissible idx e o') :
@@ -414,9 +414,9 @@ theorem sameOn_of_admissible {idx : D → O → L} {e : Fin 4 → Finset D} {o o
   by_contra hne
   obtain ⟨i₁, hi₁ne, hi₁e, hi₁⟩ := h i₀ k hk
   obtain ⟨i₂, hi₂ne, hi₂e, hi₂⟩ := h' i₀ k hk
-  -- `i₂` carries the value `t' := idx k (o' i₀)` under `o` as well
+  -- `i₂` has the value `t' := idx k (o' i₀)` under `o` as well
   have hi₂' : idx k (o i₂) = idx k (o' i₀) := by rw [hagree i₂ hi₂ne]; exact hi₂
-  -- a second index carrying `t := idx k (o i₀)`
+  -- a second index with value `t := idx k (o i₀)`
   obtain ⟨i₃, hi₃ne, hi₃e, hi₃⟩ := h' i₁ k hi₁e
   have hi₁' : idx k (o' i₁) = idx k (o i₀) := by rw [← hagree i₁ hi₁ne]; exact hi₁
   have hi₃i₀ : i₃ ≠ i₀ := by
@@ -425,7 +425,7 @@ theorem sameOn_of_admissible {idx : D → O → L} {e : Fin 4 → Finset D} {o o
     rw [← hi₁', ← hi₃, hh]
   have hi₃v : idx k (o i₃) = idx k (o i₀) := by
     rw [hagree i₃ hi₃i₀, hi₃, hi₁']
-  -- a second index carrying `t'`
+  -- a second index with value `t'`
   obtain ⟨i₄, hi₄ne, hi₄e, hi₄⟩ := h i₂ k hi₂e
   have hi₄i₀ : i₄ ≠ i₀ := by
     intro hh
@@ -460,7 +460,7 @@ section Vk
 
 variable [DecidableEq D] [DecidableEq L]
 
-/-- The multiset `V_k` of values at coordinate `k` carried by the three arguments other
+/-- The multiset `V_k` of the values at coordinate `k` of those of the three arguments other
 than `i₀` that occupy `k`. -/
 def valuesAt (idx : D → O → L) (e : Fin 4 → Finset D) (o : Fin 4 → O) (i₀ : Fin 4) (k : D) :
     Multiset L :=
@@ -523,8 +523,8 @@ theorem two_le_count_of_admissible {idx : D → O → L} {e : Fin 4 → Finset D
   simpa [Multiset.replicate_succ, hfi, hfi'] using hle
 
 /-- On a multiset with at most three elements, at most one value `t` is such that `t` and
-the multiset together contain every value at least twice. The bound is necessary: on
-`{a,a,b,b}` both `a` and `b` qualify. -/
+the multiset together contain every value at least twice. The bound on the size is necessary,
+since on `{a,a,b,b}` both `a` and `b` qualify. -/
 theorem eq_of_two_le_count {V : Multiset L} (hV : Multiset.card V ≤ 3) {t t' : L}
     (ht : ∀ j ∈ t ::ₘ V, 2 ≤ Multiset.count j (t ::ₘ V))
     (ht' : ∀ j ∈ t' ::ₘ V, 2 ≤ Multiset.count j (t' ::ₘ V)) : t = t' := by
@@ -584,8 +584,8 @@ theorem not_admissible_of_two_singletons {V : Multiset L} {a b : L} (hab : a ≠
     rw [Multiset.count_cons_of_ne (Ne.symm hta)] at this
     omega
 
-/-- The determination step, via `V_k`: the two candidate values `t_{i₀k}` and `t'_{i₀k}`
-share the same `V_k`, and `eq_of_two_le_count` forces them equal. -/
+/-- The determination step via `V_k`. The two candidate values `t_{i₀k}` and `t'_{i₀k}` have
+the same `V_k`, and `eq_of_two_le_count` forces them to be equal. -/
 theorem sameOn_of_admissible_vk {idx : D → O → L} {e : Fin 4 → Finset D} {o o' : Fin 4 → O}
     {i₀ : Fin 4} (hagree : ∀ i, i ≠ i₀ → o i = o' i)
     (h : Admissible idx e o) (h' : Admissible idx e o') :
@@ -611,8 +611,8 @@ end Vk
 
 /-! ### Invariance under permuting the four arguments -/
 
-/-- `Admissible` is a condition on the quadruple, so it survives any relabelling of the four
-arguments that moves the levels with them. -/
+/-- `Admissible` is invariant under any relabelling of the four arguments that moves the levels
+with them. -/
 theorem admissible_comp {idx : D → O → L} {e : Fin 4 → Finset D} {o : Fin 4 → O}
     (σ : Equiv.Perm (Fin 4)) (h : Admissible idx e o) :
     Admissible idx (e ∘ σ) (o ∘ σ) := by
@@ -856,8 +856,8 @@ theorem card_admissiblePairs_le (idx : D → O → L) (e : Fin 4 → Finset D) (
     _ ≤ 2 * (((e 0).card + (e 1).card) * Gmax) * cmax :=
         Nat.mul_le_mul_right _ (Nat.mul_le_mul_left 2 hTcard)
 
-/-- The admissibility relation of a fixed assignment, between the pairs `(o₁,o₂)` and
-`(o₃,o₄)`: the conjunction of `Admissible` and `Linked`. -/
+/-- The admissibility relation of a fixed assignment between the pairs `(o₁,o₂)` and
+`(o₃,o₄)`, defined as the conjunction of `Admissible` and `Linked`. -/
 def admRel (idx : D → O → L) (e : Fin 4 → Finset D) (p q : O × O) : Prop :=
   Admissible idx e (quad p.1 p.2 q.1 q.2) ∧ Linked idx e (quad p.1 p.2 q.1 q.2)
 
@@ -875,7 +875,7 @@ theorem filter_admRel_row (idx : D → O → L) (e : Fin 4 → Finset D) (p : O 
     exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, (Finset.mem_filter.mp h).2⟩
 
 omit [DecidableEq O] in
-/-- The column count equals a row count: exchanging the two pairs is the permutation
+/-- The column count equals a row count, since exchanging the two pairs is the permutation
 `pairSwap`, which preserves `Admissible` and `Linked`. -/
 theorem filter_admRel_col (idx : D → O → L) (e : Fin 4 → Finset D) (q : O × O) :
     (Finset.univ.filter fun p => admRel idx e p q)
@@ -1010,7 +1010,7 @@ theorem var_quadForm_le_sites {Γ D L : Type*} [DecidableEq D] [DecidableEq L] [
 
 end Assembly
 
-/-! ## 6. A witness
+/-! ## 6. An example
 
 The hypotheses of `var_quadForm_le_sites` hold on a model with one observation, two
 fixed-effect dimensions and a Rademacher variable under the uniform law on `Bool`. -/
@@ -1209,8 +1209,8 @@ a linear functional on all of `Ω → ℝ`; `condAvg` is this object. -/
 
 section CondExp
 
-/-- `E[· ∣ 𝒟](ω₀)` on a finite sample space, where `A` is the atom containing `ω₀`: the
-`p`-weighted average over `A`. -/
+/-- `E[· ∣ 𝒟](ω₀)` on a finite sample space, the `p`-weighted average over the atom `A`
+containing `ω₀`. -/
 noncomputable def condAvg {Ω : Type*} (p : Ω → ℝ) (A : Finset Ω) : (Ω → ℝ) →ₗ[ℝ] ℝ where
   toFun f := (∑ ω ∈ A, p ω * f ω) / (∑ ω ∈ A, p ω)
   map_add' f g := by
@@ -1227,8 +1227,7 @@ noncomputable def condAvg {Ω : Type*} (p : Ω → ℝ) (A : Finset Ω) : (Ω �
 @[simp] theorem condAvg_apply {Ω : Type*} (p : Ω → ℝ) (A : Finset Ω) (f : Ω → ℝ) :
     condAvg p A f = (∑ ω ∈ A, p ω * f ω) / (∑ ω ∈ A, p ω) := rfl
 
-/-- The defining property of a conditional expectation on the atom:
-`∫_A f = P(A)·E[f∣𝒟]`. -/
+/-- The defining property `∫_A f = P(A)·E[f∣𝒟]` of a conditional expectation on the atom. -/
 theorem condAvg_defining {Ω : Type*} (p : Ω → ℝ) (A : Finset Ω)
     (hA : (∑ ω ∈ A, p ω) ≠ 0) (f : Ω → ℝ) :
     (∑ ω ∈ A, p ω) * condAvg p A f = ∑ ω ∈ A, p ω * f ω := by
@@ -1248,7 +1247,7 @@ theorem witE_eq_condAvg : witE = condAvg (fun _ : Bool => (1:ℝ)/2) Finset.univ
 
 end CondExp
 
-/-! ## 9. A witness at a nontrivial conditional expectation
+/-! ## 9. An example at a nontrivial conditional expectation
 
 The hypotheses of `var_quadForm_le_levels` hold on a model with one observation, `M = 2`,
 `Ω = Bool × Bool` under the uniform law and `𝒟 = σ(first coordinate)` realized at
@@ -1257,7 +1256,7 @@ cumulant is `-2`. -/
 
 section WitnessCond
 
-/-- The conditioning atom: `𝒟 = σ(first coordinate)`, realized at `ω₁ = true`. -/
+/-- The conditioning atom of `𝒟 = σ(first coordinate)` realized at `ω₁ = true`. -/
 def witAtom : Finset (Bool × Bool) := {(true, true), (true, false)}
 
 /-- `E[· ∣ 𝒟]` along that realization, under the uniform law on `Bool × Bool`. -/
@@ -1271,7 +1270,7 @@ noncomputable def witE₂ : ((Bool × Bool) → ℝ) →ₗ[ℝ] ℝ :=
     Finset.sum_insert (by decide), Finset.sum_singleton]
   ring
 
-/-- A variable that is Rademacher **on the atom** and constant `3` off it. -/
+/-- A variable that is Rademacher on the atom and constant `3` off it. -/
 def witZ₂ : Fin 1 → (Bool × Bool) → ℝ :=
   fun _ ω => if ω.1 then (if ω.2 then (1:ℝ) else -1) else 3
 

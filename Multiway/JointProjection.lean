@@ -4,7 +4,7 @@ import Multiway.Spanning
 # Joint-projection equivalence, minimality and exact absorption
 
 This file formalizes Theorem 3 of the paper (Joint-projection equivalence, minimality and exact
-absorption), in the abstraction of `Multiway.Spanning`: `E` is the observation space, `X : F →ₗ[ℝ] E`
+absorption), in the abstract setting of `Multiway.Spanning`, where `E` is the observation space, `X : F →ₗ[ℝ] E`
 the regressors, `S` the joint fixed-effects space `𝒮`, and the estimators are given by their
 normal equations. The intercept `ι` is an arbitrary element of `S`.
 
@@ -34,8 +34,8 @@ variable [AddCommGroup F] [Module ℝ F]
 
 /-! ### The two control spaces -/
 
-/-- `col(P_[Δ]X)`, the joint between component of the regressors: the image of `col(X)`
-under `P_[Δ]`. -/
+/-- `col(P_[Δ]X)`, the image of `col(X)` under `P_[Δ]`, spanned by the joint between
+component of the regressors. -/
 noncomputable def jointProjControls (S : Submodule ℝ E) (X : F →ₗ[ℝ] E) : Submodule ℝ E :=
   (LinearMap.range X).map (S.starProjection : E →L[ℝ] E).toLinearMap
 
@@ -86,7 +86,7 @@ theorem jointProjControls_le_of_equiv {S W : Submodule ℝ E} {X : F →ₗ[ℝ]
   (spanning_condition_iff S W X).mpr
     (starProjection_mem_of_isMFESlope_imp hWS fun y b hb => (hequiv y b).mpr hb)
 
-/-- **Theorem 3(b), second claim.** The control space `col(P_[Δ]X)` itself delivers
+/-- **Theorem 3(b), second claim.** With the control space `col(P_[Δ]X)`,
 `β̂_𝒞 = β̂_MFE` for every `y`. -/
 theorem jm_equiv_jointProjControls {S : Submodule ℝ E} {X : F →ₗ[ℝ] E}
     (hid : Identified S X) (y : E) (b : F) :
@@ -94,8 +94,8 @@ theorem jm_equiv_jointProjControls {S : Submodule ℝ E} {X : F →ₗ[ℝ] E}
   (spanning hid (jointProjControls_le S X)).mpr
     (starProjection_mem_jointProjControls S X) y b
 
-/-- **Theorem 3(b).** `col(P_[Δ]X)` is the smallest subspace of `𝒮` whose span by a control
-matrix delivers `β̂_𝒞 = β̂_MFE` for every `y`, and it is attained by `P_[Δ]X`. -/
+/-- **Theorem 3(b).** `col(P_[Δ]X)` is the smallest subspace `W ⊆ 𝒮` such that the control
+space `W` gives `β̂_𝒞 = β̂_MFE` for every `y`, and it is attained by `P_[Δ]X`. -/
 theorem jm_isLeast {S : Submodule ℝ E} {X : F →ₗ[ℝ] E} (hid : Identified S X) :
     IsLeast {W : Submodule ℝ E |
         W ≤ S ∧ ∀ (y : E) (b : F), IsAugSlope W X y b ↔ IsMFESlope S X y b}

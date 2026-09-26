@@ -22,7 +22,7 @@ derives the moment identities from independence of the innovation vectors.
 * `quadvar_compl_le`: the variance bound `E[((Θ'QΘ)_{jk} - tr(Q)(Σ_ξ)_{jk})²] ≤ 2C·n`.
 * `cgmsharp_bddInProb_of_moments`, `cgmsharp_tendstoInProb`: Lemma SM.B.9.
 * `CondP.tendstoInMeasure_of_deconditioning`, `CondP.lintegral_le_of_deconditioning`:
-  deconditioning bridges for convergence in measure and for lower-integral bounds.
+  convergence in measure and lower-integral bounds pass from `condExpKernel P 𝒟` to `P`.
 * `designcond_tendstoInProb_uncond`, `designcond_design_ii_uncond`: the first and third claims
   with a random design.
 -/
@@ -73,7 +73,7 @@ theorem cross_apply {Q : Matrix O O ℝ} (hsymm : Qᵀ = Q) (mu th : Matrix O ι
     simpa [Matrix.transpose_apply] using congrFun (congrFun hsymm o) o'
   rw [Matrix.transpose_apply, hq]; ring
 
-/-- `(Θ'Qμ)_{jk} = ∑_{o} (Qμ)_{ok} Θ_{oj}`. No symmetry is needed here. -/
+/-- `(Θ'Qμ)_{jk} = ∑_{o} (Qμ)_{ok} Θ_{oj}`, for any `Q`. -/
 theorem cross_apply' (Q : Matrix O O ℝ) (mu th : Matrix O ι ℝ) (j k : ι) :
     (thᵀ * Q * mu) j k = ∑ o : O, (Q * mu) o k * th o j := by
   have h : ∀ o' : O, (thᵀ * Q) j o' * mu o' k = ∑ o : O, (Q o o' * mu o' k) * th o j := by
@@ -92,7 +92,7 @@ theorem sum_sq_mulVec_eq {A : Matrix O O ℝ} (hs : Aᵀ = A) (hi : A * A = A)
   rw [h1, Matrix.transpose_mul, hs]
   rw [Matrix.mul_assoc, ← Matrix.mul_assoc A A v, hi, Matrix.mul_assoc]
 
-/-- `Q` is a contraction: `‖Q_[Δ]μ_{·j}‖² ≤ ‖μ_{·j}‖²`. -/
+/-- `‖Q_[Δ]μ_{·j}‖² ≤ ‖μ_{·j}‖²` for a symmetric idempotent `P_[Δ]`. -/
 theorem sum_sq_compl_mulVec_le [DecidableEq O] {Pm : Matrix O O ℝ} (hs : Pmᵀ = Pm)
     (hi : Pm * Pm = Pm) (v : Matrix O ι ℝ) (j : ι) :
     ∑ o : O, ((((1 : Matrix O O ℝ) - Pm) * v) o j) ^ 2 ≤ ∑ o : O, (v o j) ^ 2 := by
@@ -192,8 +192,8 @@ section Chebyshev
 
 variable {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
 
-/-- **Chebyshev's inequality along the sequence.** A second-moment bound by a null sequence
-gives convergence in probability. -/
+/-- By Chebyshev's inequality, a second-moment bound by a null sequence gives convergence in
+probability. -/
 theorem tendstoInProb_zero_of_integral_sq_le {Z : ℕ → Ω → ℝ}
     (hint : ∀ n, Integrable (fun ω => (Z n ω) ^ 2) P) {c : ℕ → ℝ}
     (hle : ∀ n, ∫ ω, (Z n ω) ^ 2 ∂P ≤ c n) (hc : Tendsto c atTop (𝓝 0)) :
@@ -230,7 +230,7 @@ variable {ι : Type*} [Fintype ι]
 variable {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
 
 omit [Fintype ι] in
-/-- **The cross term.** `n⁻¹(μ'Q_[Δ]Θ)_{jk} ⟶^p 0`, by Chebyshev's inequality from
+/-- The cross term satisfies `n⁻¹(μ'Q_[Δ]Θ)_{jk} ⟶^p 0`, by Chebyshev's inequality from
 `Var((μ'QΘ)_{jk}) = (Σ_ξ)_{kk}‖Qμ_{·j}‖² = O(n)`. -/
 theorem cross_tendstoInProb
     {xi : ∀ n, O n → ι → Ω → ℝ} {mu : ∀ n, Matrix (O n) ι ℝ} {Q : ∀ n, Matrix (O n) (O n) ℝ}
@@ -270,7 +270,7 @@ theorem cross_tendstoInProb
     rw [heq]
 
 omit [(n : ℕ) → DecidableEq (O n)] [Fintype ι] in
-/-- **The quadratic term.** `n⁻¹[(Θ'Q_[Δ]Θ)_{jk} - tr(Q_[Δ])(Σ_ξ)_{jk}] ⟶^p 0`. -/
+/-- The quadratic term satisfies `n⁻¹[(Θ'Q_[Δ]Θ)_{jk} - tr(Q_[Δ])(Σ_ξ)_{jk}] ⟶^p 0`. -/
 theorem quadCentered_tendstoInProb
     {xi : ∀ n, O n → ι → Ω → ℝ} {Q : ∀ n, Matrix (O n) (O n) ℝ}
     {Sig : Matrix ι ι ℝ} {Cq : ℝ} (j k : ι)
@@ -307,7 +307,7 @@ theorem cross_transpose_apply {O' ι' : Type*} [Fintype O'] {Q : Matrix O' O' �
   rw [cross_apply' Q mu th j k, cross_apply hsymm mu th k j]
 
 omit [Fintype ι] in
-/-- **Proposition SM.D.1, first display**, entry by entry:
+/-- **Proposition SM.D.1, first display.** Entry by entry,
 `n⁻¹X'Q_[Δ]X - [n⁻¹μ'Q_[Δ]μ + (1 - d_[Δ]/n)Σ_ξ] ⟶^p 0`, given the variance bound `hquadvar`. -/
 theorem designcond_tendstoInProb
     {xi : ∀ n, O n → ι → Ω → ℝ} {mu : ∀ n, Matrix (O n) ι ℝ} {Pm : ∀ n, Matrix (O n) (O n) ℝ}
@@ -382,7 +382,7 @@ theorem tendstoInProb_of_tendsto {b : ℕ → ℝ} {c : ℝ} (hb : Tendsto b atT
   exact zero_le
 
 omit [Fintype ι] in
-/-- **Proposition SM.D.1, third claim**: if in addition `n⁻¹μ'Q_[Δ]μ → H_μ` and `d_[Δ]/n → κ`,
+/-- **Proposition SM.D.1, third claim.** If in addition `n⁻¹μ'Q_[Δ]μ → H_μ` and `d_[Δ]/n → κ`,
 then part (ii) of the design assumption holds with `H = H_μ + (1-κ)Σ_ξ`, entry by entry. -/
 theorem designcond_design_ii
     {xi : ∀ n, O n → ι → Ω → ℝ} {mu : ∀ n, Matrix (O n) ι ℝ} {Pm : ∀ n, Matrix (O n) (O n) ℝ}
@@ -413,7 +413,7 @@ theorem designcond_design_ii
   funext ω
   ring
 
-/-- **Proposition SM.D.1, second display**, in quadratic-form form:
+/-- **Proposition SM.D.1, second display.** As quadratic forms,
 `H = H_μ + (1-κ)Σ_ξ ⪰ (1-κ)Σ_ξ`. The eigenvalue bound `λ_min(H) ≥ (1-κ)λ_min(Σ_ξ)` follows by
 the variational characterization of the smallest eigenvalue. -/
 theorem designcond_quadForm_lower_bound {Hmu Sig : Matrix ι ι ℝ} {κ : ℝ}
@@ -434,12 +434,12 @@ theorem designcond_quadForm_lower_bound {Hmu Sig : Matrix ι ι ℝ} {κ : ℝ}
 
 end Main
 
-/-! ### Witnesses -/
+/-! ### Examples -/
 
 section Witness
 
-/-- The moment-level witness model: one observation, one regressor, the innovation equal to
-`1`, so that `Sigma_xi = 1`. -/
+/-- A model with one observation, one regressor and innovation equal to `1`, so that
+`Sigma_xi = 1`. -/
 def witnessXi : Fin 1 -> Fin 1 -> Unit -> Real := fun _ _ _ => 1
 
 theorem witnessXi_int (o o' : Fin 1) (a b : Fin 1) :
@@ -454,7 +454,7 @@ theorem witnessXi_cov (o o' : Fin 1) (a b : Fin 1) :
   subst ho; subst hab
   simp [witnessXi]
 
-/-- Witness for `integral_quad`, with right-hand side `tr(A)(Sigma_xi)_{00} = 1`. -/
+/-- `integral_quad` applied to this model, with right-hand side `tr(A)(Sigma_xi)_{00} = 1`. -/
 theorem integral_quad_witness :
     (integral (Measure.dirac ()) fun u =>
         ((theta witnessXi u)ᵀ * (1 : Matrix (Fin 1) (Fin 1) Real) * theta witnessXi u) 0 0)
@@ -465,7 +465,7 @@ theorem integral_quad_witness :
   rw [h]
   simp
 
-/-- Witness for `integral_linForm_sq`: with `c = 2` the right-hand side is `4`. -/
+/-- `integral_linForm_sq` applied to this model. With `c = 2` the right-hand side is `4`. -/
 theorem integral_linForm_sq_witness :
     (integral (Measure.dirac ()) fun u => (∑ o : Fin 1, (2 : Real) * witnessXi o 0 u) ^ 2)
       = 4 := by
@@ -475,8 +475,8 @@ theorem integral_linForm_sq_witness :
   rw [h]
   norm_num
 
-/-- The design-level witness: `n` observations, one regressor identically `1`, and the
-trivial fixed-effects space, so that `d_{[Delta]} = 0` and `H_mu = 1`. -/
+/-- A design with `n` observations, one regressor identically `1` and the trivial fixed-effects
+space, so that `d_{[Delta]} = 0` and `H_mu = 1`. -/
 def witnessMu (n : Nat) : Matrix (Fin n) (Fin 1) Real := fun _ _ => 1
 
 theorem witnessMu_gram (n : Nat) :
@@ -489,8 +489,8 @@ theorem witnessXi0_cov (n : Nat) (o o' : Fin n) (a b : Fin 1) :
       = if o = o' then (0 : Matrix (Fin 1) (Fin 1) Real) a b else 0 := by
   by_cases h : o = o' <;> simp [h]
 
-/-- Witness for `designcond_tendstoInProb` and `designcond_design_ii`, with limit
-`H = H_mu + (1-kappa) Sigma_xi = 1`. The innovations are degenerate. -/
+/-- On this design with degenerate innovations, `n⁻¹X'Q_[Δ]X ⟶^p H_mu + (1-kappa) Sigma_xi = 1`,
+as `designcond_tendstoInProb` and `designcond_design_ii` state. -/
 theorem designcond_witness :
     TendstoInMeasure (Measure.dirac ())
       (fun (n : Nat) (u : Unit) => (n : Real)⁻¹
@@ -588,13 +588,14 @@ end CgmSharpGroundwork
 /-! ### The variance expansion
 
 For a general coefficient matrix `A` and general `(j,k)`,
-`∫ ((Θ'AΘ)_{jk} - tr(A)(Σ_ξ)_{jk})² ≤ 2C‖A‖_F²`: only the pairings of `(o,o')` with itself or
-with its transpose survive, and each is bounded by the fourth-moment bound. At `A = Q_[Δ]` this
+`∫ ((Θ'AΘ)_{jk} - tr(A)(Σ_ξ)_{jk})² ≤ 2C‖A‖_F²`. In the expansion of the square, only the
+pairings of `(o,o')` with itself or with its transpose have nonzero expectation, and each is
+bounded by the fourth-moment bound. At `A = Q_[Δ]` this
 gives `quadvar_compl_le`, since `‖Q_[Δ]‖_F² = tr(Q_[Δ]) = n - d_[Δ]`.
 
 The hypotheses `hfour`, `hpair4`, `hmixed4`, `hmixed4'`, `hquad4` state the four-fold moments
-of the innovations (bounded by `C`, and the values conditional independence gives them);
-they are derived from the primitive-design assumption at the end of the file. `hint4` is the
+of the innovations (a bound by `C`, and the values implied by conditional independence).
+They follow from the primitive-design assumption (`quadvar_compl_le_of_primitive`). `hint4` is the
 integrability of the four-fold products.
 -/
 
@@ -609,8 +610,8 @@ def centPair (xi : O → ι → Ω → ℝ) (Sig : Matrix ι ι ℝ) (j k : ι) 
   xi p.1 j ω * xi p.2 k ω - (if p.1 = p.2 then Sig j k else 0)
 
 omit [MeasurableSpace Ω] in
-/-- `(Θ'AΘ)_{jk} - tr(A)(Σ_ξ)_{jk} = ∑_{(o,o')} A_{oo'}G_{(o,o')}`: the centering of
-`integral_quad` written as a single sum over index pairs. -/
+/-- `(Θ'AΘ)_{jk} - tr(A)(Σ_ξ)_{jk} = ∑_{(o,o')} A_{oo'}G_{(o,o')}`, which writes the centering of
+`integral_quad` as a single sum over index pairs. -/
 theorem quad_sub_trace_eq_sum (A : Matrix O O ℝ) (xi : O → ι → Ω → ℝ) (Sig : Matrix ι ι ℝ)
     (j k : ι) (ω : Ω) :
     ((theta xi ω)ᵀ * A * theta xi ω) j k - A.trace * Sig j k
@@ -686,7 +687,7 @@ theorem integral_centPair_mul [IsProbabilityMeasure P]
   ring
 
 omit [Fintype O] in
-/-- The diagonal pairing is bounded by the fourth-moment bound: `E[G_p²] ≤ C`. -/
+/-- `E[G_p²] ≤ C`, by the fourth-moment bound. -/
 theorem integral_centPair_self_le [IsProbabilityMeasure P]
     (hint2 : ∀ o o' a b, Integrable (fun ω => xi o a ω * xi o' b ω) P)
     (hint4 : ∀ r s : O × O, Integrable
@@ -705,7 +706,7 @@ theorem integral_centPair_self_le [IsProbabilityMeasure P]
   linarith [hfour p.1 p.2]
 
 omit [Fintype O] in
-/-- Every surviving pairing is at most `C`: `|E[G_pG_q]| ≤ (E[G_p²] + E[G_q²])/2`. -/
+/-- `|E[G_pG_q]| ≤ C`, since `|E[G_pG_q]| ≤ (E[G_p²] + E[G_q²])/2`. -/
 theorem abs_integral_centPair_mul_le [IsProbabilityMeasure P]
     (hint2 : ∀ o o' a b, Integrable (fun ω => xi o a ω * xi o' b ω) P)
     (hint4 : ∀ r s : O × O, Integrable
@@ -739,8 +740,7 @@ theorem abs_integral_centPair_mul_le [IsProbabilityMeasure P]
   linarith
 
 omit [Fintype O] in
-/-- Only the pairings of `p` with itself or with its transpose survive: `E[G_pG_q] = 0` whenever
-`q ≠ p` and `q ≠ pᵀ`. -/
+/-- `E[G_pG_q] = 0` whenever `q ≠ p` and `q ≠ pᵀ`. -/
 theorem integral_centPair_mul_eq_zero [IsProbabilityMeasure P]
     (hint2 : ∀ o o' a b, Integrable (fun ω => xi o a ω * xi o' b ω) P)
     (hint4 : ∀ r s : O × O, Integrable
@@ -777,9 +777,9 @@ theorem integral_centPair_mul_eq_zero [IsProbabilityMeasure P]
       rw [hcp, hcq, hquad4 p q hp hqd hq hqT]
       ring
 
-/-- **The bilinear variance bound**, at a general coefficient matrix `A` and general `(j,k)`:
-`E[((Θ'AΘ)_{jk} - tr(A)(Σ_ξ)_{jk})²] ≤ 2C‖A‖_F²`. The factor `2` counts the two surviving
-pairings. -/
+/-- For a general coefficient matrix `A` and general `(j,k)`,
+`E[((Θ'AΘ)_{jk} - tr(A)(Σ_ξ)_{jk})²] ≤ 2C‖A‖_F²`. The factor `2` counts the pairings of `p` with
+itself and with `pᵀ`. -/
 theorem integral_quad_centered_sq_le [IsProbabilityMeasure P] (A : Matrix O O ℝ) (hC : 0 ≤ C)
     (hint2 : ∀ o o' a b, Integrable (fun ω => xi o a ω * xi o' b ω) P)
     (hint4 : ∀ r s : O × O, Integrable
@@ -908,7 +908,7 @@ theorem quadvar_compl_le [IsProbabilityMeasure P] {Pm : Matrix O O ℝ} (hC : 0 
   have htr : 0 ≤ Pm.trace := Cgm.trace_nonneg_of_symmProj hs hi
   nlinarith
 
-/-- The raw second moment: `E[((Θ'AΘ)_{jk})²] ≤ 2(tr(A)Σ_{jk})² + 4C‖A‖_F²`. -/
+/-- The uncentered second moment satisfies `E[((Θ'AΘ)_{jk})²] ≤ 2(tr(A)Σ_{jk})² + 4C‖A‖_F²`. -/
 theorem integral_quad_sq_le [IsProbabilityMeasure P] (A : Matrix O O ℝ) (hC : 0 ≤ C)
     (hint2 : ∀ o o' a b, Integrable (fun ω => xi o a ω * xi o' b ω) P)
     (hint4 : ∀ r s : O × O, Integrable
@@ -949,9 +949,8 @@ variable {ι : Type*} [Fintype ι]
 variable {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
 
 omit [Fintype ι] in
-/-- **Proposition SM.D.1, first display**, with the variance bound supplied by
-`quadvar_compl_le` from the fourth-moment structure, at `Cq = 2C`. Here `hcardn` holds at every
-`n`. -/
+/-- **Proposition SM.D.1, first display**, with the variance bound given by `quadvar_compl_le` at
+`Cq = 2C`. The hypothesis `hcardn` states that there are `n` observations at index `n`. -/
 theorem designcond_tendstoInProb_of_moments [IsProbabilityMeasure P]
     {xi : ∀ n, O n → ι → Ω → ℝ} {mu : ∀ n, Matrix (O n) ι ℝ} {Pm : ∀ n, Matrix (O n) (O n) ℝ}
     {Sig : Matrix ι ι ℝ} {Cmu C : ℝ} (j k : ι) (hSigj : 0 ≤ Sig j j) (hSigk : 0 ≤ Sig k k)
@@ -1009,8 +1008,8 @@ both bounded by `d_[Δ]` (`trace_conj_hadamardLink`, `rectFrobSq_hadamardLink_le
 fluctuation is bounded by the variance expansion above. `Ξ^{(2)}_n` is bounded by a pathwise
 Cauchy–Schwarz inequality over the sharing pairs and the cluster count
 `#{(o,o') : o ∼ o'} ≤ J·G_max·n`. The two halves are added in the Frobenius norm, which bounds
-the `l2` operator norm. The hypothesis `hone` asks that the normalizer
-`d_[Δ] + (G_max n)^{1/2}` be at least `1`, which excludes the empty design.
+the `l2` operator norm. The hypothesis `hone` requires the normalizer
+`d_[Δ] + (G_max n)^{1/2}` to be at least `1`, which excludes the empty design.
 -/
 
 section CgmSharpAlgebra
@@ -1135,7 +1134,7 @@ theorem xiMat_compl_eq_quad (c : D → O → L) (dims : Finset D) {Q : Matrix O 
   rw [Cgm.xiMat, Matrix.transpose_mul, hs]
   simp [Matrix.mul_assoc]
 
-/-! The 0/1 weight `(𝒮h - I)` and the counting step. -/
+/-! The 0/1 weight `(𝒮h - I)` and the number of sharing pairs. -/
 
 def linkOffInd (c : D → O → L) (dims : Finset D) (p : O × O) : ℝ :=
   if p.1 = p.2 then 0 else (if Linked c dims p.1 p.2 then 1 else 0)
@@ -1164,7 +1163,7 @@ theorem linkMat_sub_one_apply (c : D → O → L) {dims : Finset D} (hdims : dim
     simp [hl, Matrix.one_apply_eq]
   · simp [h, Matrix.one_apply_ne h]
 
-/-- **The union bound and the cluster count**: `#{(o,o') : o ∼ o'} ≤ J·G_max·n`. -/
+/-- `#{(o,o') : o ∼ o'} ≤ J·G_max·n`, by the union bound over the clustering dimensions. -/
 theorem sum_linkOffInd_le (c : D → O → L) (dims : Finset D) {Gmax : ℝ}
     (hG : ∀ (d : D) (l : L), (Cgm.clusterCard (c d) l : ℝ) ≤ Gmax) :
     ∑ p : O × O, linkOffInd c dims p
@@ -1213,7 +1212,8 @@ theorem sum_linkOffInd_le (c : D → O → L) (dims : Finset D) {Gmax : ℝ}
   refine le_trans (Finset.sum_le_sum hper) ?_
   rw [Finset.sum_const, nsmul_eq_mul]
 
-/-- **The pathwise Cauchy--Schwarz over the sharing pairs**, with `∑_{o,o'}Λ²_{oo'} = tr(Λ)`. -/
+/-- The Cauchy–Schwarz inequality over the sharing pairs, pathwise, with
+`∑_{o,o'}Λ²_{oo'} = tr(Λ)`. -/
 theorem xiMat_sq_le_of_symmProj (c : D → O → L) {dims : Finset D}
     (hdims : dims.Nonempty) {Lam : Matrix O O ℝ} (hLs : Lamᵀ = Lam) (hLi : Lam * Lam = Lam)
     (x : Matrix O ι ℝ) (a b : ι) :
@@ -1269,7 +1269,7 @@ theorem integral_sq_mul_sq_le (x : Ω → Matrix O ι ℝ) {C4 : ℝ}
   rw [integral_div, integral_add (hx4int o a) (hx4int o' b)] at hmono
   linarith [hx4 o a, hx4 o' b]
 
-/-- **The `Ξ^{(2)}` half**: `E[(Ξ^{(2)}_{ab})²] ≤ tr(Λ)·C·J·G_max·n`. -/
+/-- `E[(Ξ^{(2)}_{ab})²] ≤ tr(Λ)·C·J·G_max·n`. -/
 theorem integral_xiTwo_sq_le [IsProbabilityMeasure P] (c : D → O → L) {dims : Finset D}
     (hdims : dims.Nonempty) {Lam : Matrix O O ℝ} (hLs : Lamᵀ = Lam) (hLi : Lam * Lam = Lam)
     (x : Ω → Matrix O ι ℝ) {C4 Gmax : ℝ} (hC4 : 0 ≤ C4)
@@ -1573,7 +1573,7 @@ theorem integral_within_pow_four_le_const [IsProbabilityMeasure P] {Pm : Matrix 
   rw [one_mul] at hkey
   linarith
 
-/-- The finite-sample second-moment bound behind Lemma SM.B.9, given the fourth-moment bound
+/-- The finite-sample second-moment bound used for Lemma SM.B.9, given the fourth-moment bound
 `hxx`. -/
 theorem integral_rectFrobSq_xiSharp_le [IsProbabilityMeasure P] (c : D → O → L)
     {dims : Finset D} (hdims : dims.Nonempty) {Pm Lam : Matrix O O ℝ}
@@ -1679,8 +1679,8 @@ theorem integral_rectFrobSq_xiSharp_le [IsProbabilityMeasure P] (c : D → O →
   exact le_of_eq (by ring)
 
 
-/-- The finite-sample second-moment bound behind Lemma SM.B.9, at `C4 := 2‖Σ_ξ‖_F² + 4C`, with
-`hxx` and `hxxint` supplied by `integral_within_pow_four_le_const` and
+/-- The finite-sample second-moment bound used for Lemma SM.B.9, at `C4 := 2‖Σ_ξ‖_F² + 4C`, with
+`hxx` and `hxxint` proved by `integral_within_pow_four_le_const` and
 `integrable_sq_within_mul_within`. -/
 theorem integral_rectFrobSq_xiSharp_le_of_moments [IsProbabilityMeasure P] (c : D → O → L)
     {dims : Finset D} (hdims : dims.Nonempty) {Pm Lam : Matrix O O ℝ}
@@ -1813,7 +1813,7 @@ variable [∀ n, DecidableEq (D n)] [∀ n, Fintype (L n)] [∀ n, DecidableEq (
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 variable {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
 
-/-- **Lemma SM.B.9**: `‖Ξ_n‖ = O_p(d_[Δ] + (G_max n)^{1/2})`, given the second-moment bound
+/-- **Lemma SM.B.9.** `‖Ξ_n‖ = O_p(d_[Δ] + (G_max n)^{1/2})`, given the second-moment bound
 `hmom`. -/
 theorem cgmsharp_bddInProb [IsProbabilityMeasure P]
     (c : ∀ n, D n → O n → L n) (dims : ∀ n, Finset (D n))
@@ -1886,7 +1886,7 @@ theorem cgmsharp_bddInProb [IsProbabilityMeasure P]
     have hmul := mul_le_mul_of_nonneg_left hbr hcard
     nlinarith [hstep1, hmul]
 
-/-- **Lemma SM.B.9, closing statement**: `‖Ξ_n‖/n ⟶^p 0`. -/
+/-- **Lemma SM.B.9, last claim.** `‖Ξ_n‖/n ⟶^p 0`. -/
 theorem cgmsharp_tendstoInProb [IsProbabilityMeasure P]
     (c : ∀ n, D n → O n → L n) (dims : ∀ n, Finset (D n))
     {Pm Lam : ∀ n, Matrix (O n) (O n) ℝ} {xi : ∀ n, O n → ι → Ω → ℝ} {Gmax : ℕ → ℝ}
@@ -1904,8 +1904,8 @@ theorem cgmsharp_tendstoInProb [IsProbabilityMeasure P]
     (fun n => Nat.cast_nonneg n) (fun _ _ => norm_nonneg _) hB hrate
 
 
-/-- **Lemma SM.B.9**: `‖Ξ_n‖ = O_p(d_[Δ] + (G_max n)^{1/2})`, with the second-moment bound
-supplied at each index by `integral_rectFrobSq_xiSharp_le_of_moments` at
+/-- **Lemma SM.B.9.** `‖Ξ_n‖ = O_p(d_[Δ] + (G_max n)^{1/2})`, with the second-moment bound
+at each index given by `integral_rectFrobSq_xiSharp_le_of_moments` at
 `C4 := 2‖Σ_ξ‖_F² + 4C`. -/
 theorem cgmsharp_bddInProb_of_moments [IsProbabilityMeasure P]
     (c : ∀ n, D n → O n → L n) {dims : ∀ n, Finset (D n)} (hdims : ∀ n, (dims n).Nonempty)
@@ -1964,7 +1964,7 @@ theorem cgmsharp_bddInProb_of_moments [IsProbabilityMeasure P]
 
 end CgmSharpSeq
 
-/-! ### Witnesses for the variance expansion and Lemma SM.B.9
+/-! ### Examples for the variance expansion and Lemma SM.B.9
 
 * `quadvar_compl_le_witness`: `quadvar_compl_le` at `j = 0 ≠ 1 = k`, on a deterministic model
   with `(Σ_ξ)_{01} = 2`.
@@ -1979,11 +1979,11 @@ section CgmSharpWitness
 
 open scoped Matrix
 
-/-- The bilinear witness innovations: one observation, two regressor coordinates, values `1`
-and `2`, so that `(Σ_ξ)_{01} = 2`. -/
+/-- Innovations for one observation with two regressor coordinates, equal to `1` and `2`, so that
+`(Σ_ξ)_{01} = 2`. -/
 def bilWitnessXi : Fin 1 → Fin 2 → Unit → ℝ := fun _ a _ => if a = 0 then 1 else 2
 
-/-- `Σ_ξ` for that model. `(Σ_ξ)_{01} = 2`. -/
+/-- `Σ_ξ` for this model, with `(Σ_ξ)_{01} = 2`. -/
 def bilWitnessSig : Matrix (Fin 2) (Fin 2) ℝ :=
   Matrix.of fun a b => (if a = 0 then (1 : ℝ) else 2) * (if b = 0 then (1 : ℝ) else 2)
 
@@ -2023,7 +2023,7 @@ theorem bilWitness_mean :
   rw [h, bilWitnessSig_offDiag]
   simp
 
-/-- Witness for `quadvar_compl_le` at `j = 0 ≠ 1 = k`. -/
+/-- `quadvar_compl_le` applied to this model at `j = 0 ≠ 1 = k`. -/
 theorem quadvar_compl_le_witness :
     (integral (Measure.dirac ()) fun u =>
         (((theta bilWitnessXi u)ᵀ
@@ -2041,7 +2041,7 @@ theorem quadvar_compl_le_witness :
     (fun _ p h => absurd (Subsingleton.elim p.1 p.2) h)
     (fun p _ h _ _ _ => absurd (Subsingleton.elim p.1 p.2) h)
 
-/-- The design-level witness: `P_[Δ]` a rank-one diagonal projector, so `d_[Δ] = 1`. -/
+/-- A design in which `P_[Δ]` is a rank-one diagonal projector, so `d_[Δ] = 1`. -/
 def sharpWitnessPm (n : ℕ) : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ :=
   Matrix.diagonal (fun o => if o = 0 then (1 : ℝ) else 0)
 
@@ -2060,7 +2060,7 @@ theorem cgmsharp_witness_boundary :
   · rw [sharpWitnessPm_trace]
     norm_num
 
-/-- Witness for `cgmsharp_bddInProb` on a growing design, with `ξ ≡ 0`. -/
+/-- `cgmsharp_bddInProb` applied to a growing design with `ξ ≡ 0`. -/
 theorem cgmsharp_witness :
     Sequence.BddInProb (Measure.dirac ())
       (fun (n : ℕ) (u : Unit) =>
@@ -2105,11 +2105,11 @@ theorem cgmsharp_witness :
     exact integrable_const _
 
 
-/-! #### Witnesses with two observations and a random innovation
+/-! #### Examples with two observations and a random innovation
 
 A fair coin on `Ω = Bool` with `O = Fin 2`, `ξ_0` a fair sign and `ξ_1 ≡ 1`, so that `Σ_ξ = 1`
-and `E[ξ_0ξ_1] = 0`, and `P_[Δ] = ιι'/2`, so that `Q_{oo} = 1/2`. The identity `hquad4` is
-vacuous on two observations.
+and `E[ξ_0ξ_1] = 0`, and `P_[Δ] = ιι'/2`, so that `Q_{oo} = 1/2`. On two observations
+`hquad4` holds trivially, since every off-diagonal pair `q` is `p` or `pᵀ`.
 -/
 
 /-- A fair coin, the smallest space on which two observations can have zero covariance. -/
@@ -2131,11 +2131,11 @@ theorem integral_fourthCoin (f : Bool → ℝ) :
   norm_num
   ring
 
-/-- Two observations, one regressor: `ξ_0` a fair sign, `ξ_1 ≡ 1`. -/
+/-- Two observations and one regressor, with `ξ_0` a fair sign and `ξ_1 ≡ 1`. -/
 def fourthXi : Fin 2 → Fin 1 → Bool → ℝ :=
   fun o _ ω => if o = 0 then (if ω then (1 : ℝ) else -1) else 1
 
-/-- `Σ_ξ = 1` for that model. -/
+/-- `Σ_ξ = 1` for this model. -/
 def fourthSig : Matrix (Fin 1) (Fin 1) ℝ := Matrix.of fun _ _ => (1 : ℝ)
 
 /-- `P_[Δ] = ιι'/2`, the mean projector on two observations, so `Q_{oo} = 1/2`. -/
@@ -2188,8 +2188,8 @@ theorem fourth_mixed4' (a b : Fin 1) (e : Fin 2) (p : Fin 2 × Fin 2) (h : p.1 �
   obtain ⟨p1, p2⟩ := p
   fin_cases e <;> fin_cases p1 <;> fin_cases p2 <;> simp_all <;> norm_num [fourthXi]
 
-/-- Vacuous on two observations: with `p.1 ≠ p.2` and `q.1 ≠ q.2` on `Fin 2`, `q` is `p` or
-`pᵀ`. -/
+/-- `hquad4` on two observations. With `p.1 ≠ p.2` and `q.1 ≠ q.2` on `Fin 2`, `q` is `p` or
+`pᵀ`, so the hypotheses `h1` and `h2` cannot both hold. -/
 theorem fourth_quad4 (a b : Fin 1) (p q : Fin 2 × Fin 2) (hp : p.1 ≠ p.2) (hq : q.1 ≠ q.2)
     (h1 : q ≠ p) (h2 : q ≠ (p.2, p.1)) :
     ∫ ω, (fourthXi p.1 a ω * fourthXi p.2 b ω)
@@ -2211,7 +2211,8 @@ theorem fourth_moment_nonzero :
   rw [integral_fourthCoin]
   norm_num
 
-/-- Witness for `integral_within_pow_four_le`; the bound reads `1/2 ≤ (1/2)²·6 = 3/2`. -/
+/-- `integral_within_pow_four_le` applied to this model, where the bound reads
+`1/2 ≤ (1/2)²·6 = 3/2`. -/
 theorem integral_within_pow_four_le_witness :
     ∫ ω, (within fourthPm fourthXi ω 0 0) ^ 4 ∂fourthCoin
       ≤ (((1 : Matrix (Fin 2) (Fin 2) ℝ) - fourthPm) 0 0) ^ 2
@@ -2221,7 +2222,7 @@ theorem integral_within_pow_four_le_witness :
     (fourth_four 0 0) (fourth_pair4 0 0) (fourth_mixed4 0 0) (fourth_mixed4' 0 0)
     (fourth_quad4 0 0) 0
 
-/-- One maintained dimension with one label: both observations share a cluster. -/
+/-- One maintained dimension with one label, so both observations share a cluster. -/
 def fourthC : Fin 1 → Fin 2 → Fin 1 := fun _ _ => 0
 
 theorem fourthC_clusterCard (d : Fin 1) (l : Fin 1) :
@@ -2264,8 +2265,8 @@ theorem fourth_xiSharp_moment :
   rw [integral_fourthCoin]
   norm_num
 
-/-- Witness for `integral_rectFrobSq_xiSharp_le_of_moments`, with `Ξ_n` not identically
-zero. -/
+/-- `integral_rectFrobSq_xiSharp_le_of_moments` applied to this model, where `Ξ_n` is not
+identically zero. -/
 theorem integral_rectFrobSq_xiSharp_le_of_moments_witness :
     ∫ ω, rectFrobSq (xiSharp fourthC ({0} : Finset (Fin 1)) fourthPm
         (0 : Matrix (Fin 2) (Fin 2) ℝ) fourthXi ω) ∂fourthCoin
@@ -2283,8 +2284,8 @@ theorem integral_rectFrobSq_xiSharp_le_of_moments_witness :
     (fun _ _ => Integrable.of_finite) (fun _ _ => Integrable.of_finite)
 
 
-/-- Witness for `cgmsharp_bddInProb_of_moments` on a growing design, with each observation in
-its own cluster (`Cgm.clusterCard = 1`) and degenerate innovations. -/
+/-- `cgmsharp_bddInProb_of_moments` applied to a growing design in which every cluster has one
+observation (`Cgm.clusterCard = 1`) and the innovations are degenerate. -/
 theorem cgmsharp_witness_of_moments :
     Sequence.BddInProb (Measure.dirac ())
       (fun (n : ℕ) (u : Unit) =>
@@ -2349,7 +2350,7 @@ theorem cgmsharp_witness_of_moments :
 end CgmSharpWitness
 
 
-/-! ### Deconditioning bridges
+/-! ### Deconditioning
 
 Let `ℙ_ω := condExpKernel P 𝒟 ω`, which requires `[StandardBorelSpace Ω]`.
 
@@ -2511,7 +2512,7 @@ theorem measurable_matmul_apply {m n p : Type*} [Fintype n] {A : Ω → Matrix m
   simp only [Matrix.mul_apply]
   exact Finset.measurable_sum _ fun l _ => (hA i l).mul (hB l j)
 
-/-- ... and through the trace. -/
+/-- Entrywise measurability passes through the trace. -/
 theorem measurable_trace_of_entries {m : Type*} [Fintype m] {A : Ω → Matrix m m ℝ}
     (hA : ∀ i l, Measurable fun y => A y i l) : Measurable fun y => (A y).trace := by
   simp only [Matrix.trace, Matrix.diag_apply]
@@ -2569,7 +2570,7 @@ end MatMeas
 
 /-! ### Proposition SM.D.1 with a random design
 
-Here `μ`, `P_[Δ]` and `d_[Δ]` are `𝒟`-measurable random matrices, the hypotheses of the
+In this section `μ`, `P_[Δ]` and `d_[Δ]` are `𝒟`-measurable random matrices, the hypotheses of the
 primitive-design assumption hold under `ℙ_ω := condExpKernel P 𝒟 ω` at `P`-almost every `ω`, and
 the conclusions hold under `P`.
 
@@ -2627,8 +2628,7 @@ theorem designcond_tendstoInProb_cond
     (mu := fun n => mu n ω) (Pm := fun n => Pm n ω) (Sig := Sig) (Cmu := Cmu ω) (Cq := Cq ω)
     j k hSigj hSigk hs hi hcard hmb h2 hc hqv hq1 hq2 hq3
 
-/-- **Proposition SM.D.1, first display**, unconditionally, with `μ`, `P_[Δ]` and `d_[Δ]`
-random. -/
+/-- **Proposition SM.D.1, first display**, under `P`, with `μ`, `P_[Δ]` and `d_[Δ]` random. -/
 theorem designcond_tendstoInProb_uncond (h𝒟 : 𝒟 ≤ mΩ)
     {xi : ∀ n, O n → ι → Ω → ℝ}
     {mu : ∀ n, Ω → Matrix (O n) ι ℝ} {Pm : ∀ n, Ω → Matrix (O n) (O n) ℝ}
@@ -2669,8 +2669,8 @@ theorem designcond_tendstoInProb_uncond (h𝒟 : 𝒟 ≤ mΩ)
   filter_upwards [hfz n] with y hy
   rw [hy.1, hy.2]
 
-/-- **Proposition SM.D.1, third claim**, unconditionally: part (ii) of the design assumption
-holds with `H = H_μ + (1-κ)Σ_ξ`, entry by entry, with `μ` and `P_[Δ]` random and the
+/-- **Proposition SM.D.1, third claim**, under `P`. Part (ii) of the design assumption holds
+with `H = H_μ + (1-κ)Σ_ξ`, entry by entry, with `μ` and `P_[Δ]` random and the
 convergences `hHmu`, `hkappa` holding almost surely. -/
 theorem designcond_design_ii_uncond (h𝒟 : 𝒟 ≤ mΩ)
     {xi : ∀ n, O n → ι → Ω → ℝ}
@@ -2716,9 +2716,9 @@ theorem designcond_design_ii_uncond (h𝒟 : 𝒟 ≤ mΩ)
 
 end UncondMain
 
-/-! ### Witnesses for the deconditioning
+/-! ### Examples for the deconditioning
 
-The model is `CLTMartingale.CondD.FrozenWitness`: two fair coins on `Bool × Bool` with
+The model `CLTMartingale.CondD.FrozenWitness` has two fair coins on `Bool × Bool` with
 `𝒟 = σ(first coin)`, a proper sub-σ-algebra, so that `ℙ_ω ≠ P`. The design `μ_o` is `1` or
 `1 + 1/(n+1)` according to the first coin, so the statistic is random at every `n` while both
 halves have the limit `H_μ = 1`. The innovations are degenerate.
@@ -2730,8 +2730,8 @@ namespace DecondWitness
 
 open Multiway.CLTMartingale.CondD.FrozenWitness
 
-/-- The design's common entry: `1` on the first coin's `true` half and `1 + 1/(n+1)` on the
-other. It is `𝒟`-measurable with the same limit on both halves. -/
+/-- The common entry of the design, `1` on the first coin's `true` half and `1 + 1/(n+1)` on
+the other. It is `𝒟`-measurable with the same limit on both halves. -/
 noncomputable def dval (n : ℕ) (ω : Bool × Bool) : ℝ :=
   if ω.1 then 1 else 1 + ((n : ℝ) + 1)⁻¹
 
@@ -2814,9 +2814,9 @@ theorem decond_witness_cond :
     (Filter.Eventually.of_forall fun ω n => by simp [dtheta])
     (Filter.Eventually.of_forall fun ω n => by simp [dtheta])
 
-/-- Witness for the deconditioned proposition: `𝒟` is a proper sub-σ-algebra; `ℙ_ω ≠ P`; the
-statistic at `n = 1` equals `9/4` with probability `1/2`; and both theorems of the random-design
-section apply, the second with limit `H = H_μ + (1-κ)Σ_ξ = 1`. -/
+/-- On this model `𝒟` is a proper sub-σ-algebra, `ℙ_ω ≠ P`, and the statistic at `n = 1` equals
+`9/4` with probability `1/2`. The conclusions of `designcond_tendstoInProb_uncond` and
+`designcond_design_ii_uncond` hold, the second with limit `H = H_μ + (1-κ)Σ_ξ = 1`. -/
 theorem decond_witness :
     (∃ B : Set (Bool × Bool), MeasurableSet B ∧ ¬ MeasurableSet[Dsig] B)
     ∧ ¬ (∀ᵐ ω ∂Pw, condExpKernel Pw Dsig ω = Pw)
@@ -2869,7 +2869,7 @@ theorem decond_witness :
       decond_witness_cond hHmu (Filter.Eventually.of_forall fun ω => by simp [dPm])
     simpa [Matrix.one_apply_eq] using hmain
 
-/-- Witness for `tendstoInMeasure_of_design`, with the design the first coin itself. -/
+/-- `tendstoInMeasure_of_design` applied with the first coin as the design. -/
 theorem design_bridge_witness :
     TendstoInMeasure Pw (fun (n : ℕ) (y : Bool × Bool) => (dval n y) ^ 2 - 1) atTop
       (fun _ => (0 : ℝ)) := by
@@ -2896,17 +2896,17 @@ end DecondWitnessSection
 
 /-! ## The moment identities, derived from the primitive-design assumption
 
-The identities `hcov`, `hfour`, `hpair4`, `hmixed4`, `hmixed4'` and `hquad4` are derived from:
+The identities `hcov`, `hfour`, `hpair4`, `hmixed4`, `hmixed4'` and `hquad4` are derived from the following hypotheses.
 
 * `iIndepFun (xiVec xi) P`: independence across `o` of the innovation vectors in `ℝ^J`;
 * `hmean`: `E[ξ_o] = 0`;
 * `hSig`: `Var(ξ_o) = Σ_ξ`, the diagonal half of `hcov`;
 * `hmom`: `∫ (∑_a ξ²_{oa})² ≤ C`.
 
-`hfour` needs no independence: `ξ²_{oj}ξ²_{o'k} ≤ (‖ξ_o‖⁴ + ‖ξ_{o'}‖⁴)/2`. The others follow from
-the three-against-one grouping `integral_mul_triple`. The integrability hypotheses remain. The
-consumers `designcond_tendstoInProb_of_primitive`, `quadvar_compl_le_of_primitive` and
-`integral_rectFrobSq_xiSharp_le_of_primitive` carry no moment-identity hypothesis.
+`hfour` does not use independence, since `ξ²_{oj}ξ²_{o'k} ≤ (‖ξ_o‖⁴ + ‖ξ_{o'}‖⁴)/2`. The others follow from
+the three-against-one grouping `integral_mul_triple`. The integrability hypotheses are kept.
+The theorems `designcond_tendstoInProb_of_primitive`, `quadvar_compl_le_of_primitive` and
+`integral_rectFrobSq_xiSharp_le_of_primitive` have no moment-identity hypothesis.
 -/
 
 section FromIndep
@@ -3197,10 +3197,10 @@ theorem designcond_tendstoInProb_of_primitive [IsProbabilityMeasure P]
 
 end FromIndepSeq
 
-/-! ### Witness for the derived identities
+/-! ### An example for the derived identities
 
-Three observations with independent fair signs, so that `hquad4` is exercised at `p = (0,1)`,
-`q = (0,2)`, with `(Σ_ξ)_{00} = 1`.
+Three observations with independent fair signs, so that `hquad4` has a nontrivial instance at
+`p = (0,1)`, `q = (0,2)`, with `(Σ_ξ)_{00} = 1`.
 -/
 
 section FromIndepWitness
@@ -3246,7 +3246,7 @@ theorem pdIntegrable {f : (Fin 3 → Fin 1 → ℝ) → ℝ} (hf : Measurable f)
   Integrable.mono' (integrable_const B) hf.aestronglyMeasurable
     (Eventually.of_forall fun ω => by rw [Real.norm_eq_abs]; exact hb ω)
 
-/-- The one-coordinate integral: the blocks are independent and each is a fair sign. -/
+/-- `E[f(ξ_{oa})] = (f(1) + f(-1))/2`, since each coordinate is a fair sign. -/
 theorem pdIntegral {f : ℝ → ℝ} (hf : Measurable f) (o : Fin 3) (a : Fin 1) :
     ∫ ω, f (ω o a) ∂pdP = (f 1 + f (-1)) / 2 := by
   have hmp : Measure.map (fun ω : Fin 3 → Fin 1 → ℝ => ω o) pdP = gmu (Fin 1) :=
@@ -3327,8 +3327,7 @@ theorem pdInt4 (j k : Fin 1) (r s : Fin 3 × Fin 3) :
       (by norm_num : (0:ℝ) ≤ 1 * 1)
     linarith
 
-/-- The witness: the six derived identities on this model, together with two nonzero
-values. -/
+/-- The six derived identities hold on this model, and `(Σ_ξ)_{00} = 1`. -/
 theorem primitive_identities_witness :
     (∫ ω, pdXi 0 0 ω * pdXi 1 0 ω ∂pdP = if (0 : Fin 3) = 1 then pdSig 0 0 else 0)
     ∧ (∫ ω, pdXi 0 0 ω * pdXi 0 0 ω ∂pdP = if (0 : Fin 3) = 0 then pdSig 0 0 else 0)

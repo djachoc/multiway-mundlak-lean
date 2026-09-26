@@ -8,9 +8,9 @@ import Multiway.RateAgnostic
 This file formalizes Corollary SM.D.3 of the paper (Feasible inference under the cluster-shock
 model). The disturbance is `ν_o = ∑_j c^{(j)}_{g_j(o)} + ε_o` with independent cluster shocks and
 idiosyncratic terms, and the covariance matrix is `Ω = ∑_j σ²_{c,j} Sh^{(j)} + diag(Var(ε_o ∣ 𝒟))`.
-The central limit theorems are obtained through the Stein dependency-graph bound of
-`Multiway.SteinCluster`: with one clustering dimension at the rate `Ḡ_n³/n → 0`, and with `J`
-dimensions at the rate `Ḡ_n⁴/n → 0`.
+The central limit theorems follow from the Stein dependency-graph bound of
+`Multiway.SteinCluster`, at the rate `Ḡ_n³/n → 0` with one clustering dimension and at the rate
+`Ḡ_n⁴/n → 0` with `J` dimensions.
 
 ## Main results
 
@@ -21,7 +21,7 @@ dimensions at the rate `Ḡ_n⁴/n → 0`.
   the full measure with a `𝒟`-measurable random design.
 * `clustershock_rateagnostic_a`, `_b`, `_c`: Theorem 11 (Rate-agnostic inference under multiway
   clustering) for the cluster-shock model, including the Wald step.
-* Vacuity witnesses on explicit cluster-shock designs.
+* Examples of explicit cluster-shock designs on which the hypotheses hold.
 -/
 
 namespace Multiway.ClusterShock
@@ -74,7 +74,7 @@ theorem omegaOf_eq_zero_of_ne {g : O → L} {scv : ℝ} {ve : O → ℝ} {o o' :
 
 end Omega
 
-/-! ### The rate: from the cluster-size condition to the Stein rate -/
+/-! ### From the cluster-size condition to the Stein rate -/
 
 /-- With `λ_min(Ω_n) ≥ λ₀n` and `φ_n = BC_ν/√(λ₀n)`, `Ḡ_nφ_n ≤ (BC_ν/√λ₀)·√(Ḡ_n³/n)`,
 using `Ḡ_n ≤ √(Ḡ_n³)` for `Ḡ_n ≥ 1`. -/
@@ -161,24 +161,24 @@ theorem clustershock_a_oneDimension
   exact rate_le_sqrt_cube hB0 hCnu0 (by positivity) (hnObs n)
     (by exact_mod_cast hGb1 n)
 
-/-! ### Vacuity witness
+/-! ### Example
 
-At sample size `n` there are `n+1` clusters of two observations; the members of a cluster share
-one fair-sign shock and each observation carries its own fair sign, so `Ḡ_n = 2` and `Ω` is not
+At sample size `n` there are `n+1` clusters of two observations. The members of a cluster share
+one fair-sign shock and each observation has a separate fair sign, so `Ḡ_n = 2` and `Ω` is not
 diagonal. -/
 
 section Witness
 
 open Multiway.Multilinear
 
-/-- `𝒪_n := {0,…,n} × {0,1}`: `n+1` clusters of two observations each, `2(n+1)` observations. -/
+/-- `𝒪_n := {0,…,n} × {0,1}`, with `n+1` clusters of two observations and `2(n+1)` observations. -/
 abbrev WsO (n : ℕ) := Fin (n + 1) × Fin 2
 
-/-- The cluster shock of cluster `γ` reads coin `3γ`. -/
+/-- The index `3γ` of the coin that gives the cluster shock of cluster `γ`. -/
 def cIdx (n : ℕ) (γ : Fin (n + 1)) : Fin (3 * (n + 1)) :=
   ⟨3 * γ.val, by have := γ.isLt; omega⟩
 
-/-- The idiosyncratic disturbance of `o = (γ,k)` reads coin `3γ + 1 + k`. -/
+/-- The index `3γ + 1 + k` of the coin that gives the idiosyncratic disturbance of `o = (γ,k)`. -/
 def eIdx (n : ℕ) (o : WsO n) : Fin (3 * (n + 1)) :=
   ⟨3 * o.1.val + 1 + o.2.val, by have := o.1.isLt; have := o.2.isLt; omega⟩
 
@@ -216,7 +216,7 @@ theorem abs_wsNu_le (n : ℕ) (o : WsO n) (ω : Fin (3 * (n + 1)) → Bool) : |w
   have h2 := Multiway.SteinCluster.abs_sign2_le' (eIdx n o) ω
   linarith
 
-/-- The coin indices the observations in `A` depend on. -/
+/-- The indices of the coins on which the observations in `A` depend. -/
 def wsIdx (n : ℕ) (A : Finset (WsO n)) : Finset (Fin (3 * (n + 1))) :=
   A.image (fun o => cIdx n o.1) ∪ A.image (eIdx n)
 
@@ -271,7 +271,7 @@ theorem wsRebuild_comp (n : ℕ) (A : Finset (WsO n)) :
   simp only [Function.comp_apply, wsRebuild, wsNu]
   rw [dite_eq_left (cIdx_mem_wsIdx o.2), dite_eq_left (eIdx_mem_wsIdx o.2)]
 
-/-- The sharing graph of the witness design is a dependency graph for `ν`. -/
+/-- The sharing graph of the example design is a dependency graph for `ν`. -/
 noncomputable def wsDep (n : ℕ) : DepGraph (wsNu n) (coins (3 * (n + 1))) where
   G := fun o o' => o.1 = o'.1
   decG := fun _ _ => inferInstance
@@ -312,8 +312,8 @@ theorem integral_four {m : ℕ} (f1 f2 f3 f4 : (Fin m → Bool) → ℝ)
   have h123 : Integrable (fun ω => f1 ω + f2 ω + f3 ω) (coins m) := h12.add h3
   rw [integral_add h123 h4, integral_add h12 h3, integral_add h1 h2]
 
-/-- The second moments of the witness disturbance: `2` on the diagonal, `1` within a cluster,
-`0` across clusters. -/
+/-- The second moments of the disturbance in the example are `2` on the diagonal, `1` within a
+cluster and `0` across clusters. -/
 theorem integral_wsNu_mul (n : ℕ) (o o' : WsO n) :
     ∫ ω, wsNu n o ω * wsNu n o' ω ∂(coins (3 * (n + 1)))
       = (if o.1 = o'.1 then (1 : ℝ) else 0) + (if o = o' then 1 else 0) := by
@@ -336,7 +336,7 @@ theorem integral_wsNu_mul (n : ℕ) (o o' : WsO n) :
   rw [ite_eq_right (cIdx_ne_eIdx n o.1 o'), ite_eq_right (Ne.symm (cIdx_ne_eIdx n o'.1 o))]
   simp only [hc1, he1, add_zero]
 
-/-- The witness design matrix: one regressor, equal to `1` at every observation. -/
+/-- The design matrix of the example, with one regressor equal to `1` at every observation. -/
 noncomputable def wsXt (n : ℕ) : Matrix (WsO n) (Fin 1) ℝ := fun _ _ => 1
 
 theorem wsXt_transpose_mul_self (n : ℕ) :
@@ -366,7 +366,7 @@ theorem wsCluster_card (n : ℕ) (γ : Fin (n + 1)) :
     exact Prod.ext (ha.trans hc.symm) h
   · simp
 
-/-- Vacuity witness for `clustershock_a_oneDimension`: `n+1` clusters of two observations, one
+/-- An example for `clustershock_a_oneDimension`, with `n+1` clusters of two observations, one
 regressor `x̃_o = 1`, and `ν_o = c_{g(o)} + ε_o` with independent fair signs, so that
 `σ²_{c,1} = 1`, `σ̲² = 1`, `C_ν = 2` and `Ω` is not diagonal. -/
 theorem clustershock_a_oneDimension_witness (s : ℝ) :
@@ -419,9 +419,10 @@ end Witness
 
 /-! ### The corollary at `J = 1` with a random design, under the full measure
 
-Here `X̃_n` is a `𝒟`-measurable random matrix, the cluster map and the variances are functions of
-`ω`, every hypothesis is read under the regular conditional law `ℙ_ω := condExpKernel P 𝒟 ω` at
-`P`-almost every `ω`, and the conclusion is a limit law under `P`. The rate is `Ḡ_n³/n → 0`, as in
+The design `X̃_n` is a `𝒟`-measurable random matrix, and the cluster map and the variances are
+functions of `ω`. Every hypothesis is read under the regular conditional law
+`ℙ_ω := condExpKernel P 𝒟 ω` at `P`-almost every `ω`, and the conclusion is a limit law under
+`P`. The rate is `Ḡ_n³/n → 0`, as in
 `clustershock_a_oneDimension`. -/
 
 section Unconditional
@@ -505,12 +506,12 @@ theorem clustershock_a_oneDimension_unconditional
 
 end Unconditional
 
-/-! ### Vacuity witness for `clustershock_a_oneDimension_unconditional`
+/-! ### Example for `clustershock_a_oneDimension_unconditional`
 
-The witness lives on the single space `Bool × ((ℕ × ℕ) → Bool)` of
-`SteinCluster.FrozenDesignWitness`. At index `n` there are `n+1` clusters of two observations;
-cluster `γ` reads shock coin `(n, 3γ)` and observation `(γ, k)` reads coin `(n, 3γ+1+k)`. The single
-regressor is `x̃_o = ±1`, with sign read off the design coin, so the design is random and
+The example is defined on the single space `Bool × ((ℕ × ℕ) → Bool)` of
+`SteinCluster.FrozenDesignWitness`. At index `n` there are `n+1` clusters of two observations.
+The shock of cluster `γ` is given by coin `(n, 3γ)` and that of observation `(γ, k)` by coin
+`(n, 3γ+1+k)`. The single regressor is `x̃_o = ±1`, with sign given by the design coin, so the design is random and
 `𝒟`-measurable, and the within-cluster covariance under `ℙ_ω` is `1`. -/
 
 section FrozenShockWitness
@@ -519,10 +520,11 @@ namespace FrozenShockWitness
 
 open Multiway.SteinCluster.FrozenDesignWitness
 
-/-- The cluster shock of cluster `γ` at index `n` reads coin `(n, 3γ)`. -/
+/-- The index `(n, 3γ)` of the coin that gives the cluster shock of cluster `γ` at index `n`. -/
 def csIdx (n : ℕ) (γ : Fin (n + 1)) : ℕ × ℕ := (n, 3 * γ.val)
 
-/-- The idiosyncratic disturbance of `o = (γ,k)` at index `n` reads coin `(n, 3γ + 1 + k)`. -/
+/-- The index `(n, 3γ + 1 + k)` of the coin that gives the idiosyncratic disturbance of
+`o = (γ,k)` at index `n`. -/
 def esIdx (n : ℕ) (o : WsO n) : ℕ × ℕ := (n, 3 * o.1.val + 1 + o.2.val)
 
 theorem csIdx_injective (n : ℕ) : Function.Injective (csIdx n) := by
@@ -649,8 +651,8 @@ theorem integral_four_P1 (f1 f2 f3 f4 : Cw → ℝ)
   have h123 : Integrable (fun z => f1 z + f2 z + f3 z) P1 := h12.add h3
   rw [integral_add h123 h4, integral_add h12 h3, integral_add h1 h2]
 
-/-- **The second moments of the cluster-shock disturbance**: `2` on the diagonal, `1` within a
-cluster, `0` across clusters. -/
+/-- The second moments of the cluster-shock disturbance are `2` on the diagonal, `1` within a
+cluster and `0` across clusters. -/
 theorem integral_csNu_mul (n : ℕ) (o o' : WsO n) :
     ∫ z, csNu n o z * csNu n o' z ∂P1
       = (if o.1 = o'.1 then (1 : ℝ) else 0) + (if o = o' then 1 else 0) := by
@@ -684,7 +686,7 @@ theorem integral_csNu_within (n : ℕ) (γ : Fin (n + 1)) :
   norm_num
 
 
-/-- The design at index `n`: the all-ones regressor, with the sign of the design coin. -/
+/-- The design at index `n`, the all-ones regressor multiplied by the sign of the design coin. -/
 noncomputable def cXt (n : ℕ) (y : Aw) : Matrix (WsO n) (Fin 1) ℝ := sgnA y • wsXt n
 
 noncomputable def cBhat (n : ℕ) (y : Aw) : Fin 1 → ℝ :=
@@ -773,7 +775,7 @@ theorem c_hGrate : Tendsto (fun n : ℕ => (((2 : ℕ) : ℝ)) ^ 3 / (((n : ℝ)
     exact tendsto_natCast_atTop_atTop.atTop_add tendsto_const_nhds
   simpa using (tendsto_const_nhds (x := (((2 : ℕ) : ℝ)) ^ 3) (f := atTop (α := ℕ))).div_atTop hd
 
-/-- Vacuity witness for `clustershock_a_oneDimension_unconditional`. -/
+/-- An example for `clustershock_a_oneDimension_unconditional`. -/
 theorem clustershock_a_oneDimension_unconditional_witness :
     Pw {y : Aw | y.1 = true} = 2⁻¹
     ∧ (∃ B : Set Aw, MeasurableSet B ∧ ¬ MeasurableSet[Dw] B)
@@ -840,9 +842,9 @@ end FrozenShockWitness
 
 /-! ## General `J`
 
-The asymptotic content is `Multiway.SteinCluster.cltcluster_a_general_betaJM`. This section
-supplies the covariance matrix at general `J` (`Multiway.Sharing.clusterOmega`), the degree bound
-`D_n + 1 ≤ JḠ_n` of the union sharing graph, and the rate bridge from `Ḡ_n⁴/n → 0` to the Stein
+The limit theorem is `Multiway.SteinCluster.cltcluster_a_general_betaJM`. It is applied with the
+covariance matrix at general `J` (`Multiway.Sharing.clusterOmega`), the degree bound
+`D_n + 1 ≤ JḠ_n` of the union sharing graph, and the passage from `Ḡ_n⁴/n → 0` to the Stein
 rate. -/
 
 /-! ### The covariance matrix and the degree of the union sharing graph -/
@@ -884,7 +886,7 @@ theorem card_closedNbhd_le_mul {c : D → O → L} {dims : Finset D} {Gb : ℕ}
 
 end GeneralOmega
 
-/-! ### The rate bridge: from `Ḡ_n⁴/n → 0` to `(n/D_n)^{1/3}δ_n → 0`
+/-! ### From `Ḡ_n⁴/n → 0` to `(n/D_n)^{1/3}δ_n → 0`
 
 With `λ_min(Ω_n) ≥ c·n` and `D_n ≤ JḠ_n`,
 `steinRate³ = n⁴D_n⁸/(cn)⁶ ≤ (J⁸/c⁶)(Ḡ_n⁴/n)²`, and the cube root is taken by an `ε`-argument. -/
@@ -1034,8 +1036,8 @@ theorem clustershock_a_general
 
 /-! ### A disturbance that is a sum of independent fair shocks
 
-Witness infrastructure: `ν_o = ∑_k s_{idx(o,k)}` over an arbitrary component index, with its
-moments and its dependency graph. -/
+The disturbance `ν_o = ∑_k s_{idx(o,k)}` over an arbitrary component index, with its moments
+and its dependency graph, for use in the examples below. -/
 
 section ShockSum
 
@@ -1045,7 +1047,7 @@ variable {O : Type*} [Fintype O] [DecidableEq O]
 variable {κ : Type*} [Fintype κ] [DecidableEq κ]
 variable {m : ℕ}
 
-/-- `ν_o := ∑_k s_{idx(o,k)}`, where `idx o k` is the coin that component `k` of `o` reads. -/
+/-- `ν_o := ∑_k s_{idx(o,k)}`, where `idx o k` is the coin on which component `k` of `o` depends. -/
 noncomputable def shockSum (idx : O → κ → Fin m) (o : O) (ω : Fin m → Bool) : ℝ :=
   ∑ k : κ, sign2 (idx o k) ω
 
@@ -1071,8 +1073,8 @@ theorem integral_shockSum (idx : O → κ → Fin m) (o : O) :
   simp [integral_sign2]
 
 omit [Fintype O] [DecidableEq O] [DecidableEq κ] in
-/-- `E[ν_oν_{o'}]` counts the components at which `o` and `o'` read the same coin, provided two
-components of different kind never read the same coin. -/
+/-- `E[ν_oν_{o'}]` is the number of components at which `o` and `o'` depend on the same coin,
+provided two components of different kind never depend on the same coin. -/
 theorem integral_shockSum_mul {idx : O → κ → Fin m}
     (hinj : ∀ o o' : O, ∀ k k' : κ, idx o k = idx o' k' → k = k') (o o' : O) :
     ∫ ω, shockSum idx o ω * shockSum idx o' ω ∂(coins m)
@@ -1159,9 +1161,9 @@ noncomputable def shockDep (idx : O → κ → Fin m) (G : O → O → Prop) [De
 
 end ShockSum
 
-/-! ### Vacuity witness at general `J`, on a design with `J = 2`
+/-! ### Example at general `J`, on a design with `J = 2`
 
-`n+3` observations, one regressor `x̃_o = 1`, `𝓡_n = I_1`, and two clustering dimensions
+The design has `n+3` observations, one regressor `x̃_o = 1`, `𝓡_n = I_1`, and two clustering dimensions
 `g^{(1)}(o) = ⌊o/2⌋` and `g^{(2)}(o) = ⌊(o+1)/2⌋`. The disturbance is
 `ν_o = c^{(1)}_{g₁(o)} + c^{(2)}_{g₂(o)} + ε_o` with independent fair signs, so `Ḡ_n = 2` and
 `C_ν = 3`. The sharing relation is `|o − o'| ≤ 1`, which is not transitive, and `Ω` is not
@@ -1171,7 +1173,7 @@ section GeneralWitness
 
 open Multiway.Multilinear
 
-/-- The two maintained clustering maps of the witness: `g^{(1)}(o) = ⌊o/2⌋` and
+/-- The two maintained clustering maps of the example, `g^{(1)}(o) = ⌊o/2⌋` and
 `g^{(2)}(o) = ⌊(o+1)/2⌋`. -/
 def wtC (n : ℕ) (j : Fin 2) (o : Fin (n + 3)) : Fin (n + 3) :=
   if j = 0 then ⟨o.val / 2, by have := o.isLt; omega⟩
@@ -1181,8 +1183,8 @@ theorem wtC_val (n : ℕ) (j : Fin 2) (o : Fin (n + 3)) :
     (wtC n j o).val = if j = 0 then o.val / 2 else (o.val + 1) / 2 := by
   unfold wtC; by_cases h : j = 0 <;> simp [h]
 
-/-- The label component `k` of `o` reads: its dimension-1 cluster at `k = 0`, its dimension-2
-cluster at `k = 1`, and `o` itself at `k = 2` (the idiosyncratic disturbance). -/
+/-- The label of component `k` of `o`, which is its dimension-1 cluster at `k = 0`, its
+dimension-2 cluster at `k = 1`, and `o` itself at `k = 2` (the idiosyncratic disturbance). -/
 def wtLab (n : ℕ) (o : Fin (n + 3)) (k : Fin 3) : ℕ :=
   if k = 0 then o.val / 2 else if k = 1 then (o.val + 1) / 2 else o.val
 
@@ -1196,12 +1198,12 @@ theorem wtLab_lt (n : ℕ) (o : Fin (n + 3)) (k : Fin 3) : wtLab n o k < n + 3 :
     · rw [ite_eq_left h1]; omega
     · rw [ite_eq_right h1]; omega
 
-/-- Component `k` of observation `o` reads coin `3·label + k`, so the three kinds of shock never
-collide. -/
+/-- Component `k` of observation `o` depends on coin `3·label + k`, so shocks of different kinds
+never share a coin. -/
 def wtIdx (n : ℕ) (o : Fin (n + 3)) (k : Fin 3) : Fin (3 * (n + 3)) :=
   ⟨3 * wtLab n o k + k.val, by have h1 := wtLab_lt n o k; have h2 := k.isLt; omega⟩
 
-/-- Two components of different kind never read the same coin. -/
+/-- Two components of different kind never depend on the same coin. -/
 theorem wtIdx_component (n : ℕ) (o o' : Fin (n + 3)) (k k' : Fin 3)
     (h : wtIdx n o k = wtIdx n o' k') : k = k' := by
   have h1 := congrArg Fin.val h
@@ -1236,7 +1238,7 @@ theorem wtLab_eq_two_iff (n : ℕ) (o o' : Fin (n + 3)) :
   rw [Fin.ext_iff]
   simp [wtLab]
 
-/-- `Ḡ_n = 2`: every cluster of either dimension has at most two members. -/
+/-- `Ḡ_n = 2`, since every cluster of either dimension has at most two members. -/
 theorem wtCluster_card (n : ℕ) (j : Fin 2) (γ : Fin (n + 3)) :
     (cluster (wtC n j) γ).card ≤ 2 := by
   classical
@@ -1255,7 +1257,7 @@ theorem wtCluster_card (n : ℕ) (j : Fin 2) (γ : Fin (n + 3)) :
     · rw [ite_eq_right hj] at hav hbv; omega
   simpa using hcard
 
-/-- The union sharing relation of the witness is `|o − o'| ≤ 1`. -/
+/-- The union sharing relation of the example is `|o − o'| ≤ 1`. -/
 theorem wtLinked_iff_pathG (n : ℕ) (o o' : Fin (n + 3)) :
     Multiway.Linked (wtC n) Finset.univ o o' ↔ pathG (n + 3) o o' := by
   rw [pathG_iff_two_dimensions]
@@ -1273,7 +1275,7 @@ theorem wtLinked_iff_pathG (n : ℕ) (o o' : Fin (n + 3)) :
     · exact ⟨0, Finset.mem_univ 0, (wtLab_eq_zero_iff n o o').mp (by simpa [wtLab] using h)⟩
     · exact ⟨1, Finset.mem_univ 1, (wtLab_eq_one_iff n o o').mp (by simpa [wtLab] using h)⟩
 
-/-- The sharing relation is not transitive: `0 ∼ 1` and `1 ∼ 2` while `0 ≁ 2`. -/
+/-- The sharing relation is not transitive, since `0 ∼ 1` and `1 ∼ 2` while `0 ≁ 2`. -/
 theorem wtLinked_not_transitive (n : ℕ) :
     ∃ a b c : Fin (n + 3), Multiway.Linked (wtC n) Finset.univ a b ∧
       Multiway.Linked (wtC n) Finset.univ b c ∧
@@ -1282,7 +1284,7 @@ theorem wtLinked_not_transitive (n : ℕ) :
   exact ⟨a, b, c, (wtLinked_iff_pathG n a b).mpr h1, (wtLinked_iff_pathG n b c).mpr h2,
     fun h => h3 ((wtLinked_iff_pathG n a c).mp h)⟩
 
-/-- Non-adjacent observations read disjoint sets of coins. -/
+/-- Non-adjacent observations depend on disjoint sets of coins. -/
 theorem wtIdx_ne_of_not_linked (n : ℕ) (o o' : Fin (n + 3))
     (h : ¬ Multiway.Linked (wtC n) Finset.univ o o') (k k' : Fin 3) :
     wtIdx n o k ≠ wtIdx n o' k' := by
@@ -1297,7 +1299,7 @@ theorem wtIdx_ne_of_not_linked (n : ℕ) (o o' : Fin (n + 3))
   · have hoo : o = o' := (wtLab_eq_two_iff n o o').mp hlab
     exact ⟨0, Finset.mem_univ 0, by rw [hoo]⟩
 
-/-- The sharing graph of the witness design is a dependency graph for `ν`. -/
+/-- The sharing graph of the example design is a dependency graph for `ν`. -/
 noncomputable def wtDep (n : ℕ) :
     DepGraph (shockSum (wtIdx n)) (coins (3 * (n + 3))) :=
   shockDep (wtIdx n) (Multiway.Linked (wtC n) Finset.univ)
@@ -1305,8 +1307,8 @@ noncomputable def wtDep (n : ℕ) :
     (fun _ _ h => Multiway.Sharing.linked_symm h)
     (wtIdx_ne_of_not_linked n)
 
-/-- The witness `Ω` is not diagonal: its entry at the members `0` and `1` of the cluster `{0,1}`
-is `1`. -/
+/-- The matrix `Ω` of the example is not diagonal, since its entry at the members `0` and `1` of
+the cluster `{0,1}` is `1`. -/
 theorem wtOmega_offDiag (n : ℕ) :
     Multiway.Sharing.clusterOmega (wtC n) Finset.univ (fun _ => (1 : ℝ)) (fun _ => 1)
         (⟨0, by omega⟩ : Fin (n + 3)) (⟨1, by omega⟩ : Fin (n + 3)) = 1 := by
@@ -1326,7 +1328,7 @@ theorem wtOmega_offDiag (n : ℕ) :
   rw [ite_eq_left e0, ite_eq_right e1, ite_eq_right e2]
   ring
 
-/-- Vacuity witness for `clustershock_a_general`, on the `J = 2` design above. -/
+/-- An example for `clustershock_a_general`, on the `J = 2` design above. -/
 theorem clustershock_a_general_witness (s : ℝ) :
     Tendsto (fun n => ((coins (3 * (n + 3))).map (fun ω =>
         (fun _ : Fin 1 => (1 : ℝ)) ⬝ᵥ
@@ -1505,7 +1507,7 @@ section PartBWitness
 
 open Multiway.Multilinear
 
-/-- Vacuity witness for `clustershock_b_general`, on the `J = 2` design of
+/-- An example for `clustershock_b_general`, on the `J = 2` design of
 `clustershock_a_general_witness`, with the fourth-moment bound at `C₄ = 3`. -/
 theorem clustershock_b_general_witness (s : ℝ) :
     Tendsto (fun n => ((coins (3 * (n + 3))).map (fun ω =>
@@ -1591,13 +1593,13 @@ end PartBWitness
 
 /-! ## Rate-agnostic inference for the cluster-shock model
 
-Theorem 11 (Rate-agnostic inference under multiway clustering) for the cluster-shock model, at the
-cluster-size condition `Ḡ_n³d_[Δ]/n → 0` and general `J`; no central limit theorem is involved.
-The disturbance enters only through the conditional fourth-moment bound `𝔼[ν_o⁴ ∣ 𝒟] ≤ C`. The
-limits are those of `Multiway.RateAgnostic`; this section supplies the model-specific inputs:
-the dependency structure, the conditional mean zero, the variance floor `Ω_n ⪰ σ̲²θnI_K`, the
-vanishing of `Ω` off the sharing graph, and the accumulation bounds. Since `Ω` is a conditional
-expectation, these hold almost everywhere. -/
+Theorem 11 (Rate-agnostic inference under multiway clustering) holds for the cluster-shock
+model under the cluster-size condition `Ḡ_n³d_[Δ]/n → 0` and at general `J`, without a central
+limit theorem. The disturbance enters only through the conditional
+fourth-moment bound `𝔼[ν_o⁴ ∣ 𝒟] ≤ C`. The limits are those of `Multiway.RateAgnostic`, applied
+with the dependency structure of the model, the conditional mean zero, the variance floor
+`Ω_n ⪰ σ̲²θnI_K`, the vanishing of `Ω` off the sharing graph, and the accumulation bounds. Since
+`Ω` is a conditional expectation, these hold almost everywhere. -/
 
 section RAHelpers
 
@@ -1617,7 +1619,8 @@ theorem le_of_smul_one_le_smul_one {K : Type*} [Fintype K] [DecidableEq K] [None
   have hc : (0 : ℝ) < Fintype.card K := by exact_mod_cast Fintype.card_pos
   exact le_of_mul_le_mul_right ht hc
 
-/-- `Ḡ_n ≥ 1`: a cluster of a maintained dimension contains the observation that indexes it. -/
+/-- `Ḡ_n ≥ 1`, since a cluster of a maintained dimension contains the observation that indexes
+it. -/
 theorem one_le_of_cluster_bound {O D L : Type*} [Fintype O] [DecidableEq O] [DecidableEq L]
     {c : D → O → L} {dims : Finset D} {Gb : ℕ} (hdims : dims.Nonempty) (hne : Nonempty O)
     (hGb : ∀ j ∈ dims, ∀ γ : L, (cluster (c j) γ).card ≤ Gb) : 1 ≤ Gb := by
@@ -2349,9 +2352,9 @@ theorem clustershock_rateagnostic_b (hm : 𝒟 ≤ mΩ) [SigmaFinite (P.trim hm)
 
 end RateAgnosticHalfB
 
-/-! ### Vacuity witnesses for the rate-agnostic theorems
+/-! ### Examples for the rate-agnostic theorems
 
-A cluster-shock design with `J = 1` and `n+1` clusters of two observations, on the infinite
+Consider a cluster-shock design with `J = 1` and `n+1` clusters of two observations, on the infinite
 product of fair coins `bigCoins`, with `𝒟 = ⊥`. The shocks are independent fair signs, one per
 cluster and one per observation, so `Ω` is not diagonal and the sharing graph is not complete. -/
 
@@ -2365,7 +2368,7 @@ instance : IsProbabilityMeasure bigCoins := by
   unfold bigCoins
   infer_instance
 
-/-- A fair sign read off coordinate `i`. -/
+/-- The fair sign `±1` given by coordinate `i`. -/
 noncomputable def bigSign (i : ℕ) (ω : ℕ → Bool) : ℝ := if ω i then 1 else -1
 
 theorem measurable_bigSign (i : ℕ) : Measurable (bigSign i) :=
@@ -2417,8 +2420,8 @@ def wrDims : Finset WrD := Finset.univ
 
 theorem wrDims_nonempty : wrDims.Nonempty := ⟨0, Finset.mem_univ _⟩
 
-/-- The shocks, indexed injectively into `ℕ`: `3g` carries the cluster shock of cluster `g`, and
-`3i+1`, `3i+2` the two idiosyncratic shocks of cluster `i`. -/
+/-- The shocks, indexed injectively into `ℕ`, with `3g` the index of the cluster shock of
+cluster `g` and `3i+1`, `3i+2` those of the two idiosyncratic shocks of cluster `i`. -/
 def wrIdx (n : ℕ) : ((WrD × WrL n) ⊕ WrO n) → ℕ
   | Sum.inl p => 3 * p.2.val
   | Sum.inr p => 3 * p.1.val + 1 + p.2.val
@@ -2449,7 +2452,7 @@ theorem iCondIndepFun_wrZ (n : ℕ) : iCondIndepFun ⊥ bot_le (wrZ n) bigCoins 
 
 noncomputable def wrXt (n : ℕ) : Matrix (WrO n) (Fin 1) ℝ := fun _ _ => 1
 
-/-- The mean projector, symmetric, idempotent, of trace `1`. -/
+/-- The mean projector, which is symmetric, idempotent and of trace `1`. -/
 noncomputable def wrPr (n : ℕ) : Matrix (WrO n) (WrO n) ℝ :=
   fun _ _ => 1 / (Fintype.card (WrO n) : ℝ)
 
@@ -2571,7 +2574,7 @@ theorem wr_tendsto' : Tendsto (fun n : ℕ => ((2 : ℕ) : ℝ) ^ 3
     / (Fintype.card (WrO n) : ℝ)) atTop (𝓝 0) := by
   simpa using wr_tendsto
 
-/-- `Ω_{(i,0),(i,1)} = 1`: the two observations of a cluster share the cluster shock. -/
+/-- `Ω_{(i,0),(i,1)} = 1`, since the two observations of a cluster share the cluster shock. -/
 theorem wr_condOmega_offDiag (n : ℕ) (i : WrL n) :
     Multiway.Sharing.clusterOmega (wrC n) wrDims (fun _ => (1 : ℝ)) (fun _ => (1 : ℝ))
       ((i, 0) : WrO n) ((i, 1) : WrO n) = 1 := by
@@ -2619,7 +2622,7 @@ theorem wr_mom (n : ℕ) (o : WrO n) : ∀ᵐ ω ∂bigCoins,
   rw [h16] at hω
   exact hω
 
-/-- Vacuity witness for `clustershock_rateagnostic_a`. -/
+/-- An example for `clustershock_rateagnostic_a`. -/
 theorem clustershock_rateagnostic_a_witness :
     TendstoInMeasure bigCoins (fun n ω =>
         rectFrobNorm ((sqrtPD ((wrXt n)ᵀ
@@ -2658,7 +2661,7 @@ theorem clustershock_rateagnostic_a_witness :
   · intro n
     rw [one_mul, wrXt_gram]
 
-/-- Vacuity witness for `clustershock_rateagnostic_b`, with `Π` the mean projector,
+/-- An example for `clustershock_rateagnostic_b`, with `Π` the mean projector,
 `d_{[Δ]} = 1` and `K = 0`. -/
 theorem clustershock_rateagnostic_b_witness :
     TendstoInMeasure bigCoins (fun n ω =>
@@ -2719,7 +2722,7 @@ with the `r`-dimensional law `𝒱_n^{-1/2}𝓡_n(β̂_JM − β) ⟶ᵈ N(0, I_
 
 section GeneralUnconditional
 
-/-- The almost-everywhere facts shared by the general-`J` unconditional forms: the degree bound
+/-- The almost-everywhere facts used by the general-`J` unconditional forms, namely the degree bound
 with `D_n(ω) := min{JḠ_n(ω), n}`, `D_n ≥ 1`, the floor `Ω_n ⪰ σ̲²θnI_K`, and the rate
 `(n/D_n)^{1/3}δ_n → 0`. -/
 theorem clustershock_general_uncond_package
@@ -3041,8 +3044,8 @@ end WaldStep
 
 /-! ### A sum of independent fair shocks on a single probability space
 
-Witness infrastructure: `ν_o = ∑_k s_{idx(o,k)}` on `Aw = Bool × ((ℕ × ℕ) → Bool)`, which carries
-the whole sequence of designs. -/
+The disturbance `ν_o = ∑_k s_{idx(o,k)}` on `Aw = Bool × ((ℕ × ℕ) → Bool)`, a single space for
+the whole sequence of designs, for use in the examples below. -/
 
 section CoinShockSum
 
@@ -3176,13 +3179,13 @@ noncomputable def coinShockDep {μ : Measure Aw} [IsProbabilityMeasure μ]
 
 end CoinShockSum
 
-/-! ### Vacuity witnesses for the general-`J` random-design and Wald forms
+/-! ### Examples for the general-`J` random-design and Wald forms
 
 At index `n` there are `n+3` observations with clustering maps `g^{(1)}(o) = ⌊o/2⌋` and
-`g^{(2)}(o) = ⌊(o+1)/2⌋`; component `k` of observation `o` reads coin `(n, 3·label_k(o) + k)`, so
+`g^{(2)}(o) = ⌊(o+1)/2⌋`; component `k` of observation `o` depends on coin `(n, 3·label_k(o) + k)`, so
 `ν_o = c^{(1)}_{g₁(o)} + c^{(2)}_{g₂(o)} + ε_o` with fair signs. The regressor is `x̃_o = ±1` with
-the sign read off the design coin, `𝓡_n = I_1`, and `Ḡ_n⁴/n = 16/(n+3) → 0`. The variance
-estimator of the Wald witness is `𝒱_n` inflated by `1 + 1/(n+1)`. -/
+the sign given by the design coin, `𝓡_n = I_1`, and `Ḡ_n⁴/n = 16/(n+3) → 0`. The variance
+estimator of the Wald example is `𝒱_n` inflated by `1 + 1/(n+1)`. -/
 
 section FrozenGeneralShockWitness
 
@@ -3192,7 +3195,7 @@ open Multiway.SteinCluster.FrozenDesignWitness
 open scoped MatrixOrder Matrix.Norms.L2Operator
 open Matrix
 
-/-- Component `k` of observation `o` at index `n` reads coin `(n, 3·label + k)`. -/
+/-- Component `k` of observation `o` at index `n` depends on coin `(n, 3·label + k)`. -/
 def gcIdx (n : ℕ) (o : Fin (n + 3)) (k : Fin 3) : ℕ × ℕ := (n, 3 * wtLab n o k + k.val)
 
 theorem gcIdx_component (n : ℕ) (o o' : Fin (n + 3)) (k k' : Fin 3)
@@ -3250,8 +3253,8 @@ noncomputable def gcDep {μ : Measure Aw} [IsProbabilityMeasure μ]
     (fun _ _ h => Multiway.Sharing.linked_symm h)
     (gcIdx_ne_of_not_linked n)
 
-/-- The design at index `n`: the all-ones regressor over `n+3` observations, with the sign of
-the design coin. -/
+/-- The design at index `n`, the all-ones regressor over `n+3` observations multiplied by the
+sign of the design coin. -/
 noncomputable def gcXt (n : ℕ) (y : Aw) : Matrix (Fin (n + 3)) (Fin 1) ℝ :=
   sgnA y • redXt (n + 2)
 
@@ -3389,7 +3392,7 @@ theorem gc_hWvm (n : ℕ) : Measurable fun y : Aw =>
   exact (by fun_prop : Measurable
     (fun x : ℝ => (WithLp.toLp 2 ![x] : EuclideanSpace ℝ (Fin 1)))).comp (gc_hWm n)
 
-/-- Vacuity witness for `clustershock_a_general_unconditional`. -/
+/-- An example for `clustershock_a_general_unconditional`. -/
 theorem clustershock_a_general_unconditional_witness :
     Pw {y : Aw | y.1 = true} = 2⁻¹
     ∧ (∃ B : Set Aw, MeasurableSet B ∧ ¬ MeasurableSet[Dw] B)
@@ -3464,7 +3467,7 @@ theorem clustershock_a_general_unconditional_witness :
     simp only [Fintype.card_fin]
     exact gc_hGrate
 
-/-- Vacuity witness for `clustershock_b_general_unconditional`, with the fourth-moment bound at
+/-- An example for `clustershock_b_general_unconditional`, with the fourth-moment bound at
 `C₄ = 3`. -/
 theorem clustershock_b_general_unconditional_witness :
     Pw {y : Aw | y.1 = true} = 2⁻¹
@@ -3557,7 +3560,7 @@ theorem clustershock_b_general_unconditional_witness :
     simp only [Fintype.card_fin]
     exact gc_hGrate
 
-/-- Vacuity witness for `clustershock_a_general_unconditional_vector`, at `r = 1`. -/
+/-- An example for `clustershock_a_general_unconditional_vector`, at `r = 1`. -/
 theorem clustershock_a_general_unconditional_vector_witness :
     (∀ n : ℕ, ∃ a b d : Fin (n + 3),
         Multiway.Linked (wtC n) Finset.univ a b
@@ -3664,7 +3667,7 @@ theorem gc_hVmeas (n : ℕ) : Measurable fun y : Aw =>
   rw [h]
   exact measurable_const
 
-/-- The variance estimator of the witness: the exact variance inflated by `1 + 1/(n+1)`. -/
+/-- The variance estimator of the example, the exact variance inflated by `1 + 1/(n+1)`. -/
 noncomputable def gcVh (n : ℕ) (y : Aw) : Matrix (Fin 1) (Fin 1) ℝ :=
   (1 + 1 / ((n : ℝ) + 1)) • restrictedVar (gcXt n y)
     (Multiway.Sharing.clusterOmega (wtC n) Finset.univ (fun _ => (1 : ℝ)) (fun _ => (1 : ℝ)))
@@ -3726,7 +3729,7 @@ theorem gc_ratio (n : ℕ) (y : Aw) :
     simp [rectFrobSq, Matrix.smul_apply, Matrix.one_apply]
   rw [h1, Real.sqrt_sq (by positivity)]
 
-/-- Vacuity witness for `clustershock_rateagnostic_c`. -/
+/-- An example for `clustershock_rateagnostic_c`. -/
 theorem clustershock_rateagnostic_c_witness :
     (∀ (n : ℕ) (y : Aw), rectFrobNorm ((sqrtPD (restrictedVar (gcXt n y)
           (Multiway.Sharing.clusterOmega (wtC n) Finset.univ (fun _ => (1 : ℝ))

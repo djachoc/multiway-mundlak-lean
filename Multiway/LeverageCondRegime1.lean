@@ -7,10 +7,10 @@ import Mathlib.Probability.CondVar
 
 This file formalizes clauses (ii) and (iii) of Lemma SM.B.6 (Residual representation and exact
 leverage identity) and Proposition SM.D.4 (Exact leverage correction) under Regime 1 of the
-dependence assumption: the innovations `ε_o` are mutually conditionally independent given `𝒟`,
-with conditional mean zero and conditional variances `σ²_ε(o)`. The conditional cross-moment
-identity `E[ε_o ε_{o'} | 𝒟] = 𝟙{o = o'} σ²_ε(o)`, taken as the hypothesis `hcross` in
-`Multiway.LeverageCond`, is derived here. The residual-maker entries `R_{oo'}` may be arbitrary
+dependence assumption, in which the innovations `ε_o` are mutually conditionally independent given
+`𝒟`, with conditional mean zero and conditional variances `σ²_ε(o)`. Under Regime 1 the conditional
+cross-moment identity `E[ε_o ε_{o'} | 𝒟] = 𝟙{o = o'} σ²_ε(o)`, which `Multiway.LeverageCond` takes
+as the hypothesis `hcross`, holds. The residual-maker entries `R_{oo'}` may be arbitrary
 `𝒟`-measurable random variables satisfying `ν̂_{FE,o} = ∑_{o'} R_{oo'} ε_{o'}` (`hres`) and
 `∑_{o'} R²_{oo'} = R_{oo}` (`hrow`); a deterministic operator is a special case.
 
@@ -31,7 +31,7 @@ open MeasureTheory ProbabilityTheory
 
 open scoped RealInnerProductSpace
 
-/-! ### The diagonal: `E[ε_o² | 𝒟]` is the conditional variance -/
+/-! ### Conditional second moments on the diagonal -/
 
 section Diagonal
 

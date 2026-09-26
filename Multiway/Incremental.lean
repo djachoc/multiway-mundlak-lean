@@ -173,7 +173,7 @@ theorem incrementalMundlak_comp_orthogonal (hUS : U ≤ S) :
 
 end Annihilate
 
-/-- **Lemma SM.B.1.** With `hS : T ⊔ U = S`:
+/-- **Lemma SM.B.1.** Let `T ⊔ U = S` (hypothesis `hS`). Then
 
 1. `A_m` is the orthogonal projector onto `col(Q_{-m}Δ_m) = U.map Q_{-m}`;
 2. `col(B_m) = col(A_m)`;

@@ -37,8 +37,8 @@ dependents.
 ## Verification
 
 `lake build` checks that every file elaborates. It does not rule out a `sorry`, which elaborates
-with a warning and leaves the build green. `Verify.lean` carries one `#print axioms` directive
-per public declaration and is run on its own.
+with a warning and leaves the build green. `Verify.lean` has one `#print axioms` directive
+per public declaration and is run separately.
 
 ```
 lake env lean Verify.lean
@@ -56,11 +56,10 @@ Proposition SM.D.3. Modules are named for the mathematics, not for the numbering
 
 [`results/map.tsv`](results/map.tsv) is the index, and [`results/README.md`](results/README.md)
 is the same table rendered. Each row gives a printed result, the module that holds it and the
-declarations carrying its clauses. To read a result, open that module. Its header records what
-the declaration proves, which hypotheses are the paper's own and which are artifacts of the
-formalization. There are no per-result pages.
+declarations that state its clauses. To read a result, open that module. Its header states what
+the declarations prove. There are no per-result pages.
 
-The figure below is drawn from the manuscript's own proofs and reads from left to right, from
+The figure below is drawn from the proofs in the manuscript and reads from left to right, from
 supporting results to the main ones. Lemma SM.B.6 is invoked by nine other proofs and
 Theorems 3 and 4 by six each; Theorem 1 invokes nothing. Its source is
 [`results/proofmap.tex`](results/proofmap.tex).
@@ -86,8 +85,7 @@ lake-manifest.json       the pinned Mathlib revision
 
 ## Reading the statements
 
-Each Lean statement transcribes a printed one, and the module header records how it was read.
-Where a statement departs from the printed one, the header says so. Some hypotheses
+Each Lean statement transcribes a printed one. Some hypotheses
 are measurability or nonemptiness conditions that the paper leaves implicit. Where the paper
 writes convergence in probability, a few statements give almost everywhere convergence along a
 realization of the conditioning variables. A handful of results are exercised on a model that
@@ -95,13 +93,13 @@ holds one index at one, so the matrix algebra is not tested by that example.
 
 Each result is also exhibited on a concrete model, by a declaration whose name ends in `_witness`
 and proves that its hypotheses hold together. A theorem with contradictory hypotheses compiles
-and proves nothing, and the witnesses rule that out.
+and proves nothing, and these declarations rule that out.
 
 Two results from outside the paper are formalized here because its proofs use them. Theorem 2 of
 Janson (1988, p. 307), the central limit theorem for sums over a dependency graph, is in
 `Multiway/JansonCLT.lean` with his Theorem 1 and Lemmas 1 to 4. Remark 3 of that paper, which
 extends the theorem to unbounded summands by truncation, is stated there without proof and is not
-formalized here; the manuscript writes out its own truncation argument instead. Marcinkiewicz's
+formalized here; the manuscript writes out a truncation argument instead. Marcinkiewicz's
 Théorème 2 bis is in `Multiway/Marcinkiewicz.lean`.
 
 ## Ported modules
@@ -110,7 +108,7 @@ Nine modules come from CausalSmith, the
 [`Causalean`](https://github.com/Jiyuan-Tan/CausalSmith) library of Jiyuan Tan, under the Apache
 License 2.0. Eight of them are the Stein-method central limit theorem for dependency graphs in
 `Multiway/SteinCLT/`, and `Multiway/Cumulant.lean` comes from that library's moment-problem file.
-Each carries the notice the license requires, naming the upstream path and the changes made.
+Each has the notice the license requires, naming the upstream path and the changes made.
 Those changes are re-rooted imports and one repair for a Mathlib rename. No upstream declaration
 name, namespace or attribution was altered.
 
@@ -148,5 +146,5 @@ The Mathlib Community (2020). The Lean mathematical library. *CPP 2020*, 367-381
 
 ## License
 
-Apache License 2.0, as in [LICENSE](LICENSE). Mathlib and the ported modules carry the same
+Apache License 2.0, as in [LICENSE](LICENSE). Mathlib and the ported modules are under the same
 license, which allows results from here to be ported into other developments with attribution.

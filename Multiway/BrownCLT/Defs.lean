@@ -23,9 +23,9 @@ import Mathlib.Probability.Moments.Variance
 /-!
 # Martingale-difference arrays
 
-The triangular-array martingale-difference structure underlying the martingale central limit
-theorem of Brown (1971): for each row `n`, a filtration `𝓕_{n,0} ≤ ⋯ ≤ 𝓕_{n,k_n}` and
-differences `X_{n,i}` that are `𝓕_{n,i+1}`-measurable, square-integrable, and have vanishing
+The triangular-array martingale-difference structure of the martingale central limit theorem of
+Brown (1971). Each row `n` has a filtration `𝓕_{n,0} ≤ ⋯ ≤ 𝓕_{n,k_n}` and differences `X_{n,i}`
+that are `𝓕_{n,i+1}`-measurable, square-integrable, and have vanishing
 conditional mean given `𝓕_{n,i}`. The conditional variance process is
 `V_n = Σ_{i<k_n} E[X_{n,i}² | 𝓕_{n,i}]`. Filtrations are plain monotone families
 `Fin (k n + 1) → MeasurableSpace Ω`.
@@ -44,8 +44,8 @@ namespace StatLean.TimeSeries
 
 variable {Ω : Type*} [MeasurableSpace Ω]
 
-/-- **Martingale-difference (triangular) array**: row `n` has `k n` differences adapted
-to the row filtration `F n : Fin (k n + 1) → MeasurableSpace Ω`. -/
+/-- A martingale-difference triangular array. Row `n` has `k n` differences adapted to the row
+filtration `F n : Fin (k n + 1) → MeasurableSpace Ω`. -/
 structure IsMDSArray (k : ℕ → ℕ) (X : (n : ℕ) → Fin (k n) → Ω → ℝ)
     (F : (n : ℕ) → Fin (k n + 1) → MeasurableSpace Ω) (μ : Measure Ω) : Prop where
   /-- The row filtration is a family of sub-σ-algebras. -/

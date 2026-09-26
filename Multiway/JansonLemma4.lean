@@ -36,8 +36,8 @@ variable {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasu
 variable {ι : Type*} [Fintype ι] [DecidableEq ι] {X : ι → Ω → ℝ}
 
 omit [IsProbabilityMeasure μ] [Fintype ι] in
-/-- The dependency graph's independence, transported to the `splitPart` shape that
-`Cumulant.mixedCumulant_eq_zero_of_indepFun` consumes. -/
+/-- The dependency graph's independence, transported to the `splitPart` form used by
+`Cumulant.mixedCumulant_eq_zero_of_indepFun`. -/
 theorem indepFun_splitPart_of_sep (D : DepGraph X μ) {j : ℕ} (φ : Fin j → ι)
     (a b : Finset (Fin j)) (hsep : ∀ k ∈ a, ∀ l ∈ b, ¬ D.G (φ k) (φ l)) :
     IndepFun (Cumulant.splitPart (fun k => X (φ k)) a)
@@ -161,22 +161,23 @@ theorem abs_cumulant_sum_le (D : DepGraph X μ) {M : ℕ}
         ring
 end Lemma4
 
-/-! ### Witnesses -/
+/-! ### Examples -/
 
 section Witness
 
 open Cumulant Cumulant.SkewWitness
 
-/-- The witness index map: slots `0` and `1` read the first coordinate, slot `2` the second. -/
+/-- The index map of the example: slots `0` and `1` read the first coordinate, slot `2` the
+second. -/
 def wπ : Fin 3 → Fin 2 := ![0, 0, 1]
 
-/-- The witness dependency relation: two variables are adjacent exactly when they read the same
-coordinate. -/
+/-- The dependency relation of the example: two variables are adjacent if and only if they read
+the same coordinate. -/
 def wG : Fin 3 → Fin 3 → Prop := fun i k => wπ i = wπ k
 
 instance instDecidableRelWG : DecidableRel wG := fun i k => inferInstanceAs (Decidable (wπ i = wπ k))
 
-/-- The witness family: `X 0 = X 1 = ω 0` and `X 2 = ω 1`, on two independent copies of the
+/-- The family of the example: `X 0 = X 1 = ω 0` and `X 2 = ω 1`, on two independent copies of the
 skewed law `¼δ₄ + ¾δ₀`. -/
 noncomputable def wX (i : Fin 3) : (Fin 2 → ℝ) → ℝ := coord (wπ i)
 
@@ -184,7 +185,7 @@ theorem coord_iIndep : iIndepFun coord pairLaw :=
   iIndepFun_pi (μ := fun _ : Fin 2 => skewLaw) (X := fun _ => (id : ℝ → ℝ))
     (fun _ => aemeasurable_id)
 
-/-- The witness dependency graph. -/
+/-- The dependency graph of the example. -/
 noncomputable def wDep : DepGraph wX pairLaw where
   G := wG
   decG := inferInstance
@@ -226,7 +227,7 @@ theorem wDep_nbhd_eq (i : Fin 3) : wDep.nbhd i = univ.filter (fun k => wG i k) :
   rw [DepGraph.mem_nbhd_iff, Finset.mem_filter]
   exact ⟨fun h => ⟨Finset.mem_univ _, h⟩, fun h => h.2⟩
 
-/-- Janson's maximal degree is `M = 1` here. -/
+/-- Janson's maximal degree of this graph is `M = 1`. -/
 theorem wDep_degree (i : Fin 3) : #((wDep.nbhd i).erase i) ≤ 1 := by
   rw [wDep_nbhd_eq]
   revert i
@@ -290,7 +291,7 @@ theorem w_lemma4_witness_lhs :
 
 /-! #### Lemma 3 on the graph -/
 
-/-- Slots `{0}` and `{1,2}` carry vertices `0` and `2`, which are not adjacent. -/
+/-- Slots `{0}` and `{1,2}` contain vertices `0` and `2`, which are not adjacent. -/
 theorem w_not_connFam : ¬ IsConnFam wG ![0, 2, 2] := by
   intro h
   have hc := h {0} ⟨0, by decide⟩ ⟨1, by decide⟩

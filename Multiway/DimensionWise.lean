@@ -18,8 +18,8 @@ dimension-wise controls span `dwControls C₀ P W`, and `G_X = 0` is the contain
 * `spanning_of_single`: clause (i), a single dimension.
 * `starProjection_iSup_eq`: `P_[Δ] = ∑_m P_m - (M-1)P_0` under pairwise `P_mP_ℓ = P_0`.
 * `spanning_of_pairwise`: clause (ii), `G_X = 0` under pairwise `P_mP_ℓ = P_0`.
-* `commute_of_uniform_spanning`: clause (iii) in contrapositive form: uniform equivalence
-  forces `P_mP_{-m} = P_{-m}P_m`.
+* `commute_of_uniform_spanning`: clause (iii) in contrapositive form (uniform equivalence
+  forces `P_mP_{-m} = P_{-m}P_m`).
 -/
 
 namespace Multiway
@@ -53,7 +53,7 @@ variable [Fintype D] [Nonempty D] {C₀ : Submodule ℝ E} {P : D → Submodule 
 variable {W : Submodule ℝ E}
 
 omit [Fintype D] [Nonempty D] in
-/-- `P_mP_0 = P_0`: the constant space sits inside every dimension's space, so its projector
+/-- `P_mP_0 = P_0`: the constant space is contained in every dimension's space, so its projector
 is fixed by each `P_m`. The companion `P_0P_m = P_0` is Mathlib's
 `starProjection_comp_starProjection_of_le`. -/
 theorem starProjection_const_fixed (hconst : ∀ m, C₀ ≤ P m) (m : D) (x : E) :
@@ -86,8 +86,8 @@ theorem inf_orthogonal_isOrtho (hconst : ∀ m, C₀ ≤ P m)
     hpair m ℓ hml x, h0 x, starProjection_const_fixed hconst m x, hC]
   abel
 
-/-- The family the decomposition runs over: the constant space, and one `𝒮_m ∩ span(ι_n)^⊥`
-per dimension. -/
+/-- The constant space together with one `𝒮_m ∩ span(ι_n)^⊥` per dimension, the family over
+which the decomposition is taken. -/
 noncomputable def constFamily (C₀ : Submodule ℝ E) (P : D → Submodule ℝ E) : Option D → Submodule ℝ E
   | none => C₀
   | some m => P m ⊓ C₀ᗮ
@@ -169,8 +169,8 @@ open scoped RealInnerProductSpace
 variable {F : Type*} [AddCommGroup F] [Module ℝ F] [FiniteDimensional ℝ F]
 variable {C₀ : Submodule ℝ E} {P : D → Submodule ℝ E} {m : D}
 
-/-- The regressor `X_x := [x + w_1 - Q_[Δ]x, w_2, …, w_K]`: the map `a ↦ w a + φ(a) • v`,
-with `w` carrying `K` independent columns from `col(Q_[Δ])` and `φ` selecting the first. -/
+/-- The regressor `X_x := [x + w_1 - Q_[Δ]x, w_2, …, w_K]`, the map `a ↦ w a + φ(a) • v`,
+where the `K` columns of `w` are independent vectors in `col(Q_[Δ])` and `φ` selects the first. -/
 def perturbedRegressor (w : F →ₗ[ℝ] E) (φ : F →ₗ[ℝ] ℝ) (v : E) : F →ₗ[ℝ] E :=
   w + LinearMap.smulRight φ v
 
@@ -212,7 +212,7 @@ theorem commute_of_uniform_spanning [Nontrivial F] (hM : ∃ ℓ, ℓ ≠ m)
     simp only [LinearMap.comp_apply, ContinuousLinearMap.coe_coe, LinearMap.zero_apply,
       starProjection_eq_self_iff.mpr hz] at h
     exact h
-  -- both maps see only the fitted component of their argument
+  -- both maps depend only on the fitted component of their argument
   have hAsplit : ∀ x : E, incrementalProjector (⨆ ℓ, P ℓ) (⨆ ℓ, ⨆ (_ : ℓ ≠ m), P ℓ) x
       = incrementalProjector (⨆ ℓ, P ℓ) (⨆ ℓ, ⨆ (_ : ℓ ≠ m), P ℓ)
         ((⨆ ℓ, P ℓ).starProjection x) := by

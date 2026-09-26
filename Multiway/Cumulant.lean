@@ -39,9 +39,9 @@ import Mathlib.Probability.Independence.Integration
 
 This file defines joint cumulants by the set-partition (Möbius) formula, which requires only
 finite moments, and develops the part of their theory used by Janson (1988), *Ann. Probab.*
-**16**(1), 305–312: the moment–cumulant inversion, additivity over independent summands,
-homogeneity, translation invariance, vanishing on independently split families, and a bound
-for bounded variables.
+16(1), 305–312. This includes the moment–cumulant inversion, additivity over independent
+summands, homogeneity, translation invariance, vanishing on independently split families, and a
+bound for bounded variables.
 
 ## Main results
 
@@ -59,7 +59,7 @@ namespace Cumulant
 
 /-! ### Section 1.  Sums over `Finpartition`
 
-Combinatorics of set partitions, driven by the bijection `sum_filter_mem_parts`.
+Combinatorics of set partitions, based on the bijection `sum_filter_mem_parts`.
 -/
 
 section Partitions
@@ -93,8 +93,8 @@ lemma card_addBlock_parts {s D : Finset ι} (hDs : D ⊆ s) (hD : D.Nonempty)
     (σ : Finpartition (s \ D)) : #(addBlock hDs hD σ).parts = #σ.parts + 1 := by
   rw [addBlock_parts, Finset.card_insert_of_notMem (notMem_parts_of_nonempty hD σ)]
 
-/-- Restricting a partition of `s` to the complement of one of its blocks deletes exactly that
-block. -/
+/-- Restricting a partition of `s` to the complement of one of its blocks gives the partition
+with that block removed. -/
 lemma parts_restrict_sdiff {s D : Finset ι} {π : Finpartition s} (hD : D ∈ π.parts) :
     (π.restrict (Finset.sdiff_subset (s := s) (t := D))).parts = π.parts.erase D := by
   have hkey : ∀ C ∈ π.parts, C ≠ D → C ⊓ (s \ D) = C := by
@@ -122,7 +122,7 @@ lemma parts_restrict_sdiff {s D : Finset ι} {π : Finpartition s} (hD : D ∈ �
   · rintro ⟨hCD, hC⟩
     exact ⟨(π.nonempty_of_mem_parts hC).ne_empty, C, hC, hkey C hC hCD⟩
 
-/-- For a nonempty `D ⊆ s`, the partitions of `s` that have `D` as a block are exactly the
+/-- For a nonempty `D ⊆ s`, the partitions of `s` that have `D` as a block are the
 partitions of `s \ D` with `D` adjoined. -/
 lemma sum_filter_mem_parts {s D : Finset ι} (hDs : D ⊆ s) (hD : D.Nonempty)
     (G : Finpartition s → M) :
@@ -294,7 +294,7 @@ private lemma ite_ite_comm {α : Type*} [Zero α] (p q : Prop) [Decidable p] [De
     (if p then (if q then a else 0) else 0) = (if q then (if p then a else 0) else 0) := by
   by_cases hp : p <;> by_cases hq : q <;> simp [hp, hq]
 
-/-- One term of the marked-block identity: the subsets `D ∋ i₀` of `s` other than `s` itself are
+/-- One term of the marked-block identity. The subsets `D ∋ i₀` of `s` other than `s` itself are
 in bijection with the nonempty blocks `E = s \ D` avoiding `i₀`, and a `k`-block partition of
 `D` with `E` adjoined is a `(k+1)`-block partition of `s` having `E` as a block. -/
 lemma mul_partSumCard_eq_sum {f : Finset ι → ℝ} {s E : Finset ι} (hEs : E ⊆ s)
@@ -384,8 +384,8 @@ lemma sum_marked_block (f : Finset ι → ℝ) (hf : f ∅ = 1) {s : Finset ι} 
 
 /-! ### Section 2.  The Möbius transform and its inversion
 
-`mobius f` is the set-partition formula with the weights `(-1)^(k-1) (k-1)!`.  The theorem is
-that `partSum` inverts it, which for `f` the joint moments is the moment–cumulant relation.
+`mobius f` is the set-partition formula with the weights `(-1)^(k-1) (k-1)!`, and `partSum`
+inverts it. For `f` the joint moments, this is the moment–cumulant relation.
 -/
 
 /-- The weight `(-1)^(k-1) (k-1)!` that the set-partition formula attaches to a partition with
@@ -562,8 +562,8 @@ lemma sum_powerset_comm (s : Finset ι) (K : Finset ι → Finset ι → ℝ) :
   · simp only [ite_eq_left h, ite_eq_left h.symm]
   · simp only [ite_eq_right h, ite_eq_right (fun hc : Disjoint D A => h hc.symm)]
 
-/-- The block recursion for a subset convolution: the block of `i₀` lies either in the first
-factor or in the second. -/
+/-- The block recursion for a subset convolution, in which the block of `i₀` lies either in
+the first factor or in the second. -/
 lemma conv_recursion (f g : Finset ι → ℝ) {s : Finset ι} {i₀ : ι} (hi : i₀ ∈ s) :
     ∑ A ∈ s.powerset, partSum f A * partSum g (s \ A)
       = ∑ D ∈ s.powerset.filter (fun D => i₀ ∈ D),
@@ -709,7 +709,7 @@ theorem mobius_add_of_conv {f g h : Finset ι → ℝ} (hf : f ∅ = 1) (hg : g 
     rw [partSum_mobius f hf A, partSum_mobius g hg (t \ A)]
 
 /-- If the joint moments factor across a splitting of `s` into two disjoint parts, then the
-Möbius transform vanishes at `s` as soon as `s` meets both parts. -/
+Möbius transform vanishes at `s` whenever `s` meets both parts. -/
 theorem mobius_eq_zero_of_split {f : Finset ι → ℝ} (hf : f ∅ = 1) {s a b : Finset ι}
     (hab : Disjoint a b) (hcover : s ⊆ a ∪ b)
     (hsplit : ∀ t : Finset ι, t ⊆ s → f t = f (t ∩ a) * f (t ∩ b))
@@ -717,7 +717,7 @@ theorem mobius_eq_zero_of_split {f : Finset ι → ℝ} (hf : f ∅ = 1) {s a b 
     mobius f s = 0 := by
   classical
   set h : Finset ι → ℝ := fun B => if B ⊆ a ∨ B ⊆ b then mobius f B else 0 with hhdef
-  -- one branch of the induction, used with `(a, b)` and with `(b, a)`
+  -- the induction step, used with `(a, b)` and with `(b, a)`
   have step : ∀ (c d : Finset ι), Disjoint c d →
       (∀ t : Finset ι, t ⊆ s → f t = f (t ∩ c) * f (t ∩ d)) →
       (∀ B : Finset ι, h B = if B ⊆ c then mobius f B else
@@ -727,7 +727,7 @@ theorem mobius_eq_zero_of_split {f : Finset ι → ℝ} (hf : f ∅ = 1) {s a b 
     intro c d hcd hsp hh t hts i₀ hi₀t hi₀c ih
     have hi₀d : i₀ ∉ d := fun hcon => (Finset.disjoint_left.mp hcd hi₀c) hcon
     rw [partSum_recursion h hi₀t]
-    -- only the blocks inside `c` survive
+    -- the terms with `D ⊄ c` vanish
     have hterm : ∀ D ∈ t.powerset.filter (fun D => i₀ ∈ D),
         h D * partSum h (t \ D)
           = if D ⊆ c then mobius f D * f ((t ∩ c) \ D) * f (t ∩ d) else 0 := by
@@ -750,7 +750,7 @@ theorem mobius_eq_zero_of_split {f : Finset ι → ℝ} (hf : f ∅ = 1) {s a b 
       · have hDd : ¬ D ⊆ d := fun hcon => hi₀d (hcon hD.2)
         rw [hh D, ite_eq_right hDc, ite_eq_right hDd, ite_eq_right hDc, zero_mul]
     rw [Finset.sum_congr rfl hterm, ← Finset.sum_filter]
-    -- the surviving index set is the blocks of `t ∩ c` containing `i₀`
+    -- the remaining index set consists of the subsets of `t ∩ c` containing `i₀`
     have hidx : (t.powerset.filter (fun D => i₀ ∈ D)).filter (fun D => D ⊆ c)
         = (t ∩ c).powerset.filter (fun D => i₀ ∈ D) := by
       ext D
@@ -782,8 +782,8 @@ theorem mobius_eq_zero_of_split {f : Finset ι → ℝ} (hf : f ∅ = 1) {s a b 
   rw [← hfinal]
   simp only [hhdef, hsa, hsb, or_self, ite_false]
 
-/-- Blocks of a partition of `s` cover `s` exactly once, so an `s`-indexed product factors
-across them. -/
+/-- Every element of `s` lies in exactly one block of a partition of `s`, so an `s`-indexed
+product factors across the blocks. -/
 lemma prod_prod_parts {s : Finset ι} (π : Finpartition s) (a : ι → ℝ) :
     ∏ B ∈ π.parts, ∏ i ∈ B, a i = ∏ i ∈ s, a i := by
   classical
@@ -793,7 +793,7 @@ lemma prod_prod_parts {s : Finset ι} (π : Finpartition s) (a : ι → ℝ) :
 
 end Partitions
 
-/-! ### Section 2.  Joint moments and cumulants
+/-! ### Section 3.  Joint moments and cumulants
 
 Janson's mixed semiinvariants and the moment–cumulant relation.
 -/
@@ -822,7 +822,7 @@ lemma jointMoment_const_fun (μ : Measure Ω) (X : Ω → ℝ) (s : Finset ι) :
 noncomputable def mixedCumulant (μ : Measure Ω) (X : ι → Ω → ℝ) (s : Finset ι) : ℝ :=
   mobius (jointMoment μ X) s
 
-/-- The definition written out: a linear combination of products `∏_k E ∏_{i ∈ I_k} X_i` over
+/-- The definition, written as a linear combination of products `∏_k E ∏_{i ∈ I_k} X_i` over
 the partitions `I_1, …, I_l` of `s`. -/
 lemma mixedCumulant_eq (μ : Measure Ω) (X : ι → Ω → ℝ) (s : Finset ι) :
     mixedCumulant μ X s
@@ -1058,7 +1058,8 @@ lemma jointMoment_const (μ : Measure Ω) [IsProbabilityMeasure μ] (c : ℝ) (s
     jointMoment μ (fun _ : ι => fun _ : Ω => c) s = c ^ #s := by
   simp [jointMoment]
 
-/-- The mixed cumulant of a constant family: `c` at a singleton, `0` at anything larger. -/
+/-- The mixed cumulant of a constant family is `c` at a singleton and `0` at any larger
+index set. -/
 theorem mixedCumulant_const (μ : Measure Ω) [IsProbabilityMeasure μ] (c : ℝ) {s : Finset ι}
     (hs : s.Nonempty) :
     mixedCumulant μ (fun _ : ι => fun _ : Ω => c) s = if #s = 1 then c else 0 := by
@@ -1168,8 +1169,8 @@ theorem cumulant_map {Ω' : Type*} [MeasurableSpace Ω'] (μ : Measure Ω) {g : 
 
 /-! #### Janson, Lemma 3: a mixed cumulant vanishes on an independently split family -/
 
-/-- The two halves of a family, extended by `1` off their own index sets, so that a product
-over any subset reads off the relevant half. -/
+/-- The family restricted to `a` and extended by `1` outside `a`, so that its product over a
+subset of `a` is the product of the original family. -/
 noncomputable def splitPart (X : ι → Ω → ℝ) (a : Finset ι) (ω : Ω) (i : ι) : ℝ :=
   if i ∈ a then X i ω else 1
 
@@ -1248,10 +1249,10 @@ theorem mixedCumulant_eq_zero_of_indepFun (μ : Measure Ω) [IsProbabilityMeasur
 
 end Probability
 
-/-! ### Section 3.  Witnesses
+/-! ### Section 4.  Examples
 
-The results above evaluated on a skewed two-point law with `κ_1 = 1`, `κ_2 = 3` and `κ_3 = 6`,
-so that cumulants of order three are non-zero.
+The results above are evaluated on a skewed two-point law with `κ_1 = 1`, `κ_2 = 3` and
+`κ_3 = 6`, whose cumulant of order three is non-zero.
 -/
 
 section Witness
@@ -1260,8 +1261,8 @@ open scoped ENNReal
 
 namespace SkewWitness
 
-/-- A skewed two-point law: the value `4` with probability `1/4`, the value `0` with
-probability `3/4`. Its raw moments are `E X = 1`, `E X² = 4`, `E X³ = 16`. -/
+/-- The skewed two-point law with the value `4` with probability `1/4` and the value `0`
+with probability `3/4`. Its raw moments are `E X = 1`, `E X² = 4`, `E X³ = 16`. -/
 noncomputable def skewLaw : Measure ℝ :=
   (1/4 : ℝ≥0∞) • Measure.dirac (4 : ℝ) + (3/4 : ℝ≥0∞) • Measure.dirac (0 : ℝ)
 
@@ -1386,7 +1387,7 @@ theorem skew_bounded : ∀ᵐ x ∂skewLaw, |id x| ≤ 4 := by
   rw [Set.indicator_of_notMem (by norm_num), Set.indicator_of_notMem (by norm_num)]
   simp
 
-/-- Janson (4.4): the bound holds, and the quantity it bounds is `6`. -/
+/-- Janson (4.4) on the skewed law, where the bounded quantity is `6`. -/
 theorem skew_bound_witness :
     |cumulant id 3 skewLaw| ≤ mobiusBound (univ : Finset (Fin 3)) * 4 ^ 3 :=
   abs_cumulant_le skewLaw id measurable_id skew_bounded 3

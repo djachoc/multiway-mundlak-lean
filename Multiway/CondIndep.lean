@@ -29,7 +29,7 @@ namespace CondIndep
 
 open MeasureTheory ProbabilityTheory
 
-/-! ## 1. The quantifier swap, two random variables at a time
+/-! ## 1. Conditional independence under the regular conditional law
 
 The side condition `[CountableOrCountablyGenerated Ω (β × β')]` of
 `condIndepFun_iff_map_prod_eq_prod_map_map` holds for any standard Borel target. -/
@@ -84,7 +84,7 @@ end Swap
 
 /-! ## 2. Grouping three slots against one
 
-The indices `i`, `j`, `k` need not be distinct from one another, only from `l`. -/
+The index `l` differs from each of `i`, `j`, `k`; these three may coincide. -/
 
 section Triple
 
@@ -111,7 +111,8 @@ theorem condIndepFun_triple [StandardBorelSpace Ω] [IsFiniteMeasure μ] {h𝒟 
   have hψ : Measurable (fun v : ↥({l} : Finset O) → γ => v ⟨l, hml⟩) := by fun_prop
   exact (hindep.condIndepFun_finset ({i, j, k} : Finset O) ({l} : Finset O) hdisj hZ).comp hφ hψ
 
-/-- Three against one, at the level of conditional expectations. -/
+/-- `μ[G(Z_i,Z_j,Z_k)·H(Z_l) | 𝒟] =ᵐ[μ] μ[G(Z_i,Z_j,Z_k) | 𝒟]·μ[H(Z_l) | 𝒟]` for a conditionally
+independent family and `l ∉ {i, j, k}`. -/
 theorem condExp_mul_triple [StandardBorelSpace Ω] [IsFiniteMeasure μ] {h𝒟 : 𝒟 ≤ mΩ}
     {Z : O → Ω → γ} (hZ : ∀ o, Measurable (Z o)) (hindep : iCondIndepFun 𝒟 h𝒟 Z μ)
     {i j k l : O} (hi : i ≠ l) (hj : j ≠ l) (hk : k ≠ l)
@@ -125,8 +126,7 @@ theorem condExp_mul_triple [StandardBorelSpace Ω] [IsFiniteMeasure μ] {h𝒟 :
     (hG.comp ((hZ i).prodMk ((hZ j).prodMk (hZ k))))
     (hH.comp (hZ l)) ((condIndepFun_triple 𝒟 hZ hindep hi hj hk).comp hG hH) hGi hHi hGH
 
-/-- Three against one, vanishing form: if the lone slot has conditional mean zero, so does the
-whole product. -/
+/-- If the lone slot has conditional mean zero, so does the product of all four slots. -/
 theorem condExp_mul_triple_eq_zero [StandardBorelSpace Ω] [IsFiniteMeasure μ] {h𝒟 : 𝒟 ≤ mΩ}
     {Z : O → Ω → γ} (hZ : ∀ o, Measurable (Z o)) (hindep : iCondIndepFun 𝒟 h𝒟 Z μ)
     {i j k l : O} (hi : i ≠ l) (hj : j ≠ l) (hk : k ≠ l)
@@ -152,7 +152,7 @@ section TripleIndep
 variable {O : Type*} [DecidableEq O] {γ : Type*} [MeasurableSpace γ]
 variable {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
 
-/-- Three against one, unconditionally. -/
+/-- For an independent family, the triple `(Z_i, Z_j, Z_k)` is independent of `Z_l`. -/
 theorem indepFun_triple {Z : O → Ω → γ} (hZ : ∀ o, Measurable (Z o)) (hindep : iIndepFun Z μ)
     {i j k l : O} (hi : i ≠ l) (hj : j ≠ l) (hk : k ≠ l) :
     IndepFun (fun ω => (Z i ω, Z j ω, Z k ω)) (Z l) μ := by
@@ -170,7 +170,8 @@ theorem indepFun_triple {Z : O → Ω → γ} (hZ : ∀ o, Measurable (Z o)) (hi
   have hψ : Measurable (fun v : ↥({l} : Finset O) → γ => v ⟨l, hml⟩) := by fun_prop
   exact (hindep.indepFun_finset ({i, j, k} : Finset O) ({l} : Finset O) hdisj hZ).comp hφ hψ
 
-/-- Three against one at the level of integrals; only `AEStronglyMeasurable` is needed. -/
+/-- `∫ G(Z_i,Z_j,Z_k)·H(Z_l) dμ = (∫ G(Z_i,Z_j,Z_k) dμ)(∫ H(Z_l) dμ)` for an independent family and
+`l ∉ {i, j, k}`. No integrability hypothesis is required. -/
 theorem integral_mul_triple {Z : O → Ω → γ} (hZ : ∀ o, Measurable (Z o)) (hindep : iIndepFun Z μ)
     {i j k l : O} (hi : i ≠ l) (hj : j ≠ l) (hk : k ≠ l)
     {G : γ × γ × γ → ℝ} {H : γ → ℝ} (hG : Measurable G) (hH : Measurable H) :

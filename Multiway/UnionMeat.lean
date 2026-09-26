@@ -61,7 +61,7 @@ theorem frobSq_proj_eq_trace {P : Matrix O O ℝ} (hs : P.IsSymm) (hi : P * P = 
   rw [frobSq_eq_trace, hs.eq, hi]
 
 
-/-- `‖Ω'‖ ≤ L` in the only form the bounds below use: `‖AΩ'‖_F ≤ L‖A‖_F`. -/
+/-- The bound `‖Ω'‖ ≤ L` in the form `‖AΩ'‖_F ≤ L‖A‖_F`. -/
 theorem frobNorm_mul_le_of_opNorm {Omp : Matrix O O ℝ} {L : ℝ} (hL : 0 ≤ L)
     (hOpNorm : ∀ A : Matrix O O ℝ, frobSq (A * Omp) ≤ L ^ 2 * frobSq A) (A : Matrix O O ℝ) :
     frobNorm (A * Omp) ≤ L * frobNorm A := by
@@ -334,7 +334,7 @@ variable {O D L K : Type*} [Fintype O] [DecidableEq O] [DecidableEq D] [Decidabl
 
 `hOmega` is the covariance structure of `Ω`, `hsupp` says `Ω` is supported on the sharing
 pairs, `hXD` is `X̃'Δ_m = 0` in cell-weight form, and `hnSn` defines `nS_n`. The matrix `Om`
-stands for `Var(ν ∣ 𝒟)`. -/
+is `Var(ν ∣ 𝒟)`. -/
 theorem unionmeat_a (c : D → O → L) (dims : Finset D) (xt : O → K → ℝ)
     (levels : Finset (Finset D)) (sig1 : D → ℝ) (sige : Finset D → ℝ) (sigeps : O → ℝ)
     {Om Om1 Omp : Matrix O O ℝ} {nSn : Matrix K K ℝ}
@@ -760,9 +760,10 @@ end ClauseC
 
 The designs are indexed by `j` on one probability space. The mean of the quadratic form of
 clause (c) is the bias object of clause (b) (`expect_wMat_quadForm`), so the two bounds combine
-in one Chebyshev step. The rate hypothesis `hrate` is stated on `tr(Π_n) = d_[Δ]+K` and carries
-the factor `(#K)²` from the entrywise-to-Frobenius passage. The abstract functional `E` of
-`Multiway.QuadformE2` is related to `∫·dP` by the hypotheses `hEmean` and `hEsq`. -/
+in one Chebyshev step. The rate hypothesis `hrate` is stated on `tr(Π_n) = d_[Δ]+K` and includes
+the factor `(#K)²` that comes from bounding the Frobenius norm by the entries. The abstract
+functional `E` of `Multiway.QuadformE2` is related to `∫·dP` by the hypotheses `hEmean` and
+`hEsq`. -/
 
 section Tails
 
@@ -775,7 +776,7 @@ section Entries
 
 variable {K : Type*} [Fintype K]
 
-/-- A uniform bound on the entries bounds `‖·‖_F²`, at the cost of the factor `#K`. -/
+/-- A uniform bound `t` on the entries gives `‖M‖_F² ≤ (#K · t)²`. -/
 theorem frobSq_le_of_entries {M : Matrix K K ℝ} {t : ℝ} (ht : 0 ≤ t)
     (h : ∀ a b, |M a b| ≤ t) : frobSq M ≤ ((Fintype.card K : ℝ) * t) ^ 2 := by
   have hb : ∀ a b : K, M a b ^ 2 ≤ t ^ 2 := by
@@ -1252,11 +1253,11 @@ theorem tendstoInProb_frobNorm_meat_div_card {Ωp : Type*} [MeasurableSpace Ωp]
 
 end Sequences
 
-/-! ### Witnesses for the asymptotic tails
+/-! ### Examples for the asymptotic tails
 
-`𝒪_j = {0,…,j}` with one dimension carrying a single category, so `Sh = ιι'`; `K = 1`;
+`𝒪_j = {0,…,j}` with one dimension that has a single category, so `Sh = ιι'`; `K = 1`;
 `x̃_o = 𝟙{o = 0}`, so `‖C‖_F² = 1`; `Π_j = ee'` with `e_o = 𝟙{o = 0}`; and `n = j+1`. The
-probabilistic witness lives on `(Unit, dirac ())`. -/
+probabilistic example is on `(Unit, dirac ())`. -/
 
 section Witnesses
 
@@ -1384,7 +1385,7 @@ theorem tendstoInProb_frobNorm_bias_div_card_witness :
     simp only [hfun]
     exact witSeq_grow
 
-/-! #### The probabilistic witness -/
+/-! #### The probabilistic example -/
 
 /-- Evaluation at the single point of `Unit`, a linear functional that agrees with
 `∫·d(dirac ())`. -/
@@ -1514,12 +1515,12 @@ end Witnesses
 
 end Tails
 
-/-! ## Witnesses for the finite-sample clauses
+/-! ## Examples for the finite-sample clauses
 
-Clause (a): two observations sharing one category, `x̃ = (1, -1)'`, unit idiosyncratic variance
-and a level-one variance of `3`; the union meat is `2`. Clause (b): one observation with
-`Π = I` and `Ω' = I`, so `R = 0`. Clause (c): one Rademacher observation with `R = I` and
-`Ω' = I`. -/
+For clause (a), two observations share one category, `x̃ = (1, -1)'`, the idiosyncratic variance
+is `1` and the level-one variance is `3`; the union meat is `2`. For clause (b), one observation
+with `Π = I` and `Ω' = I`, so `R = 0`. For clause (c), one Rademacher observation with `R = I`
+and `Ω' = I`. -/
 
 section Witness
 
@@ -1569,7 +1570,7 @@ noncomputable def witOm7 : Matrix (Fin 2) (Fin 2) ℝ :=
 
 /-- The hypotheses of `identE2_i` are jointly satisfiable, on the model of
 `unionmeat_a_witness` with `R = I₂ - ιι'/2` and level-one variances `3` and `7`. Both
-conjuncts are nontrivial: `RΩR = wR ≠ 0` and the union meat equals `2`. -/
+conjuncts are nontrivial, since `RΩR = wR ≠ 0` and the union meat equals `2`. -/
 theorem identE2_i_witness :
     IdentE2.wR * witOm * IdentE2.wR = IdentE2.wR * witOm7 * IdentE2.wR
       ∧ sharedGram witC Finset.univ witX witOm
@@ -1662,10 +1663,10 @@ end Witness
 
 /-! ## Theorem 8(c): `nV̂_[Δ] ⟶^p H^{-1}SH^{-1}`
 
-Here `V̂_[Δ] := (X̃'X̃)^{-1}𝓜̂_[Δ](X̃'X̃)^{-1}`. The hypotheses are `hH : H.PosDef` and
+The estimator is `V̂_[Δ] := (X̃'X̃)^{-1}𝓜̂_[Δ](X̃'X̃)^{-1}`. The hypotheses are `hH : H.PosDef` and
 `hG : n^{-1}X̃'X̃ ⟶^p H` (the design assumption), `hM : n^{-1}𝓜̂_[Δ] - S_n ⟶^p 0` (the
 conclusion of `tendstoInProb_frobNorm_meat_div_card`), `hS : S_n ⟶^p S`, and `hN : 0 < N n`.
-`X̃'X̃` is not assumed invertible: `Matrix.inv` is total, and the event that `n^{-1}X̃'X̃` is
+`X̃'X̃` is not assumed invertible, since `Matrix.inv` is total and the event that `n^{-1}X̃'X̃` is
 singular has vanishing probability. Continuity of inversion is `NormedRing.inverse_continuousAt`
 under the scoped `Matrix.Norms.L2Operator` instance.
 -/
@@ -1955,7 +1956,7 @@ theorem tendstoInProb_nVhatDelta {Gr Mh Sn : ℕ → Ωp → Matrix K K ℝ} {H 
 
 end NVhatDelta
 
-/-! ### Witness
+/-! ### Example
 
 `K = 1` on a one-point space, `n = N_j = j+1`, `X̃'X̃ = [j+1]`, `H = S = [1]`,
 `S_n = [1 + (j+1)^{-1}]` and `𝓜̂_[Δ] = [(j+1)(1 + (j+1)^{-1})]`; the limit is the identity and

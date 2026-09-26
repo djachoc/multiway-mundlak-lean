@@ -11,13 +11,13 @@ This file formalizes Theorem 10 of the paper (Clustering on absorbed dimensions)
 maintained clustering dimension coincides with a fixed-effect dimension and `σ²_ε(o) ≡ σ²_ε`,
 the normalized clustered meat satisfies `n⁻¹𝓜̂_CGM - S_n ⟶^p 0` with the stated rates, in case
 (i) (`J = 1`) and case (ii) (the primitive-design assumption, any `J`), and
-`nV̂_CGM ⟶^p H⁻¹SH⁻¹`. The finite-sample core is an exact identity for the conditional bias,
+`nV̂_CGM ⟶^p H⁻¹SH⁻¹`. The proof rests on an identity for the conditional bias,
 `(∑_o x̃_o x̃_o' R_oo + Ξ_n) - ∑_o x̃_o x̃_o' = -X̃' bd_m(Π) X̃`, together with a conditional
-variance bound for the fluctuation. Final sections allow a `𝒟`-measurable random design.
+variance bound for the fluctuation. The last sections allow a `𝒟`-measurable random design.
 
 ## Main results
 
-* `condMean_sub_target_eq`, `bias_opNorm_le`: the exact conditional bias and its bound.
+* `condMean_sub_target_eq`, `bias_opNorm_le`: the conditional bias identity and its bound.
 * `condVar_normalizedMeatEntry_le`: the conditional variance of the normalized meat entry.
 * `caseOne_meat_tendstoInProb`, `caseTwo_meat_tendstoInProb`: cases (i) and (ii).
 * `tendstoInProb_nVhatCGM`: `nV̂_CGM ⟶^p H⁻¹SH⁻¹`.
@@ -31,7 +31,7 @@ open Finset MeasureTheory
 
 open scoped Matrix Matrix.Norms.L2Operator
 
-/-! ### The conditional bias, exactly
+/-! ### An identity for the conditional bias
 
 Under Regime 1 with `σ²_ε(o) ≡ σ²_ε`, `S_n = σ²_ε n⁻¹ ∑_o x̃_o x̃_o'`, so the conditional bias of
 the meat relative to `𝓜_n` is `σ²_ε` times the left-hand side below. -/
@@ -53,9 +53,9 @@ theorem dims_nonempty_of_link [Nonempty O] (c : D → O → L) {dims : Finset D}
   exact ⟨j, hj⟩
 
 omit [Fintype K] [DecidableEq K] [Fintype N] [DecidableEq D] in
-/-- The exact conditional bias of the clustered meat:
-`(∑_o x̃_o x̃_o' R_oo + Ξ_n) - ∑_o x̃_o x̃_o' = -X̃' bd_m(Π) X̃`, with `Π = I - R`. No condition on
-the regressors is needed. -/
+/-- The conditional bias of the clustered meat satisfies
+`(∑_o x̃_o x̃_o' R_oo + Ξ_n) - ∑_o x̃_o x̃_o' = -X̃' bd_m(Π) X̃`, with `Π = I - R`, for arbitrary
+regressors. -/
 theorem condMean_sub_target_eq (c : D → O → L) {dims : Finset D} (hdims : dims.Nonempty)
     (i : O → N) (hlink : ∀ o o' : O, Linked c dims o o' ↔ i o = i o')
     {R Pi : Matrix O O ℝ} (hPi : Pi = 1 - R) (x : Matrix O K ℝ) (a b : K) :
@@ -107,7 +107,7 @@ variable [Fintype N] [DecidableEq N] [DecidableEq D] [DecidableEq L]
 variable {Ω : Type*} (𝒟 : MeasurableSpace Ω) {mΩ : MeasurableSpace Ω} {μ : Measure Ω}
 
 omit [Fintype K] [DecidableEq K] [Fintype N] in
-/-- The conditional bias of the clustered meat, entry by entry:
+/-- The conditional mean of the clustered meat is, entry by entry,
 `E[𝓜̂_CGM | 𝒟]_{ab} = σ²_ε[(∑_o x̃_o x̃_o')_{ab} - (X̃' bd_m(Π) X̃)_{ab}]`, with `Π = I - R`. -/
 theorem condExp_meatCGM_sub_target {c : D → O → L} {dims : Finset D}
     {X : O → K → Ω → ℝ} {nuh : O → Ω → ℝ} {R : O → O → Ω → ℝ} {s : Ω → ℝ} {a b : K}
@@ -562,9 +562,10 @@ end Bridge
 
 /-! ### Case (ii)
 
-Case (ii) of Theorem 10: under the primitive-design assumption and `G_max/n → 0`, for any number
-of maintained dimensions, `n⁻¹𝓜̂_CGM - S_n = O_p(d_[Δ]/n + [G_max/n]^{1/2}) ⟶^p 0`. The bias is
-split as `Ξ_n - X̃'diag(Π)X̃`, with `Ξ_n` bounded by Lemma SM.B.9 (hypothesis `hXi`) and the
+Case (ii) of Theorem 10 states that under the primitive-design assumption and `G_max/n → 0`,
+for any number of maintained dimensions,
+`n⁻¹𝓜̂_CGM - S_n = O_p(d_[Δ]/n + [G_max/n]^{1/2}) ⟶^p 0`. The bias is split
+as `Ξ_n - X̃'diag(Π)X̃`, with `Ξ_n` bounded by Lemma SM.B.9 (hypothesis `hXi`) and the
 diagonal term by `B²tr(Π)`; the fluctuation is bounded by Chebyshev's inequality from the
 conditional variance bound (hypothesis `hcv`). The residual is written as `(I - P_[Δ] - Λ) *ᵥ ε`,
 with `P_[Δ]`, `Λ` and the clustering deterministic. -/
@@ -665,7 +666,7 @@ theorem caseTwo_bias_abs_le (c : D → O → L) (dims : Finset D) {Pm Lam R : Ma
 
 end CaseTwoBiasFinite
 
-/-! ### Bounded in probability: closure under sums -/
+/-! ### Sums of sequences bounded in probability -/
 
 section OpLayer
 
@@ -882,7 +883,7 @@ theorem chebyshev_bddInProb [IsProbabilityMeasure P] (h𝒟 : 𝒟 ≤ mΩ)
 
 end Chebyshev
 
-/-! ### Case (ii), assembled -/
+/-! ### Proof of case (ii) -/
 
 section CaseTwo
 
@@ -892,7 +893,7 @@ variable [∀ n, DecidableEq (D n)] [∀ n, Fintype (L n)] [∀ n, DecidableEq (
 variable {K : Type*} [Fintype K] [DecidableEq K]
 variable {Ω : Type*} (𝒟 : MeasurableSpace Ω) {mΩ : MeasurableSpace Ω} {P : Measure Ω}
 
-/-- **Theorem 10**, case (ii), rate: `n⁻¹𝓜̂_CGM - S_n = O_p(d_[Δ]/n + [G_max/n]^{1/2})`, entry
+/-- **Theorem 10**, case (ii), rate. `n⁻¹𝓜̂_CGM - S_n = O_p(d_[Δ]/n + [G_max/n]^{1/2})`, entry
 by entry, for any number of maintained dimensions, with `X̃ = Q_[Δ]Θ` and
 `S_n = σ²_ε n⁻¹∑_o x̃_ox̃_o'`. `hXi` is the conclusion of Lemma SM.B.9 and `hcv` that of
 `condVar_normalizedMeatEntry_le`. -/
@@ -1077,7 +1078,7 @@ theorem caseTwo_tendstoInProb {aN : ℕ → ℝ} {Z : ℕ → Ω → ℝ}
   refine le_of_eq ?_
   field_simp
 
-/-- **Theorem 10**, case (ii): `n⁻¹𝓜̂_CGM - S_n ⟶^p 0`, entry by entry, for any number of
+/-- **Theorem 10**, case (ii). `n⁻¹𝓜̂_CGM - S_n ⟶^p 0`, entry by entry, for any number of
 maintained dimensions. -/
 theorem caseTwo_meat_tendstoInProb [IsProbabilityMeasure P] (h𝒟 : 𝒟 ≤ mΩ)
     (c : ∀ n, D n → O n → L n) (dims : ∀ n, Finset (D n)) (hdims : ∀ n, (dims n).Nonempty)
@@ -1137,8 +1138,8 @@ end CaseTwo
 
 /-! ### Case (i)
 
-Case (i) of Theorem 10: if `J = 1` with the maintained dimension equal to fixed-effect dimension
-`m`, and `(d_[Δ] - N_m + K)G^{(m)}_max = o(n)`, then
+Case (i) of Theorem 10 states that if `J = 1` with the maintained dimension equal to
+fixed-effect dimension `m`, and `(d_[Δ] - N_m + K)G^{(m)}_max = o(n)`, then
 `n⁻¹𝓜̂_CGM - S_n = O_p([(d_[Δ]-N_m+K)G^{(m)}_max/n]^{1/2} + [G^{(m)}_max/n]^{1/2}) ⟶^p 0`.
 The conditional bias is bounded deterministically by `bias_opNorm_le`; the fluctuation is bounded
 by Chebyshev's inequality (hypothesis `hcv`). The residual is written as
@@ -1581,7 +1582,7 @@ theorem caseOne_meat_tendstoInProb [IsProbabilityMeasure P] (h𝒟 : 𝒟 ≤ m�
 
 end CaseOneAll
 
-/-! ### The variance estimator: `nV̂_CGM ⟶^p H⁻¹SH⁻¹`
+/-! ### Consistency of the variance estimator
 
 With `V̂_CGM = (X̃'X̃)⁻¹𝓜̂_CGM(X̃'X̃)⁻¹`, the limit follows from `Vhat.tendstoInProb_nVhat`.
 `hH` and `hG : n⁻¹X̃'X̃ ⟶^p H` are the design assumption, `hM` is the conclusion of case (i) or
@@ -1849,9 +1850,7 @@ theorem caseTwo_nVhatCGM_tendstoInProb [IsProbabilityMeasure P] (h𝒟 : 𝒟 �
 
 end ComposeTwo
 
-/-! ### Examples
-
-Each theorem below instantiates a main result of this file at a concrete model. -/
+/-! ### Examples -/
 
 section Witness
 
@@ -2065,7 +2064,7 @@ theorem caseTwo_bias_abs_le_witness :
     rw [Fin.sum_univ_one]
     fin_cases o <;> norm_num [Cgm.witnessX]
 
-/-- The bound of `caseTwo_bias_abs_le_witness` holds with equality: the bias is `-2`. -/
+/-- The bound of `caseTwo_bias_abs_le_witness` holds with equality, since the bias is `-2`. -/
 theorem caseTwo_bias_abs_le_witness_sharp :
     biasEntry (fun _ _ => (0 : Fin 1)) ({0} : Finset (Fin 1))
         (0 : Matrix (Fin 2) (Fin 2) ℝ) Cgm.witnessX 0 0 = -2
@@ -2296,7 +2295,7 @@ end RankOne
 
 section CaseOneWitnessDesign
 
-/-- The observation set at index `n`: `3 + n` observations. -/
+/-- The observation set at index `n`, with `3 + n` observations. -/
 abbrev wObs (n : ℕ) : Type := Fin 3 ⊕ Fin n
 
 /-- The cluster-mean direction `u = ι_n/√n`. -/
@@ -2362,7 +2361,7 @@ end CaseOneWitnessDesign
 
 section CaseOneWitness
 
-/-- `P_m = uu'`: one cluster holding every observation. -/
+/-- `P_m = uu'`, for a single cluster holding every observation. -/
 noncomputable def wPm (n : ℕ) : Matrix (wObs n) (wObs n) ℝ :=
   Matrix.vecMulVec (wU n) (wU n)
 
@@ -3160,7 +3159,8 @@ namespace CaseTwoDecondWitness
 
 open Multiway.CLTMartingale.CondD.FrozenWitness
 
-/-- The random `P_[Δ],n`: the rank-one projector when the first coin is `true`, else `0`. -/
+/-- The random `P_[Δ],n`, equal to the rank-one projector when the first coin is `true` and to `0`
+otherwise. -/
 noncomputable def wPmR (n : ℕ) (ω : Omg) : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ :=
   if ω.1 then PrimitiveDesign.sharpWitnessPm n else 0
 

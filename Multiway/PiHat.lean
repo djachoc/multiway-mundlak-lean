@@ -31,8 +31,8 @@ section Annihilator
 
 variable {O K : Type*} [Fintype O] [DecidableEq O] [Fintype K] [DecidableEq K]
 
-/-- `M_{C₀}`, the annihilator of `C₀ = [X, ι_n]`: symmetric, killing `X` and `ι_n`, and acting
-as the identity on `col(C₀)ᗮ`. These properties determine `M_{C₀}` uniquely. -/
+/-- `M_{C₀}` is the annihilator of `C₀ = [X, ι_n]`. It is symmetric, maps `X` and `ι_n` to zero
+and fixes every vector of `col(C₀)ᗮ`, and these properties determine it uniquely. -/
 structure IsAnnihilator (M : Matrix O O ℝ) (X : Matrix O K ℝ) (ιn : O → ℝ) : Prop where
   /-- `M_{C₀}` is symmetric. -/
   symm : Mᵀ = M
@@ -46,7 +46,7 @@ structure IsAnnihilator (M : Matrix O O ℝ) (X : Matrix O K ℝ) (ιn : O → �
 variable {M : Matrix O O ℝ} {X : Matrix O K ℝ} {ιn : O → ℝ}
 
 omit [Fintype K] [DecidableEq K] in
-/-- Two square matrices agreeing on every vector agree. -/
+/-- Two square matrices that agree on every vector are equal. -/
 theorem ext_of_mulVec {A B : Matrix O O ℝ} (h : ∀ v, A *ᵥ v = B *ᵥ v) : A = B := by
   ext o o'
   simpa [Matrix.mulVec_single] using congrFun (h (Pi.single o' 1)) o
@@ -64,13 +64,13 @@ theorem IsAnnihilator.vecMul_const (h : IsAnnihilator M X ιn) : ιn ᵥ* M = 0 
   rw [← Matrix.mulVec_transpose, h.symm, h.const]
 
 omit [DecidableEq O] [Fintype K] [DecidableEq K] in
-/-- Anything in the range of `M_{C₀}` is orthogonal to `col(X)`. -/
+/-- Every vector in the range of `M_{C₀}` is orthogonal to `col(X)`. -/
 theorem IsAnnihilator.orth_regressors (h : IsAnnihilator M X ιn) (v : O → ℝ) :
     Xᵀ *ᵥ (M *ᵥ v) = 0 := by
   rw [Matrix.mulVec_mulVec, h.transpose_regressors, Matrix.zero_mulVec]
 
 omit [DecidableEq O] [Fintype K] [DecidableEq K] in
-/-- Anything in the range of `M_{C₀}` is orthogonal to `ι_n`. -/
+/-- Every vector in the range of `M_{C₀}` is orthogonal to `ι_n`. -/
 theorem IsAnnihilator.orth_const (h : IsAnnihilator M X ιn) (v : O → ℝ) :
     ιn ⬝ᵥ (M *ᵥ v) = 0 := by
   rw [Matrix.dotProduct_mulVec, h.vecMul_const, zero_dotProduct]
@@ -321,7 +321,7 @@ theorem condExp_linearCombination_eq_zero {c : O → ℝ} {v : O → Ω → ℝ}
   simp
 
 omit [DecidableEq O] [Fintype K] [DecidableEq K] in
-/-- The double sum of display 3 read back as a matrix congruence. -/
+/-- The double sum of the third display written as a matrix product. -/
 theorem double_sum_eq_conj (A : Matrix K O ℝ) (W : Matrix O O ℝ) (k l : K) :
     ∑ o : O, ∑ o' : O, (A k o * A l o') * W o o' = (A * W * Aᵀ) k l := by
   simp only [Matrix.mul_apply, Matrix.transpose_apply, Finset.sum_mul]
@@ -474,7 +474,7 @@ section Witness
 /-- The regressor column `(1, 1, -2)'`. -/
 noncomputable def witX : Matrix (Fin 3) (Fin 1) ℝ := Matrix.of fun o _ => ![1, 1, -2] o
 
-/-- The control column of the witness, `(1, 0, 0)'`. -/
+/-- The column `Z = (1, 0, 0)'` of the example. -/
 noncomputable def witZ : Matrix (Fin 3) (Fin 1) ℝ := Matrix.of fun o _ => ![1, 0, 0] o
 
 /-- The vector of ones. -/

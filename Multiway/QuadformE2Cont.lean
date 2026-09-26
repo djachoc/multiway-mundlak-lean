@@ -12,7 +12,7 @@ dependence) under Regime 2 of the dependence assumption, with latent variables o
 measurable alphabet `V`. The law is `P := Measure.pi μ` on `Ω := Site D L O → V`, one probability
 measure per site; `V = ℝ` with the uniform law on `[0,1]` is the model of the paper. The site
 bookkeeping and Young's inequalities come from `Multiway/QuadformE2Indep.lean`. The expectation
-`E` fed to `var_quadForm_le_levels` is `expLM P`, a linear extension of the Bochner integral to
+`E` in `var_quadForm_le_levels` is `expLM P`, a linear extension of the Bochner integral to
 all of `Ω → ℝ`; it agrees with `∫ · ∂P` on integrable functions and does not appear in any
 statement. `P` is read as the conditional law given `𝒟` along a realization, with `W` fixed.
 
@@ -21,7 +21,7 @@ statement. `P` is read as the conditional law given `𝒟` along a realization, 
 * `integral_mul_eq_zero_of_intZeroAt`, `integral_mul_eq_mul_of_disjoint`: the two probabilistic
   facts (complete degeneracy at a site; independence across disjoint sets of sites).
 * `var_quadForm_le_regime2_cont`: Lemma SM.C.6 under Regime 2, stated with Bochner integrals.
-* `regime2_cont_witness`: an instance with latents uniform on `[0,1]` and
+* `regime2_cont_witness`: an example with latents uniform on `[0,1]` and
   `Var(ζ'Wζ ∣ 𝒟) = 4`.
 -/
 
@@ -84,7 +84,7 @@ section Setup
 
 variable {S V : Type*} [Fintype S] [DecidableEq S] [MeasurableSpace V]
 
-/-- **Complete degeneracy at one coordinate**: integrating `f` over the latent at site `s`, every
+/-- `f` is completely degenerate at site `s` if integrating `f` over the latent at `s`, with every
 other latent held fixed, gives zero almost surely. This is Regime 2(b) at the proper subset
 `e \ {s}` and, at a private site, Regime 2(c)'s `E[ε_o ∣ 𝒟] = 0`. -/
 def IntZeroAt (μ : S → Measure V) (s : S) (f : (S → V) → ℝ) : Prop :=
@@ -102,7 +102,7 @@ end Setup
 
 Both come from the factorization of `Measure.pi μ` across a set of coordinates and its complement
 (`measurePreserving_piEquivPiSubtypeProd`). The transport lemmas take the predicate `p` as a
-variable and are specialized inside the two facts, since `{x // x = s₀}` carries two
+variable and are specialized inside the two facts, since `{x // x = s₀}` has two
 `Fintype` instances that are not syntactically equal. -/
 
 section ProdLaw
@@ -160,7 +160,7 @@ theorem integral_piUnique (p : S → Prop) [DecidablePred p] [Unique {x // p x}]
   (measurePreserving_piUnique fun i : {x // p x} => μ ↑i).integral_comp
     (MeasurableEquiv.piUnique fun _ : {x // p x} => V).measurableEmbedding H
 
-/-- **Property (i).** If `f` integrates to zero over the latent at site `s₀` (almost surely in the
+/-- Property (i). If `f` integrates to zero over the latent at site `s₀` (almost surely in the
 other latents), `g` does not depend on that site, and `f * g` is integrable, then
 `E[fg] = 0`. -/
 theorem integral_mul_eq_zero_of_intZeroAt {s₀ : S} {f g : (S → V) → ℝ}
@@ -215,8 +215,8 @@ theorem integral_mul_eq_zero_of_intZeroAt {s₀ : S} {f g : (S → V) → ℝ}
     integral_piUnique (fun x => x = s₀) fun v => f (Function.update ω₀ s₀ v), hd, hb, zero_mul]
   rfl
 
-/-- **Property (ii).** Functions of disjoint sets of sites are independent:
-`E[fg] = E[f] E[g]`. No integrability hypothesis is needed, since `integral_prod_mul` carries
+/-- Property (ii). Functions of disjoint sets of sites are independent, so
+`E[fg] = E[f] E[g]`. No integrability hypothesis is needed, since `integral_prod_mul` requires
 none. -/
 theorem integral_mul_eq_mul_of_disjoint {T T' : Finset S} (hTT : ∀ s ∈ T', s ∉ T)
     {f g : (S → V) → ℝ} (hf : DependsOn T f) (hg : DependsOn T' g) :
@@ -285,7 +285,7 @@ theorem integrable_sum_pow_four {a b c d : Ω → ℝ} (ha : FourthMom P a) (hb 
   have h2 : Integrable (fun ω => a ω ^ 4 + b ω ^ 4 + c ω ^ 4) P := h1.add hc.int4
   exact (h2.add hd.int4).div_const 4
 
-/-- Its integral, split. -/
+/-- The integral of the four-factor dominating function, as a sum of four integrals. -/
 theorem integral_sum_pow_four {a b c d : Ω → ℝ} (ha : FourthMom P a) (hb : FourthMom P b)
     (hc : FourthMom P c) (hd : FourthMom P d) :
     ∫ ω, (a ω ^ 4 + b ω ^ 4 + c ω ^ 4 + d ω ^ 4) / 4 ∂P
@@ -295,8 +295,8 @@ theorem integral_sum_pow_four {a b c d : Ω → ℝ} (ha : FourthMom P a) (hb : 
   rw [integral_div, integral_add h2 hd.int4, integral_add h1 hc.int4,
     integral_add ha.int4 hb.int4]
 
-/-- **Young's inequality as an integrability statement**: a product of four variables with finite
-fourth moments is integrable. -/
+/-- By Young's inequality, a product of four variables with finite fourth moments is
+integrable. -/
 theorem FourthMom.integrable_mul4 {a b c d : Ω → ℝ} (ha : FourthMom P a) (hb : FourthMom P b)
     (hc : FourthMom P c) (hd : FourthMom P d) : Integrable (a * b * c * d) P := by
   refine Integrable.mono' (integrable_sum_pow_four ha hb hc hd)
@@ -371,7 +371,8 @@ theorem integral_sum_pow_four_two {a b : Ω → ℝ} (ha : FourthMom P a) (hb : 
     integral_add ha.int4 hb.int4, integral_const]
   simp
 
-/-- The two-factor form. The constant `2` is integrable because `P` is a probability measure. -/
+/-- By Young's inequality, a product of two variables with finite fourth moments is integrable.
+The constant `2` is integrable because `P` is a probability measure. -/
 theorem FourthMom.integrable_mul2 {a b : Ω → ℝ} (ha : FourthMom P a) (hb : FourthMom P b) :
     Integrable (a * b) P := by
   refine Integrable.mono' (integrable_sum_pow_four_two ha hb) (ha.meas.mul hb.meas)
@@ -421,7 +422,7 @@ theorem expLM_mul_eq_zero_of_intZeroAt {s₀ : S} {f g : (S → V) → ℝ}
   rw [expLM_apply hfg]
   exact integral_mul_eq_zero_of_intZeroAt hfg hf hg
 
-/-- The mean of a variable that integrates to zero over one of its own coordinates. -/
+/-- A variable that integrates to zero over one of its coordinates has mean zero. -/
 theorem expLM_eq_zero_of_intZeroAt {s₀ : S} {f : (S → V) → ℝ}
     (hfi : Integrable f (Measure.pi μ)) (hf : IntZeroAt μ s₀ f) :
     expLM (Measure.pi μ) f = 0 := by
@@ -437,8 +438,9 @@ theorem expLM_mul_eq_mul_of_disjoint {T T' : Finset S} (hTT : ∀ s ∈ T', s �
   rw [expLM_apply hfg, expLM_apply hfi, expLM_apply hgi]
   exact integral_mul_eq_mul_of_disjoint hTT hf hg
 
-/-- **Property (i) at the level of `cum₄`.** All four terms of the moment formula carry the
-first argument, and each vanishes by the first probabilistic fact. -/
+/-- Property (i) for `cum₄`. If `a` integrates to zero over the latent at site `s₀` and `b`, `c`,
+`d` do not depend on that site, then `cum₄(a, b, c, d) = 0`, since every term of the moment formula
+contains `a`. -/
 theorem cum4_eq_zero_of_intZeroAt {s₀ : S} {a b c d : (S → V) → ℝ}
     (ha : FourthMom (Measure.pi μ) a) (hb : FourthMom (Measure.pi μ) b)
     (hc : FourthMom (Measure.pi μ) c) (hd : FourthMom (Measure.pi μ) d)
@@ -454,7 +456,7 @@ theorem cum4_eq_zero_of_intZeroAt {s₀ : S} {a b c d : (S → V) → ℝ}
   · exact expLM_mul_eq_zero_of_intZeroAt (ha.integrable_mul2 hc) hz hfc
   · exact expLM_mul_eq_zero_of_intZeroAt (ha.integrable_mul2 hd) hz hfd
 
-/-- **Property (i), with the offending argument in any of the four positions.** -/
+/-- Property (i) for `cum₄`, with the degenerate argument in any of the four positions. -/
 theorem cum4_eq_zero_of_unshared {s₀ : S} {X : Fin 4 → (S → V) → ℝ}
     (hmom : ∀ i, FourthMom (Measure.pi μ) (X i)) {i₀ : Fin 4}
     (hz : IntZeroAt μ s₀ (X i₀)) (hf : ∀ i, i ≠ i₀ → FreeAt s₀ (X i)) :
@@ -472,8 +474,9 @@ theorem cum4_eq_zero_of_unshared {s₀ : S} {X : Fin 4 → (S → V) → ℝ}
     exact cum4_eq_zero_of_intZeroAt (hmom 3) (hmom 0) (hmom 1) (hmom 2) hz
       (hf 0 (by decide)) (hf 1 (by decide)) (hf 2 (by decide))
 
-/-- **Property (ii) at the level of `cum₄`**: the two pairs see disjoint sets of sites, so the
-fourth moment factorizes and each cross pair-moment carries a lone mean. -/
+/-- Property (ii) for `cum₄`. If `a`, `b` depend on `T₁`, `c`, `d` depend on the disjoint set `T₂`,
+and `E[a] = E[b] = 0`, then `cum₄(a, b, c, d) = 0`, since `E[abcd] = E[ab] E[cd]` and every cross
+pair-moment such as `E[ac] = E[a] E[c]` vanishes. -/
 theorem cum4_eq_zero_of_disjoint {T₁ T₂ : Finset S} (hdisj : ∀ s ∈ T₂, s ∉ T₁)
     {a b c d : (S → V) → ℝ}
     (hma : FourthMom (Measure.pi μ) a) (hmb : FourthMom (Measure.pi μ) b)
@@ -499,7 +502,7 @@ theorem cum4_eq_zero_of_disjoint {T₁ T₂ : Finset S} (hdisj : ∀ s ∈ T₂,
 
 end Cumulants
 
-/-! ## `hsupp`, assembled -/
+/-! ## The support hypothesis `hsupp` -/
 
 section Supp
 
@@ -585,15 +588,15 @@ theorem assignCum_eq_zero_of_not_supported
 end Supp
 
 
-/-! ## `hbdd`: the cumulant of an assignment is bounded by a constant
+/-! ## The bound `hbdd` on the cumulant of an assignment
 
-By Young's inequality, with the constant `K = C + 3((C+1)/2)²`. -/
+The cumulant of an assignment is bounded by `K = C + 3((C+1)/2)²`, by Young's inequality. -/
 
 section Bound
 
 variable {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
 
-/-- `hbdd` at the level of `cum₄`, with the constant exhibited. -/
+/-- `hbdd` for `cum₄`, with the constant `K` explicit. -/
 theorem abs_cum4_le_cont {a b c d : Ω → ℝ} (ha : FourthMom P a) (hb : FourthMom P b)
     (hc : FourthMom P c) (hd : FourthMom P d) {C : ℝ} (hC : 0 ≤ C)
     (hA : ∫ ω, a ω ^ 4 ∂P ≤ C) (hB : ∫ ω, b ω ^ 4 ∂P ≤ C) (hCc : ∫ ω, c ω ^ 4 ∂P ≤ C)
@@ -668,7 +671,7 @@ theorem integrable_quadForm {Lv : Finset Γ₀} {xi : Γ₀ → O → (Site D L 
 
 omit [DecidableEq D] [DecidableEq L] [DecidableEq O]
   [∀ s, IsProbabilityMeasure (μ s)] in
-/-- So is its square. -/
+/-- The square of `ζ'Wζ` is integrable. -/
 theorem integrable_quadForm_sq {Lv : Finset Γ₀} {xi : Γ₀ → O → (Site D L O → V) → ℝ}
     (hmem : ∀ γ ∈ Lv, ∀ o, FourthMom (Measure.pi μ) (xi γ o)) (W : Matrix O O ℝ) :
     Integrable (quadForm W (levelSumC Lv xi) ^ 2) (Measure.pi μ) := by
@@ -683,7 +686,7 @@ theorem integrable_quadForm_sq {Lv : Finset Γ₀} {xi : Γ₀ → O → (Site D
 
 `Var(ζ'Wζ ∣ 𝒟) ≤ 2 tr(WΩ'WΩ') + C(M) G_max c_max ‖W‖_F²`, with `C(M) = (2^M)⁴ · 4M` and the
 per-cumulant constant `K = C + 3((C+1)/2)²`, for latents with an arbitrary probability law at
-each site. Here `hW` makes `W` symmetric; `hC`, `hmom` bound the fourth moments; `hmem` makes
+each site. The hypothesis `hW` makes `W` symmetric; `hC`, `hmom` bound the fourth moments; `hmem` makes
 each `ξ^γ_o` a.e.-measurable with a finite fourth moment; `hLv`, `he` describe the levels;
 `hG`, `hc` bound the category and cell sizes; `hdep` is `ξ^e_o := h^{(e)}(U_{o⊙e})`; `hdeg` is
 complete degeneracy; and `hidio` gives the symbol `ε` the full dimension set. -/
@@ -733,11 +736,11 @@ theorem var_quadForm_le_regime2_cont {idio : Γ₀ → Prop} [DecidablePred idio
 end Assembled
 
 
-/-! ## A witness with uniform latents
+/-! ## An example with uniform latents
 
-`regime2_cont_witness` applies `var_quadForm_le_regime2_cont` to a model with every latent
-uniform on `[0,1]`: `M = 2`, one category per dimension, one observation, the kernel
-`ξ_o = σ(U^{(1)})σ(U^{(2)})` with `σ(u) = 1 - 2·1{u ≤ 1/2}`, and `ε_o = σ(U_o)`. There
+`regime2_cont_witness` applies `var_quadForm_le_regime2_cont` to a model with `M = 2`, one
+category per dimension, one observation and every latent uniform on `[0,1]`. The kernel is
+`ξ_o = σ(U^{(1)})σ(U^{(2)})` with `σ(u) = 1 - 2·1{u ≤ 1/2}`, and `ε_o = σ(U_o)`. In this model
 `Var(ζ'Wζ ∣ 𝒟) = 4` and `tr(WΩ'WΩ') = 4`. -/
 
 section Witness
@@ -757,7 +760,7 @@ theorem unif01_singleton (a : ℝ) : unif01 {a} = 0 := by
   rw [unif01, Measure.restrict_apply (measurableSet_singleton a)]
   exact measure_mono_null Set.inter_subset_left (Real.volume_singleton)
 
-/-- `σ(u) = -1` on `[0,1/2]` and `1` above: mean zero with unit square under the uniform law. -/
+/-- `σ(u) = -1` on `[0,1/2]` and `1` above. Under the uniform law it has mean zero and `σ² = 1`. -/
 noncomputable def sgnU (u : ℝ) : ℝ := if u ≤ 1 / 2 then -1 else 1
 
 theorem measurable_sgnU : Measurable sgnU :=
@@ -798,7 +801,7 @@ theorem integral_sgnU : ∫ u, sgnU u ∂unif01 = 0 := by
           measureReal_def, hset]
         simp
 
-/-- The witness sample space: one uniform coordinate per site. -/
+/-- The sample space of the example, with one uniform coordinate per site. -/
 noncomputable def witQC : WSite → Measure ℝ := fun _ => unif01
 
 instance witQC_isProb (s : WSite) : IsProbabilityMeasure (witQC s) :=
@@ -809,7 +812,7 @@ is completely degenerate. -/
 noncomputable def witKernelC (ω : WSite → ℝ) : ℝ :=
   sgnU (ω (Sum.inl (0, 0))) * sgnU (ω (Sum.inl (1, 0)))
 
-/-- The idiosyncratic term, at `o`'s own private site. -/
+/-- The idiosyncratic term, a function of the private site of `o`. -/
 noncomputable def witEpsC (o : Fin 1) (ω : WSite → ℝ) : ℝ := sgnU (ω (Sum.inr o))
 
 /-- The level family. -/
@@ -894,7 +897,7 @@ theorem witDegC : ∀ γ ∈ (Finset.univ : Finset Bool), ∀ o : Fin 1,
     simp only [witXiC_true, witEpsC, Function.update_self, witQC]
     exact integral_sgnU
 
-/-- `E[ε_oξ_o ∣ 𝒟] = 0`, by property (i) at the kernel's own site. -/
+/-- `E[ε_oξ_o ∣ 𝒟] = 0`, by property (i) at a site of the kernel. -/
 theorem witMixC : ∫ ω, (witKernelC * witEpsC 0) ω ∂(Measure.pi witQC) = 0 := by
   refine integral_mul_eq_zero_of_intZeroAt (s₀ := (Sum.inl (0, 0) : WSite)) ?_ ?_ ?_
   · exact (witMom false (Finset.mem_univ _) 0).integrable_mul2 (witMom true (Finset.mem_univ _) 0)
@@ -907,7 +910,7 @@ theorem witZC_apply (ω : WSite → ℝ) :
     levelSumC (Finset.univ : Finset Bool) witXiC 0 ω = witEpsC 0 ω + witKernelC ω := by
   simp [levelSumC]
 
-/-- The quadratic form on the witness: `ζ² = 2 + 2ξε` pointwise, since `ξ² = ε² = 1`. -/
+/-- In the example `ζ² = 2 + 2ξε` pointwise, since `ξ² = ε² = 1`. -/
 theorem witQuadFormC_eq (ω : WSite → ℝ) :
     quadForm (1 : Matrix (Fin 1) (Fin 1) ℝ) (levelSumC (Finset.univ : Finset Bool) witXiC) ω
       = 2 + 2 * (witKernelC ω * witEpsC 0 ω) := by
@@ -916,7 +919,7 @@ theorem witQuadFormC_eq (ω : WSite → ℝ) :
   simp only [quadForm_apply, Fin.sum_univ_one, Matrix.one_apply_eq, witZC_apply]
   linear_combination hk + he
 
-/-- And its square: `ζ⁴ = 8 + 8ξε`. -/
+/-- In the example `ζ⁴ = 8 + 8ξε` pointwise. -/
 theorem witQuadFormC_sq_eq (ω : WSite → ℝ) :
     quadForm (1 : Matrix (Fin 1) (Fin 1) ℝ) (levelSumC (Finset.univ : Finset Bool) witXiC) ω ^ 2
       = 8 + 8 * (witKernelC ω * witEpsC 0 ω) := by
@@ -980,8 +983,8 @@ theorem witness_trace_cont :
     witness_levelGramC]
   norm_num
 
-/-- The witness: every hypothesis of `var_quadForm_le_regime2_cont` holds on a model whose
-latents are uniform on `[0,1]`. -/
+/-- Every hypothesis of `var_quadForm_le_regime2_cont` holds on a model whose latents are uniform
+on `[0,1]`. -/
 theorem regime2_cont_witness :
     (∫ ω, quadForm (1 : Matrix (Fin 1) (Fin 1) ℝ)
         (levelSumC (Finset.univ : Finset Bool) witXiC) ω ^ 2 ∂(Measure.pi witQC))

@@ -7,13 +7,13 @@ This file completes Lemma SM.C.6 of the paper (variance of a quadratic form unde
 dependence) under Regime 2 of the dependence assumption, with latent variables taking finitely
 many values. It proves the two hypotheses `hsupp` (vanishing of fourth cumulants of unsupported
 assignments) and `hbdd` (a uniform cumulant bound) that `QuadformE2.var_quadForm_le_levels`
-leaves open. The expectation is `prodExp q`, the average under a product law `q` over
+takes as assumptions. The expectation is `prodExp q`, the average under a product law `q` over
 `Ω := Site D L O → V`, a linear functional on `Ω → ℝ`.
 
 ## Notation
 
-* `Site D L O := (D × L) ⊕ O`: `Sum.inl (k, j)` carries the latent `U^{(k)}_j` and `Sum.inr o`
-  carries `ε_o` (distinct from `Multiway.Site`);
+* `Site D L O := (D × L) ⊕ O`, where `Sum.inl (k, j)` is the site of the latent `U^{(k)}_j` and
+  `Sum.inr o` the site of `ε_o` (this `Site` is distinct from `Multiway.Site`);
 * `xi γ o` is `ξ^γ_o`, and `siteSet γ o` is the set of sites it depends on.
 
 ## Main results
@@ -39,7 +39,7 @@ section Product
 
 variable {S V : Type*} [Fintype S] [DecidableEq S] [Fintype V] [DecidableEq V]
 
-/-- `f` does not see coordinate `s`. -/
+/-- `f` does not depend on coordinate `s`. -/
 def FreeAt (s : S) (f : (S → V) → ℝ) : Prop :=
   ∀ (ω : S → V) (v : V), f (Function.update ω s v) = f ω
 
@@ -55,7 +55,7 @@ def AvgZeroAt (q : S → V → ℝ) (s : S) (f : (S → V) → ℝ) : Prop :=
 /-- The product law on `Ω`. -/
 def prodLaw (q : S → V → ℝ) : (S → V) → ℝ := fun ω => ∏ s, q s (ω s)
 
-/-- The expectation under the product law, as `QuadformE2.condAvg` on the finite space `Ω`: a
+/-- The expectation under the product law, as `QuadformE2.condAvg` on the finite space `Ω`, a
 linear functional `(Ω → ℝ) →ₗ[ℝ] ℝ`. -/
 noncomputable def prodExp (q : S → V → ℝ) : ((S → V) → ℝ) →ₗ[ℝ] ℝ :=
   condAvg (prodLaw q) Finset.univ
@@ -76,7 +76,7 @@ theorem dependsOn_one (T : Finset S) : DependsOn T (1 : (S → V) → ℝ) := by
   intro ω ω' _; rfl
 
 omit [Fintype S] [Fintype V] [DecidableEq V] in
-/-- A function of the coordinates in `T` does not see a coordinate outside `T`. -/
+/-- A function of the coordinates in `T` does not depend on a coordinate outside `T`. -/
 theorem freeAt_of_dependsOn {T : Finset S} {s : S} (hs : s ∉ T) {f : (S → V) → ℝ}
     (hf : DependsOn T f) : FreeAt s f := by
   intro ω v
@@ -358,24 +358,25 @@ end ProdExp
 
 /-! ## 4. The sites
 
-Each latent `U^{(k)}_j` and each `ε_o` has its own coordinate, so the independence of the `ε_o`
-from each other and from the latent collection is a consequence of the product law. -/
+Each latent `U^{(k)}_j` and each `ε_o` is assigned a separate coordinate, so the independence of
+the `ε_o` from each other and from the latent collection follows from the product law. -/
 
 section Sites
 
 variable {D L O Γ₀ : Type*} [DecidableEq D] [DecidableEq L] [DecidableEq O]
 
-/-- The coordinates of the latent space: one per (dimension, category) pair, and one private
-coordinate per observation. -/
+/-- The coordinates of the latent space, one for each (dimension, category) pair and one for each
+observation. -/
 abbrev Site (D L O : Type*) := (D × L) ⊕ O
 
-/-- The site that `ξ^γ_o` occupies at dimension `k`: `(k, i_k(o))` for a kernel, and `o`'s own
-private site for the symbol `ε`. -/
+/-- The site that `ξ^γ_o` occupies at dimension `k`, which is `(k, i_k(o))` for a kernel and the
+observation site `Sum.inr o` for the symbol `ε`. -/
 def sitemap (idio : Γ₀ → Prop) [DecidablePred idio] (idx : D → O → L)
     (γ : Γ₀) (k : D) (o : O) : Site D L O :=
   if idio γ then Sum.inr o else Sum.inl (k, idx k o)
 
-/-- The set of sites `ξ^γ_o` may see: `{(k, i_k(o)) : k ∈ e_γ}` for a kernel, `{o}` for `ε`. -/
+/-- The set of sites `ξ^γ_o` may depend on, `{(k, i_k(o)) : k ∈ e_γ}` for a kernel and `{o}` for
+`ε`. -/
 def siteSet (idio : Γ₀ → Prop) [DecidablePred idio] (idx : D → O → L) (lev : Γ₀ → Finset D)
     (γ : Γ₀) (o : O) : Finset (Site D L O) :=
   (lev γ).image fun k => sitemap idio idx γ k o
@@ -425,7 +426,7 @@ theorem mem_lev_and_idx_eq_of_mem_siteSet [Fintype D]
 
 end Sites
 
-/-! ## 5. An unshared site kills the cumulant
+/-! ## 5. Vanishing of cumulants with an unshared site
 
 If one argument occupies a site no other argument occupies, it averages to zero over that site
 while the others do not depend on it, so every term of the moment-cumulant formula vanishes. -/
@@ -436,15 +437,15 @@ variable {S V : Type*} [Fintype S] [DecidableEq S] [Fintype V] [DecidableEq V] [
 variable {q : S → V → ℝ}
 
 omit [DecidableEq V] in
-/-- The mean of a variable that averages to zero over one of its own coordinates. -/
+/-- A variable that averages to zero over some coordinate has mean zero. -/
 theorem prodExp_eq_zero_of_avgZeroAt (hq1 : ∀ s, ∑ v : V, q s v = 1) {s₀ : S}
     {f : (S → V) → ℝ} (hf : AvgZeroAt q s₀ f) : prodExp q f = 0 := by
   calc prodExp q f = prodExp q (f * 1) := by rw [mul_one]
     _ = 0 := prodExp_mul_eq_zero_of_avgZeroAt hq1 hf (freeAt_one s₀)
 
 omit [DecidableEq V] in
-/-- The fourth cumulant vanishes when the first argument averages to zero over a site the other
-three do not see. -/
+/-- The fourth cumulant vanishes when the first argument averages to zero over a site on which
+the other three do not depend. -/
 theorem cum4_eq_zero_of_avgZeroAt (hq1 : ∀ s, ∑ v : V, q s v = 1) {s₀ : S}
     {a b c d : (S → V) → ℝ} (ha : AvgZeroAt q s₀ a) (hb : FreeAt s₀ b) (hc : FreeAt s₀ c)
     (hd : FreeAt s₀ d) : cum4 (prodExp q) a b c d = 0 := by
@@ -703,7 +704,7 @@ per-cumulant constant `K = C + 3((C+1)/2)²`.
 
 `hq0`, `hq1` make `q` a probability law at each site; `hW` makes `W` symmetric; `hC`, `hmom`
 bound fourth moments; `hLv`, `he` describe the levels; `hG`, `hc` bound cell sizes; `hdep` makes
-each variable a function of the latents at its own sites; `hdeg` is complete degeneracy; `hidio`
+each variable a function of the latents at its sites; `hdeg` is complete degeneracy; `hidio`
 gives the symbol `ε` the full dimension set, which forces `M ≥ 2`. -/
 theorem var_quadForm_le_regime2 {idio : Γ₀ → Prop} [DecidablePred idio] (idx : D → O → L)
     (lev : Γ₀ → Finset D) (q : Site D L O → V → ℝ) (hq0 : ∀ s v, 0 ≤ q s v)
@@ -736,9 +737,9 @@ end Assembled
 
 /-! ## 9. A model satisfying the hypotheses
 
-A model with `M = 2` fixed-effect dimensions, one category per dimension, one observation, a fair
-two-point latent alphabet, the two-way interaction kernel `ξ_o = σ(U^{(1)})σ(U^{(2)})` and an
-idiosyncratic `ε_o = σ(U_o)`. Here `Var(ζ'Wζ ∣ 𝒟) = 4` and `tr(WΩ'WΩ') = 4`. -/
+The model has `M = 2` fixed-effect dimensions, one category per dimension, one observation, a
+fair two-point latent alphabet, the two-way interaction kernel `ξ_o = σ(U^{(1)})σ(U^{(2)})` and an
+idiosyncratic term `ε_o = σ(U_o)`. In this model `Var(ζ'Wζ ∣ 𝒟) = 4` and `tr(WΩ'WΩ') = 4`. -/
 
 section Witness
 
@@ -748,17 +749,18 @@ def sgn (b : Bool) : ℝ := if b then 1 else -1
 @[simp] theorem sgn_true : sgn true = 1 := rfl
 @[simp] theorem sgn_false : sgn false = -1 := rfl
 
-/-- The witness site type: two fixed-effect dimensions, one category each, one observation. -/
+/-- The site type of the example, with two fixed-effect dimensions, one category in each, and one
+observation. -/
 abbrev WSite := Site (Fin 2) (Fin 1) (Fin 1)
 
-/-- The witness sample space. -/
+/-- The sample space of the example. -/
 abbrev WOmega := WSite → Bool
 
-/-- All observations carry the same category in both dimensions. -/
+/-- All observations have the same category in both dimensions. -/
 def witIdx : Fin 2 → Fin 1 → Fin 1 := fun _ _ => 0
 
-/-- Both symbols carry the full dimension set: the kernel is the two-way interaction, and the
-symbol `ε` is given `{1,2}` as `hidio` requires. -/
+/-- Both symbols have the full dimension set `{1,2}`. For the kernel this is the two-way
+interaction, and for the symbol `ε` it is required by `hidio`. -/
 def witLev : Bool → Finset (Fin 2) := fun _ => Finset.univ
 
 /-- `true` is the symbol `ε`. -/
@@ -771,7 +773,7 @@ noncomputable def witQ : WSite → Bool → ℝ := fun _ _ => 1 / 2
 completely degenerate. -/
 def witKernel (ω : WOmega) : ℝ := sgn (ω (Sum.inl (0, 0))) * sgn (ω (Sum.inl (1, 0)))
 
-/-- The idiosyncratic term, at `o`'s own private site. -/
+/-- The idiosyncratic term, a function of the coordinate at the site `Sum.inr o`. -/
 def witEps (o : Fin 1) (ω : WOmega) : ℝ := sgn (ω (Sum.inr o))
 
 /-- The level family. -/
@@ -878,7 +880,7 @@ theorem witZ_apply (ω : WOmega) :
     levelSum (Finset.univ : Finset Bool) witXi 0 ω = witEps 0 ω + witKernel ω := by
   simp [levelSum]
 
-/-- The quadratic form on the witness: `ζ² = 2 + 2ξε` pointwise, since `ξ² = ε² = 1`. -/
+/-- In the example the quadratic form is `ζ² = 2 + 2ξε` pointwise, since `ξ² = ε² = 1`. -/
 theorem witQuadForm_eq :
     quadForm (1 : Matrix (Fin 1) (Fin 1) ℝ) (levelSum (Finset.univ : Finset Bool) witXi)
       = (2 : ℝ) • (1 : WOmega → ℝ) + (2 : ℝ) • (witKernel * witEps 0) := by
@@ -889,7 +891,7 @@ theorem witQuadForm_eq :
     smul_eq_mul, Fin.sum_univ_one, Matrix.one_apply_eq, witZ_apply]
   linear_combination hk + he
 
-/-- And its square: `ζ⁴ = 8 + 8ξε`. -/
+/-- Its square is `ζ⁴ = 8 + 8ξε`. -/
 theorem witQuadForm_sq_eq :
     quadForm (1 : Matrix (Fin 1) (Fin 1) ℝ) (levelSum (Finset.univ : Finset Bool) witXi) ^ 2
       = (8 : ℝ) • (1 : WOmega → ℝ) + (8 : ℝ) • (witKernel * witEps 0) := by

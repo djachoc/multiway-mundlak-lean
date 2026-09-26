@@ -2,11 +2,11 @@ import Multiway.LeverageCondRegime1
 import Multiway.Quadform
 
 /-!
-# A witness for the exact leverage correction under Regime 1 at a random design
+# An example of the exact leverage correction under Regime 1 at a random design
 
-This file exhibits a model satisfying every hypothesis of the Regime 1, random-design forms of
-Proposition SM.D.4 (exact leverage correction) and Lemma SM.B.6 (ii)–(iii) proved in
-`Multiway.LeverageCondRegime1`, and derives their conclusions through those theorems.
+The hypotheses of the Regime 1, random-design forms of Proposition SM.D.4 (exact leverage
+correction) and Lemma SM.B.6 (ii)–(iii) proved in `Multiway.LeverageCondRegime1` hold on the
+following model, and their conclusions follow from those theorems.
 
 The sample space is `Option 𝒪 → ℝ` with independent fair signs, one per observation and one
 (indexed by `none`) for the design; `𝒟` is the σ-field of the design coordinate, a proper
@@ -14,7 +14,7 @@ sub-σ-field. The innovations are `ε_o = c_o · sign_o`, so `σ²_ε(o) = c_o²
 heteroskedastic, and their mutual conditional independence given `𝒟` is derived. The design
 `R` is the identity on one half of the design and the grand-mean projector `P_0` on the other,
 so it is random, symmetric idempotent, and has nonzero off-diagonal entries. The signs are
-independent of `𝒟`; what depends on `𝒟` is the design `rW` and the weights `wW`.
+independent of `𝒟`, while the design `rW` and the weights `wW` depend on `𝒟`.
 
 ## Main results
 
@@ -36,7 +36,7 @@ variable (O : Type*) [Fintype O] [DecidableEq O]
 
 /-! ### The scaled innovations `ε_o = c_o · sign_o` -/
 
-/-- The innovations of the witness: the fair sign at site `o`, scaled by `c_o`, so that
+/-- The innovations of the model, the fair sign at site `o` scaled by `c_o`, so that
 `σ²_ε(o) = c_o²`. -/
 noncomputable def epsC (c : O → ℝ) (o : O) (ω : Option O → ℝ) : ℝ := c o * wEps O o ω
 
@@ -92,7 +92,7 @@ theorem epsC_mean (c : O → ℝ) (o : O) : (wP O)[epsC O c o | wD O] =ᵐ[wP O]
   rw [h2, mul_zero]
 
 omit [DecidableEq O] in
-/-- The signs square to `1` almost everywhere: they are `±1` under the two-point law, and
+/-- The signs square to `1` almost everywhere, since they are `±1` under the two-point law and
 the truncation `clamp` is the identity there. -/
 theorem wEps_sq_ae (o : O) :
     (fun ω => wEps O o ω * wEps O o ω) =ᵐ[wP O] fun _ => (1 : ℝ) := by
@@ -138,7 +138,7 @@ theorem epsC_var (c : O → ℝ) (o : O) :
 
 The identity on one half of the design and the grand-mean projector `P_0` on the other. -/
 
-/-- The entries `R_{oo'}` of the witness design: `𝟙{o = o'}` where the design coordinate is
+/-- The entries `R_{oo'}` of the random design, `𝟙{o = o'}` where the design coordinate is
 positive and `1/n` where it is not. Both matrices are symmetric idempotent projectors. -/
 noncomputable def rW (o o' : O) (ω : Option O → ℝ) : ℝ :=
   if 0 < ω none then (if o = o' then (1 : ℝ) else 0) else (Fintype.card O : ℝ)⁻¹
@@ -171,7 +171,7 @@ theorem abs_rW_le (o₀ o o' : O) (ω : Option O → ℝ) : |rW O o o' ω| ≤ 1
     rw [inv_le_one_iff₀]
     exact Or.inr hc
 
-/-- The diagonal of the witness design, with the inner branch resolved: `1` where the design
+/-- The diagonal of the random design, with the inner branch resolved, is `1` where the design
 coordinate is positive and `1/n` where it is not. -/
 theorem rW_diag (o : O) (ω : Option O → ℝ) :
     rW O o o ω = if 0 < ω none then (1 : ℝ) else (Fintype.card O : ℝ)⁻¹ := by
@@ -322,18 +322,18 @@ theorem integral_epsC_sq (c : O → ℝ) (o : O) :
 
 end Model
 
-/-! ## The witnesses -/
+/-! ## Examples -/
 
 section Witness
 
 variable {O : Type*} [Fintype O] [DecidableEq O]
 
-/-- A witness for part (a) of Proposition SM.D.4 at a random design under Regime 1: every
-hypothesis of `LeverageCondRegime1.prop_lc_a_random_regimeOne` holds on one model and the
-conclusion is derived through it.
+/-- The hypotheses of `LeverageCondRegime1.prop_lc_a_random_regimeOne` (part (a) of
+Proposition SM.D.4 at a random design under Regime 1) hold on the model above, and its
+conclusion follows.
 
-The conjuncts are: `𝒟` is a proper sub-σ-field; the mutual conditional independence; the
-conditional covariance identity; the two values the design takes; part (a); and the
+The statement asserts that `𝒟` is a proper sub-σ-field, the mutual conditional independence,
+the conditional covariance identity, the two values the design takes, part (a), and that the
 innovations are not degenerate. The design values are stated as equations, since at a
 one-observation support the design is constant. -/
 theorem prop_lc_a_random_regimeOne_witness {c : O → ℝ} (hcb : ∀ o, |c o| ≤ 1) (o₀ : O) :
@@ -364,8 +364,9 @@ theorem prop_lc_a_random_regimeOne_witness {c : O → ℝ} (hcb : ∀ o, |c o| �
       (fun o o' o'' => int_rr_epsC O hcb o₀ o o' o'') (epsC_mean O c) (epsC_var O c)
       (int_weighted O hcb o₀)
 
-/-- A witness for part (b) of Proposition SM.D.4 at a random design under Regime 1, at a
-constant scaling `c ≡ a` with `|a| ≤ 1`; for `a ≠ 0` the variance is nonzero. -/
+/-- The hypotheses of part (b) of Proposition SM.D.4 at a random design under Regime 1 hold on
+the model above at a constant scaling `c ≡ a` with `|a| ≤ 1`; for `a ≠ 0` the variance is
+nonzero. -/
 theorem prop_lc_b_random_regimeOne_witness {a : ℝ} (hab : |a| ≤ 1) (o₀ : O) :
     (∃ B : Set (Option O → ℝ), MeasurableSet B ∧ ¬ MeasurableSet[wD O] B)
     ∧ iCondIndepFun (wD O) (wD_le O) (epsC O (fun _ => a)) (wP O)
@@ -382,7 +383,7 @@ theorem prop_lc_b_random_regimeOne_witness {a : ℝ} (hab : |a| ≤ 1) (o₀ : O
     (fun o o' o'' => int_rr_epsC O hcb o₀ o o' o'') (epsC_mean O _)
     (epsC_var O (fun _ => a)) (int_weighted O hcb o₀)
 
-/-- The witness at `𝒪 = Fin 2` and `c = (1, 1/2)`, where `σ²_ε(0) = 1 ≠ 1/4 = σ²_ε(1)`
+/-- The model at `𝒪 = Fin 2` and `c = (1, 1/2)`, where `σ²_ε(0) = 1 ≠ 1/4 = σ²_ε(1)`
 and the design takes the diagonal values `1` and `1/2`, with nonzero off-diagonal entries on
 the second half, so the correction term of part (a) is nonzero. -/
 theorem prop_lc_heteroskedastic_random_witness :

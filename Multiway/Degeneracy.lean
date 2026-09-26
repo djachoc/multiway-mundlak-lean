@@ -6,9 +6,9 @@ import Multiway.GroupCompute
 This file formalizes Corollary SM.D.2 of the paper (degeneracy along the fixed-effect
 dimensions). Under the Regime 2 decomposition `ν_o = ∑_{∅≠e} h^{(e)}(U_{o⊙e}) + ε_o`,
 `X̃'ν = ∑_{2≤|e|≤M} ∑_{t ∈ 𝒯_e} w^{(e)}_t h^{(e)}(U_t) + ∑_o x̃_o ε_o`, and every level-one
-term vanishes identically. The statement is an identity in every realization: `h^{(e)}(U_t)`
-and `ε_o` are arbitrary reals indexed by sub-tuple and observation, and the weight `f` is
-arbitrary apart from `hzero` (`Δ_m'X̃ = 0`, the sum of `f` over each level-`{m}` cell is zero).
+term vanishes identically. The statement holds in every realization, with `h^{(e)}(U_t)` and
+`ε_o` arbitrary reals indexed by sub-tuple and observation, and with the weight `f` arbitrary
+apart from `hzero` (`Δ_m'X̃ = 0`, the sum of `f` over each level-`{m}` cell is zero).
 
 ## Notation
 
@@ -79,8 +79,8 @@ theorem level_one_eq_zero (c : D → O → L) {f : O → ℝ} {m : D}
   rw [sum_mul_kernel]
   exact Finset.sum_eq_zero fun t ht => by rw [hzero t ht, zero_mul]
 
-/-- **Corollary SM.D.2.** With the level-one terms deleted, the score is carried by the
-interactions of order at least two and the idiosyncratic part alone. -/
+/-- **Corollary SM.D.2.** The level-one terms vanish, so the score is the sum of the terms of
+the interactions of order at least two and of the idiosyncratic part. -/
 theorem score_degeneracy (c : D → O → L) (dims : Finset D) (f : O → ℝ)
     (h : Finset D → Finset O → ℝ) (eps nu : O → ℝ)
     (hnu : ∀ o : O, nu o

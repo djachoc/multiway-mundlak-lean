@@ -8,18 +8,17 @@ import Multiway.ClusterJansonB
 # Feasible inference under the cluster-shock model: further forms
 
 This file completes the formalization of Corollary SM.D.3 of the paper (feasible inference
-under the cluster-shock model). It provides the second sentence (bounded conditional fourth
-moments) for every `ε > 0` and in unconditional and vector form, a weighted cluster-shock
-representation with an unbounded disturbance, a witness at `r = 2`, part (c) with the limit law
-derived rather than assumed, a single theorem carrying both the Theorem 5 and Theorem 11
-hypothesis sets, and the derivation of the moment assumption on `ν` from fourth moments of the
-shocks.
+under the cluster-shock model). It extends the second sentence (bounded conditional fourth
+moments) to every `ε > 0` and to unconditional and vector form, derives the limit law in
+part (c), states part (c) under the Theorem 5 and Theorem 11 hypothesis sets in one theorem, and
+derives the moment assumption on `ν` from fourth moments of the shocks. The examples include a
+weighted cluster-shock representation with an unbounded disturbance and a design with `r = 2`.
 
 ## Main results
 
 * `clustershock_b_general_janson_anyEps`: the second sentence at arbitrary `ε > 0`.
 * `clustershock_b_general_janson_unconditional_vector`: its unconditional vector form.
-* `clustershock_b_general_janson_unbounded_witness`: a witness with an unbounded disturbance.
+* `clustershock_b_general_janson_unbounded_witness`: an example with an unbounded disturbance.
 * `clustershock_rateagnostic_c_janson`: part (c) with the limit law derived.
 * `clustershock_wald_both_halves`: part (c) under both hypothesis sets at once.
 * `condExp_nuRV_pow_four_le`: the fourth-moment bound on `ν` from the shocks'.
@@ -42,7 +41,7 @@ For `ε > 3` the rate hypothesis of the second sentence cannot hold when `1 ≤ 
 section AnyEps
 
 /-- For `ε > 3` and `1 ≤ Ḡ_n ≤ n`, the sequence `Ḡ_n^{3−ε}/n^{1−ε}` is bounded below by `1`
-and so does not tend to `0`: `Ḡ_n^{3−ε}/n^{1−ε} = n^{ε−1}/Ḡ_n^{ε−3} ≥ n² ≥ 1`. -/
+and so does not tend to `0`, since `Ḡ_n^{3−ε}/n^{1−ε} = n^{ε−1}/Ḡ_n^{ε−3} ≥ n² ≥ 1`. -/
 theorem epsHyp_false_of_three_lt {N Gb : ℕ → ℕ} {ε : ℝ} (hε3 : 3 < ε)
     (hN1 : ∀ n, 1 ≤ N n) (hG1 : ∀ n, 1 ≤ Gb n) (hGN : ∀ n, Gb n ≤ N n)
     (h : Tendsto (fun n => (Gb n : ℝ) ^ ((3 : ℝ) - ε) / (N n : ℝ) ^ ((1 : ℝ) - ε))
@@ -564,11 +563,11 @@ noncomputable def wShockDep (idx : O → κ → Fin m) (w : ℝ) (G : O → O �
 
 end WeightedShockSum
 
-/-! ### Section C4. An unbounded-disturbance witness for the second sentence
+/-! ### Section C4. An example for the second sentence with an unbounded disturbance
 
 The `J = 2` cluster-shock design of `ClusterShock.GeneralWitness` (`n+3` observations,
 clustering maps `⌊o/2⌋` and `⌊(o+1)/2⌋`, `Ḡ_n = 2`), with each of the three shock components
-replaced by a standardized sum of `n+1` fair signs:
+replaced by a standardized sum of `n+1` fair signs, so that
 `ν_o = (n+1)^{-1/2}∑_{j<3}∑_{i≤n}s_{(j,i)-th coin of o}`. The matrix `Ω` is unchanged, while
 `sup_ω|ν_{n,o}| = 3√(n+1) → ∞` and `E[ν_o⁴] ≤ 27` for every `n`. -/
 
@@ -780,8 +779,9 @@ end UnboundedShockWitness
 
 open UnboundedShockWitness
 
-/-- A witness for `clustershock_b_general_janson` at `ε = 1/4` on the `J = 2` cluster-shock
-design with an unbounded disturbance. The statement records that the disturbance is unbounded
+/-- The hypotheses of `clustershock_b_general_janson` hold at `ε = 1/4` on the `J = 2`
+cluster-shock design with an unbounded disturbance. The statement also asserts that the
+disturbance is unbounded
 across `n`, that the sharing relation is not transitive, that the within-cluster covariance is
 `1` (so `Ω` is not diagonal), and the CDF convergence. -/
 theorem clustershock_b_general_janson_unbounded_witness (s : ℝ) :
@@ -836,9 +836,9 @@ end UnboundedShockWitness
 
 /-! ### Section C5. Part (c) with the limit law derived
 
-The theorems below carry the hypotheses of the Theorem 5 half and prove the limit law `hclt`
+The theorems below assume the hypotheses of the Theorem 5 half and prove the limit law `hclt`
 used by `ClusterShock.clustershock_rateagnostic_c`, from either sentence of the corollary. The
-ratio input `hratio` remains a hypothesis; Section C7 derives it as well. -/
+ratio input `hratio` remains a hypothesis; Section C7 derives it. -/
 
 section WaldDischarged
 
@@ -996,7 +996,7 @@ theorem clustershock_rateagnostic_c_janson_b
 
 end WaldDischarged
 
-/-! ### Section C5b. A witness for part (c) -/
+/-! ### Section C5b. An example for part (c) -/
 
 section WaldDischargedWitness
 
@@ -1006,10 +1006,10 @@ open Matrix
 open Multiway.SteinCluster.FrozenDesignWitness
 open Multiway.ClusterShock.FrozenGeneralShockWitness
 
-/-- A witness for `clustershock_rateagnostic_c_janson` on the `J = 2` cluster-shock design
-of `ClusterShock.FrozenGeneralShockWitness`: a nontrivial `𝒟`, a random `𝒟`-measurable design,
-`Ω` not diagonal, `Ḡ_n = 2` and `Ḡ_n³/n = 8/(n+3) → 0`, with the variance estimator `𝒱̂_n`
-equal to `𝒱_n` inflated by `1 + 1/(n+1)`. -/
+/-- The hypotheses of `clustershock_rateagnostic_c_janson` hold on the `J = 2` cluster-shock
+design of `ClusterShock.FrozenGeneralShockWitness`, which has a nontrivial `𝒟`, a random
+`𝒟`-measurable design, `Ω` not diagonal, `Ḡ_n = 2` and `Ḡ_n³/n = 8/(n+3) → 0`. The variance
+estimator `𝒱̂_n` is `𝒱_n` inflated by `1 + 1/(n+1)`. -/
 theorem clustershock_rateagnostic_c_janson_witness :
     Pw {y : Aw | y.1 = true} = 2⁻¹
     ∧ (∃ Bs : Set Aw, MeasurableSet Bs ∧ ¬ MeasurableSet[Dw] Bs)
@@ -1123,13 +1123,13 @@ theorem clustershock_rateagnostic_c_janson_witness :
 
 end WaldDischargedWitness
 
-/-! ### Section C6. A witness at `r = 2`
+/-! ### Section C6. An example at `r = 2`
 
 The observation set is `{0,…,n+2} × {0,1}` and the regressors are the side indicators scaled by
 `1` and `2`, so `X̃'X̃ = diag(n+3, 4(n+3))`. The clustering maps are those of `ClusterShock.wtC`
 applied to the base index, so both sides share the cluster shocks and `𝒱_{n,01} > 0`; hence
-`𝒱_n` is not a multiple of the identity. Here `J = 2`, `Ḡ_n = 4`, the sharing relation is not
-transitive and `Ω` is not diagonal. The design is deterministic. -/
+`𝒱_n` is not a multiple of the identity. The model has `J = 2` and `Ḡ_n = 4`, its sharing
+relation is not transitive and `Ω` is not diagonal. The design is deterministic. -/
 
 section ShockRank2Witness
 
@@ -1151,7 +1151,7 @@ theorem cr2w_pos (k : Fin 2) : (0 : ℝ) < cr2w k := by
 theorem cr2w_sq_le (k : Fin 2) : (cr2w k) ^ 2 ≤ (2 : ℝ) ^ 2 := by
   fin_cases k <;> norm_num [cr2w]
 
-/-- `x̃_{(i,s)} = (1{s=0}, 2·1{s=1})`: the side indicators, scaled. -/
+/-- `x̃_{(i,s)} = (1{s=0}, 2·1{s=1})`, the scaled side indicators. -/
 noncomputable def cr2Xt (n : ℕ) : Matrix (Fin (n + 3) × Fin 2) (Fin 2) ℝ :=
   fun p k => if p.2 = k then cr2w k else 0
 
@@ -1330,8 +1330,8 @@ theorem cr2Cluster_card (n : ℕ) (j : Fin 2) (γ : Fin (n + 3)) :
   have := wtCluster_card n j γ
   omega
 
-/-- The coin that component `k` of observation `(i,s)` reads: the base model's coin for `k`,
-doubled, plus the side only for the idiosyncratic component `k = 2`. -/
+/-- The coin that component `k` of observation `(i,s)` reads, with index twice the base model's
+index for `k`, plus the side `s` for the idiosyncratic component `k = 2`. -/
 def cr2Idx (n : ℕ) (p : Fin (n + 3) × Fin 2) (k : Fin 3) : Fin (3 * (n + 3) * 2) :=
   ⟨2 * (wtIdx n p.1 k).val + (if k = (2 : Fin 3) then p.2.val else 0), by
     have h1 : (wtIdx n p.1 k).val < 3 * (n + 3) := (wtIdx n p.1 k).isLt
@@ -1477,7 +1477,7 @@ theorem cr2_restrictedVar_offDiag (n : ℕ) :
   rw [restrictedVar, cr2_scoreMap, Matrix.diagonal_transpose, Matrix.mul_diagonal,
     Matrix.diagonal_mul]
 
-/-- `𝒱_n ≠ c·I₂` for every `c`: its `(0,1)` entry is strictly positive. -/
+/-- `𝒱_n ≠ c·I₂` for every `c`, since its `(0,1)` entry is strictly positive. -/
 theorem cr2_restrictedVar_ne_smul_one (n : ℕ) (t : ℝ) :
     restrictedVar (cr2Xt n) (cr2Om n) (1 : Matrix (Fin 2) (Fin 2) ℝ)
       ≠ t • (1 : Matrix (Fin 2) (Fin 2) ℝ) := by
@@ -1552,8 +1552,8 @@ end ShockRank2Witness
 
 open ShockRank2Witness
 
-/-- A witness for `clustershock_a_general_janson` at `r = K = 2`, with `𝓡_n = I₂` and `𝒱_n`
-not a multiple of the identity. The statement also records that the sharing relation is not
+/-- The hypotheses of `clustershock_a_general_janson` hold at `r = K = 2`, with `𝓡_n = I₂` and
+`𝒱_n` not a multiple of the identity. The statement also asserts that the sharing relation is not
 transitive and that `Ω` has a nonzero off-diagonal entry. -/
 theorem clustershock_a_general_janson_rank2_witness (s : ℝ) :
     (∀ (n : ℕ) (t : ℝ), restrictedVar (cr2Xt n) (cr2Om n) (1 : Matrix (Fin 2) (Fin 2) ℝ)
@@ -1589,8 +1589,8 @@ theorem clustershock_a_general_janson_rank2_witness (s : ℝ) :
   · simp only [cr2_card]
     exact cr2_hGrate_cube
 
-/-- A witness for `clustershock_b_general_janson_anyEps` at `r = K = 2` and `ε = 1/4`, on
-the same design, where `Ḡ_n = 4` and the sample size is `2(n+3)`. -/
+/-- The hypotheses of `clustershock_b_general_janson_anyEps` hold at `r = K = 2` and
+`ε = 1/4` on the same design, where `Ḡ_n = 4` and the sample size is `2(n+3)`. -/
 theorem clustershock_b_general_janson_rank2_witness (s : ℝ) :
     (∀ (n : ℕ) (t : ℝ), restrictedVar (cr2Xt n) (cr2Om n) (1 : Matrix (Fin 2) (Fin 2) ℝ)
         ≠ t • (1 : Matrix (Fin 2) (Fin 2) ℝ))
@@ -1631,10 +1631,10 @@ end ShockRank2Witness
 
 /-! ### Section C7. Both hypothesis sets at once
 
-A single theorem carries the hypotheses of the Theorem 5 half and of the Theorem 11 half. Both
+One theorem assumes the hypotheses of the Theorem 5 half and of the Theorem 11 half. Both
 halves run at `Ω_n(ω) := 𝔼[ν_oν_{o'} ∣ 𝒟](ω)` (`condOmegaMat`); the identification with the
 cluster-shock matrix `∑_jσ²_{c,j}Sh^{(j)} + diag(Var(ε_o ∣ 𝒟))` via
-`Sharing.condOmega_eq_clusterOmega` is reported as a conclusion. The ratio input and the limit
+`Sharing.condOmega_eq_clusterOmega` is a conclusion. The ratio input and the limit
 law are derived. The dependency graph, second moments, means and fourth moments are stated both
 under `ℙ_ω := condExpKernel P 𝒟 ω` (for the Theorem 5 half) and as conditional expectations
 (for the Theorem 11 half). -/
@@ -2000,7 +2000,8 @@ section IntegralForm
 
 variable {Ω : Type*} [MeasurableSpace Ω]
 
-/-- The representation step under a measure: integrability of `ν_o⁴` from the shocks'. -/
+/-- The representation step under a measure, giving integrability of `ν_o⁴` from that of the
+shocks. -/
 theorem integrable_nuRV_pow_four (μ : Measure Ω) {c : D → O → L} {dims : Finset D}
     {Z : ((D × L) ⊕ O) → Ω → ℝ} (hZmeas : ∀ s, Measurable (Z s))
     (hint : ∀ s, Integrable (fun ω => Z s ω ^ 4) μ) (o : O) :
@@ -2062,7 +2063,7 @@ variable {Ω : Type*} {𝒟 mΩ : MeasurableSpace Ω} [StandardBorelSpace Ω]
 variable {P : Measure Ω} [IsProbabilityMeasure P]
 
 /-- **Corollary SM.D.3**, part (a) of the Theorem 11 half, with the fourth-moment hypothesis
-stated on the shocks `{c^{(j)}_g} ∪ {ε_o}` rather than on `ν`; the bound on `ν` follows with
+stated on the shocks `{c^{(j)}_g} ∪ {ε_o}`; the bound on `ν` follows with
 constant `(J+1)⁴C_Z` from `condExp_nuRV_pow_four_le`. -/
 theorem clustershock_rateagnostic_a_shockmoments (hm : 𝒟 ≤ mΩ) [SigmaFinite (P.trim hm)]
     {O L : ℕ → Type*} [∀ n, Fintype (O n)] [∀ n, DecidableEq (O n)] [∀ n, DecidableEq (L n)]
@@ -2300,10 +2301,10 @@ theorem clustershock_wald_both_halves_shockmoments
 end ChainedWald
 
 
-/-! ### A witness for the representation step
+/-! ### An example for the representation step
 
-`J = 2` clustering dimensions with two labels each and two observations, so six shocks; each
-shock is `Z_s = (n+1)^{-1/2}∑_{i≤n}s_{block(s),i}` on its own block of coins. Then
+The model has `J = 2` clustering dimensions with two labels each and two observations, hence six
+shocks. Each shock is `Z_s = (n+1)^{-1/2}∑_{i≤n}s_{block(s),i}` on a separate block of coins. Then
 `sup_ω|Z_{n,s}| = √(n+1) → ∞` while `𝔼[Z_{n,s}⁴] ≤ 3`, and the derived bound on `ν` is
 `(2+1)⁴·3 = 243`. -/
 
@@ -2314,11 +2315,11 @@ open UnboundedShockWitness
 
 namespace RepresentationWitness
 
-/-- The six shocks of the witness: `c^{(1)}_g`, `c^{(2)}_g` at two labels each, and `ε_o` at two
-observations. -/
+/-- The six shocks of the model, namely `c^{(1)}_g` and `c^{(2)}_g` at two labels each and `ε_o`
+at two observations. -/
 abbrev RsS := (Fin 2 × Fin 2) ⊕ Fin 2
 
-/-- An explicit enumeration of the six shocks, so that each reads its own block of coins. -/
+/-- An explicit enumeration of the six shocks, so that each reads a separate block of coins. -/
 def rsIdx : RsS → Fin 6
   | Sum.inl (j, g) => ⟨2 * j.val + g.val, by have := j.isLt; have := g.isLt; omega⟩
   | Sum.inr o => ⟨4 + o.val, by have := o.isLt; omega⟩
@@ -2338,7 +2339,7 @@ theorem rsIdx_injective : Function.Injective rsIdx := by
         | (have := j.isLt; have := g.isLt; have := o'.isLt; omega)
         | (have := o.isLt; have := j'.isLt; have := g'.isLt; omega)
 
-/-- Shock `s` reads the `i`-th coin of its own block. -/
+/-- Shock `s` reads the `i`-th coin of its block. -/
 def rsBlk (n : ℕ) (s : RsS) (i : Fin (n + 1)) : Fin (6 * (n + 1)) :=
   ⟨(rsIdx s).val * (n + 1) + i.val, by
     have h1 : (rsIdx s).val + 1 ≤ 6 := (rsIdx s).isLt
@@ -2411,7 +2412,7 @@ theorem rsZ_unbounded (C : ℝ) :
     exact le_abs_self C
   linarith
 
-/-- The two clustering maps: dimension `0` separates the two observations, and dimension `1`
+/-- The two clustering maps. Dimension `0` separates the two observations and dimension `1`
 puts both in one cluster, so the second cluster shock is shared. -/
 def rsC : Fin 2 → Fin 2 → Fin 2 := fun j o => if j = 0 then o else 0
 
@@ -2421,8 +2422,8 @@ end RepresentationWitness
 
 open RepresentationWitness
 
-/-- A witness for the representation step at `J = 2` with unbounded shocks. The statement
-records that no constant bounds the shocks uniformly in `n`; that `J = 2`; the representation
+/-- The representation step at `J = 2` with unbounded shocks. The statement asserts that no
+constant bounds the shocks uniformly in `n`; that `J = 2`; the representation
 `ν_o = c^{(1)}_{g₁(o)} + c^{(2)}_{g₂(o)} + ε_o` at both observations; and `𝔼[ν_o⁴] ≤ 243` and
 `𝔼[ν_o⁴ ∣ ⊥] ≤ 243` almost surely, for every `n`. -/
 theorem representation_pow_four_witness :
@@ -2464,9 +2465,9 @@ theorem representation_pow_four_witness :
 
 end RepresentationWitness
 
-/-! ### Witnesses for the chained theorems
+/-! ### Examples for the chained theorems
 
-These run on the bounded `bigCoins` design of `ClusterShock`, with `J = 1` and derived constant
+They use the bounded `bigCoins` design of `ClusterShock`, with `J = 1` and derived constant
 `(1+1)⁴·1 = 16`. -/
 
 section ChainedWitness
@@ -2488,7 +2489,7 @@ theorem wr_momZ (n : ℕ) (s : (WrD × WrL n) ⊕ WrO n) : ∀ᵐ ω ∂bigCoins
   filter_upwards with ω
   exact le_refl 1
 
-/-- A witness for `clustershock_rateagnostic_a_shockmoments`. -/
+/-- An example for `clustershock_rateagnostic_a_shockmoments`. -/
 theorem clustershock_rateagnostic_a_shockmoments_witness :
     TendstoInMeasure bigCoins (fun n ω =>
         rectFrobNorm ((sqrtPD ((wrXt n)ᵀ
@@ -2527,7 +2528,7 @@ theorem clustershock_rateagnostic_a_shockmoments_witness :
   · intro n
     rw [one_mul, wrXt_gram]
 
-/-- A witness for `clustershock_rateagnostic_b_shockmoments`. -/
+/-- An example for `clustershock_rateagnostic_b_shockmoments`. -/
 theorem clustershock_rateagnostic_b_shockmoments_witness :
     TendstoInMeasure bigCoins (fun n ω =>
         rectFrobNorm ((sqrtPD ((wrXt n)ᵀ

@@ -40,8 +40,8 @@ def IsConnFam {V : Type*} (R : V → V → Prop) {j : ℕ} (φ : Fin j → V) : 
 A connected family can be reordered so that each prefix is connected. The prefix is grown one
 slot at a time; connectedness provides a slot outside the prefix linked to one inside it. -/
 
-/-- The prefix is grown one slot at a time.  `e : Fin m → Fin j` enumerates the first `m` slots
-of the search order. -/
+/-- `e : Fin m → Fin j` enumerates the first `m` slots of the search order; each slot after the
+first is `R`-linked to an earlier one. -/
 theorem exists_search_injection {V : Type*} {R : V → V → Prop} {j : ℕ} {φ : Fin j → V}
     (hconn : IsConnFam R φ) (hj : 0 < j) :
     ∀ m : ℕ, m ≤ j → ∃ e : Fin m → Fin j, Function.Injective e ∧
@@ -105,7 +105,7 @@ theorem exists_search_perm {V : Type*} {R : V → V → Prop} {j : ℕ} {φ : Fi
 
 /-! ### The prefix count
 
-The slots are filled left to right; the unfilled ones sit at a padding value `v₀`, which turns
+The slots are filled left to right; the unfilled ones are set to a padding value `v₀`, which turns
 the count into a chain of `Finset` fibre bounds. -/
 
 section Count
@@ -114,7 +114,7 @@ variable {V : Type*} [Fintype V] [DecidableEq V]
 
 open scoped Classical in
 /-- The families whose first `m` slots are filled from `t`, each after the first linked by `R`
-to an earlier slot, and whose remaining slots sit at the padding value `v₀`. -/
+to an earlier slot, and whose remaining slots equal the padding value `v₀`. -/
 noncomputable def prefixFams (R : V → V → Prop) (t : Finset V) (v₀ : V) (j m : ℕ) :
     Finset (Fin j → V) :=
   univ.filter (fun ψ : Fin j → V =>

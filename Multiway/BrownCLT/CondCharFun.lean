@@ -26,21 +26,20 @@ import Mathlib.MeasureTheory.Function.ConditionalExpectation.PullOut
 /-!
 # Conditional characteristic-function calculus for MDS arrays
 
-The analytic lemmas of the Brown / Hall–Heyde martingale CLT, assembled in
-`Multiway.BrownCLT.Brown`:
+This file proves the analytic lemmas of the Brown / Hall–Heyde martingale CLT, which
+`Multiway.BrownCLT.Brown` assembles. Conditional expectations of complex-valued integrands are
+taken componentwise through the real `condExp`.
 
-* the conditional Taylor estimate: a.e., `‖E[e^{iuX} | 𝓖] − (1 − u²/2 · E[X² | 𝓖])‖` is
-  controlled by the conditional Lindeberg mass at level `ε` plus `|u|³ ε · E[X² | 𝓖]`;
-* the nesting-free tower telescope (`norm_integral_exp_rowSum_mul_invProd_sub_one_le`):
-  reweighting `e^{iuS_n}` by the inverse Taylor product `∏_i ψ_i⁻¹`,
-  `ψ_i = 1 − u²/2 · E[X_i²|𝓕_i]`, makes `E[e^{iuS_n}∏_i ψ_i⁻¹] − 1` a martingale telescope;
-* the product comparison (`tendsto_integral_abs_prod_one_sub_condVar_sub`): `∏_i ψ_i` is close
-  to `e^{−u²σ²/2}` in `L¹`;
-* the assembled bound on `‖E e^{iuS_n} − e^{−u²σ²/2}‖`
-  (`norm_integral_exp_rowSum_sub_gaussian_le`).
+## Main results
 
-Conditional expectations of complex-valued integrands are taken componentwise through the real
-`condExp`.
+* `norm_condexp_exp_sub_one_sub_le`: the conditional Taylor estimate, which bounds
+  `‖E[e^{iuX} | 𝓖] − (1 − u²/2 · E[X² | 𝓖])‖` a.e. by the conditional Lindeberg mass at level
+  `ε` plus `|u|³ ε · E[X² | 𝓖]`.
+* `norm_integral_exp_rowSum_mul_invProd_sub_one_le`: the nesting-free tower telescope. With
+  `ψ_i = 1 − u²/2 · E[X_i²|𝓕_i]`, `E[e^{iuS_n}∏_i ψ_i⁻¹] − 1` is a martingale telescope.
+* `tendsto_integral_abs_prod_one_sub_condVar_sub`: the product comparison, `∏_i ψ_i` converges
+  to `e^{−u²σ²/2}` in `L¹`.
+* `norm_integral_exp_rowSum_sub_gaussian_le`: the bound on `‖E e^{iuS_n} − e^{−u²σ²/2}‖`.
 
 ## References
 
@@ -595,7 +594,8 @@ variable {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
 open Complex in
 /-- **One tower peel.** If the multiplier `Y` is `𝓕_{n,i}`-measurable and bounded by `B`,
 replacing `e^{iuX_{n,i}}` under the integral by its conditional Taylor polynomial
-`1 − u²/2·E[X_{n,i}²|𝓕_{n,i}]` costs at most `B` times the `i`-th conditional Taylor error. -/
+`1 − u²/2·E[X_{n,i}²|𝓕_{n,i}]` changes the integral by at most `B` times the `i`-th conditional
+Taylor error. -/
 theorem norm_integral_mul_cexp_sub_taylor_le [IsProbabilityMeasure μ]
     {k : ℕ → ℕ} {X : (n : ℕ) → Fin (k n) → Ω → ℝ}
     {F : (n : ℕ) → Fin (k n + 1) → MeasurableSpace Ω}
@@ -1145,7 +1145,7 @@ theorem tendsto_integral_abs_prod_one_sub_condVar_sub [IsProbabilityMeasure μ]
   -- unfold the opaque abbreviation
   exact main.congr fun n => integral_congr_ae (ae_of_all _ fun ω => by rw [hp n ω])
 
-/-- **Product comparison**: the convergence-in-mean form of
+/-- **Product comparison.** The convergence-in-mean form of
 `tendsto_integral_abs_prod_one_sub_condVar_sub`. -/
 theorem tendsto_integral_prod_one_sub_condVar [IsProbabilityMeasure μ]
     {k : ℕ → ℕ} {X : (n : ℕ) → Fin (k n) → Ω → ℝ}
@@ -1290,7 +1290,7 @@ theorem norm_integral_exp_rowSum_sub_gaussian_le [IsProbabilityMeasure μ]
       (1 - u ^ 2 / 2 * μ[fun ω' => X n i ω' ^ 2 | F n i.castSucc] ω : ℂ)
         = ((1 - u ^ 2 / 2 * μ[fun ω' => X n i ω' ^ 2 | F n i.castSucc] ω : ℝ) : ℂ) := by
     intro i ω; push_cast; ring
-  -- (1) the three players
+  -- (1) the abbreviations `E`, `Ψ` and `Q`
   obtain ⟨E, hE⟩ : ∃ E : Ω → ℂ, ∀ ω,
       E ω = Complex.exp (I * ((u * mdsRowSum k X n ω : ℝ) : ℂ)) := ⟨_, fun _ => rfl⟩
   obtain ⟨Ψ, hΨ⟩ : ∃ Ψ : Ω → ℝ, ∀ ω, Ψ ω =

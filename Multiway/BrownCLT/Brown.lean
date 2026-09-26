@@ -23,8 +23,8 @@ import Multiway.BrownCLT.CondCharFun
 import Mathlib.MeasureTheory.Function.ConditionalExpectation.Indicator
 import Mathlib.Probability.Distributions.Gaussian.Real
 -- PORT v4.34.0: `Measurable.abs` (the `to_additive` image of `Measurable.mabs`) is no longer
--- reachable through the imports above — the upstream import graph was pruned between
--- v4.29.1 and v4.34.0 — so its home module is now named explicitly.
+-- reachable through the imports above (the upstream import graph was pruned between
+-- v4.29.1 and v4.34.0), so its home module is now named explicitly.
 import Mathlib.MeasureTheory.Order.Group.Lattice
 
 /-!
@@ -39,7 +39,7 @@ The proof truncates the array (Hall–Heyde), then compares `E e^{iuS_n}` with
 `e^{−u²σ²/2}` through the conditional Taylor telescope of `CondCharFun.lean`. The main results
 are `mds_clt` (triangular arrays) and `mds_clt_sequence` (a single sequence).
 
-References: B. M. Brown, *Martingale central limit theorems*, Ann. Math. Statist. **42**
+References: B. M. Brown, *Martingale central limit theorems*, Ann. Math. Statist. 42
 (1971), 59–66, Thm 2; P. Hall & C. C. Heyde, *Martingale Limit Theory and Its Application*,
 Academic Press, 1980, Thm 3.2 / Cor 3.1.
 -/
@@ -58,7 +58,7 @@ section Truncation
 
 A uniform `L¹` bound on the conditional variance process does not follow from `hvar` and
 `hlind`, so the array is stopped at the first index at which the accumulated conditional
-variance would exceed `σ² + 1`, and at every index whose own conditional variance exceeds `d`.
+variance would exceed `σ² + 1`, and at every index whose conditional variance exceeds `d`.
 Both events have vanishing probability, the second by `tendsto_measure_exists_cvar_ge`.
 -/
 
@@ -105,8 +105,8 @@ private def truncSet (k : ℕ → ℕ) (X : (n : ℕ) → Fin (k n) → Ω → �
     (i : Fin (k n)) : Set Ω :=
   {ω | ∑ j ∈ Finset.Iic i, cvar k X F μ n j ω ≤ c} ∩ {ω | cvar k X F μ n i ω ≤ d}
 
-/-- The truncated array: the differences are switched off from the first index at which the
-accumulated conditional variance would exceed `c`, and at every index whose own conditional
+/-- The truncated array. The differences are set to zero from the first index at which the
+accumulated conditional variance would exceed `c`, and at every index whose conditional
 variance exceeds `d`. -/
 private noncomputable def truncArray (k : ℕ → ℕ) (X : (n : ℕ) → Fin (k n) → Ω → ℝ)
     (F : (n : ℕ) → Fin (k n + 1) → MeasurableSpace Ω) (μ : Measure Ω) (c d : ℝ) (n : ℕ)
@@ -270,7 +270,7 @@ private lemma tendsto_measure_exists_cvar_ge [IsProbabilityMeasure μ] (h : IsMD
     _ ≤ 2 / δ * ∑ i, ∫ ω in {ω | ε ≤ |X n i ω|}, X n i ω ^ 2 ∂μ :=
         mul_le_mul_of_nonneg_left hmark hc.le
 
-/-- Every truncated conditional variance obeys the per-index clamp. -/
+/-- Every truncated conditional variance is at most the per-index level `d`. -/
 private lemma cvar_truncArray_le (h : IsMDSArray k X F μ) (c : ℝ) {d : ℝ} (hd : 0 ≤ d)
     (n : ℕ) (i : Fin (k n)) :
     ∀ᵐ ω ∂μ, cvar k (truncArray k X F μ c d) F μ n i ω ≤ d := by
@@ -282,7 +282,7 @@ private lemma cvar_truncArray_le (h : IsMDSArray k X F μ) (c : ℝ) {d : ℝ} (
   · rw [Set.indicator_of_notMem hi]
     exact hd
 
-/-- Below both truncation levels the stopping is inactive. -/
+/-- Below both truncation levels, `ω` lies in every stopping set. -/
 private lemma mem_truncSet_of_le {c d : ℝ} (n : ℕ) {ω : Ω}
     (hnn : ∀ i, 0 ≤ cvar k X F μ n i ω) (hle : mdsCondVariance k X F μ n ω ≤ c)
     (hdle : ∀ i, cvar k X F μ n i ω ≤ d)
@@ -445,8 +445,8 @@ private lemma integrable_exp_rowSum (h : IsMDSArray k X F μ) [IsProbabilityMeas
   rw [Complex.norm_exp]
   simp
 
-/-- Replacing the array by its truncation costs at most twice the probability that the
-truncation is active. -/
+/-- The characteristic functions of the row sums of the array and of its truncation differ by
+at most twice the probability that the truncation is active. -/
 private lemma norm_integral_exp_rowSum_sub_trunc [IsProbabilityMeasure μ] (h : IsMDSArray k X F μ)
     (c : ℝ) {d : ℝ} (n : ℕ) (u : ℝ) :
     ‖(∫ ω, Complex.exp (Complex.I * (u * mdsRowSum k X n ω : ℝ)) ∂μ)
@@ -498,7 +498,7 @@ private lemma norm_integral_exp_rowSum_sub_trunc [IsProbabilityMeasure μ] (h : 
 
 end Truncation
 
-/-- **The Brown/Hall–Heyde martingale CLT** (characteristic-function form): a
+/-- **The Brown/Hall–Heyde martingale CLT**, in characteristic-function form. A
 martingale-difference array with conditional variance `→p σ²` satisfying the Lindeberg
 condition has asymptotically `N(0, σ²)` row sums. -/
 theorem mds_clt [IsProbabilityMeasure μ]
@@ -519,7 +519,7 @@ theorem mds_clt [IsProbabilityMeasure μ]
   classical
   set c : ℝ := σ2 + 1 with hcdef
   have hc0 : (0 : ℝ) ≤ c := by rw [hcdef]; linarith
-  -- the per-index clamp level: `u²d ≤ 1` puts each factor `1 - u²vᵢ/2` in `[1/2, 1]`
+  -- the per-index level `d`, with `u²d ≤ 1` so that each factor `1 - u²vᵢ/2` lies in `[1/2, 1]`
   set d : ℝ := 1 / (u ^ 2 + 1) with hddef
   have hd0 : (0 : ℝ) < d := by
     rw [hddef]
@@ -546,7 +546,7 @@ theorem mds_clt [IsProbabilityMeasure μ]
   have hunif' : ∀ δ : ℝ, 0 < δ →
       Tendsto (fun n => (μ {ω | ∃ i, δ ≤ μ[fun ω' => X' n i ω' ^ 2 | F n i.castSucc] ω}).toReal)
         atTop (𝓝 0) := fun δ hδ => tendsto_measure_exists_cvar_ge h' hlind' hδ
-  -- and both clamps
+  -- and both truncation bounds
   have hclampc : ∀ n, ∀ᵐ ω ∂μ, mdsCondVariance k X' F μ n ω ≤ c :=
     fun n => mdsCondVariance_truncArray_le h hc0 n
   have hclampd : ∀ (n : ℕ) (i : Fin (k n)), ∀ᵐ ω ∂μ,
@@ -757,7 +757,7 @@ theorem mds_clt_sequence [IsProbabilityMeasure μ]
     change (δ ≤ |(n : ℝ)⁻¹ * (∑ i ∈ Finset.range n, μ[fun ω' => ξ i ω' ^ 2 | G i] ω) - σ2|)
       = (δ ≤ |mdsCondVariance (fun n => n) X F μ n ω - σ2|)
     rw [hω]
-  -- the Lindeberg sets match on the nose: `{|ξᵢ/√n| ≥ ε} = {|ξᵢ| ≥ ε√n}`
+  -- the Lindeberg sets agree: `{|ξᵢ/√n| ≥ ε} = {|ξᵢ| ≥ ε√n}`
   have hlind' : ∀ ε : ℝ, 0 < ε →
       Tendsto (fun n => ∑ i : Fin n, ∫ ω in {ω | ε ≤ |X n i ω|}, (X n i ω) ^ 2 ∂μ)
         atTop (𝓝 0) := by

@@ -82,7 +82,7 @@ def outerMat (z : O → Ω → ℝ) (ω : Ω) : Matrix O O ℝ := Matrix.of fun 
 /-- A row of `m̂`: the weighted pair average of the residual products. -/
 def momentStat (w : Matrix O O ℝ) (z : O → Ω → ℝ) : Ω → ℝ := fun ω => pairAvg w (outerMat z ω)
 
-/-- With `M` standing for `E[ν̂_FEν̂_FE' | 𝒟]`, the expectation of a row of `m̂` is the same
+/-- Let `M` denote `E[ν̂_FEν̂_FE' | 𝒟]`. The expectation of a row of `m̂` is the same
 weighted average applied to `M`. Only linearity of the expectation over a finite sum is used. -/
 theorem expect_momentStat (E : (Ω → ℝ) →ₗ[ℝ] ℝ) (w : Matrix O O ℝ) (z : O → Ω → ℝ)
     {M : Matrix O O ℝ} (hM : ∀ o o', E (z o * z o') = M o o') :
@@ -101,10 +101,10 @@ theorem expect_momentStat (E : (Ω → ℝ) →ₗ[ℝ] ℝ) (w : Matrix O O ℝ
 
 variable [DecidableEq O]
 
-/-- The `m̂_0` weight, `n^{-1}I_n`: averaging over the diagonal. -/
+/-- The weight of `m̂_0`, `n^{-1}I_n`, which averages over the diagonal. -/
 noncomputable def wDiag : Matrix O O ℝ := (Fintype.card O : ℝ)⁻¹ • (1 : Matrix O O ℝ)
 
-/-- The `m̂_F` weight, `|P_F|^{-1}𝟙_{P_F}`: averaging over the class `P_F`. -/
+/-- The weight of `m̂_F`, `|P_F|^{-1}𝟙_{P_F}`, which averages over the class `P_F`. -/
 noncomputable def wPair (P : Finset (O × O)) : Matrix O O ℝ :=
   Matrix.of fun o o' => if (o, o') ∈ P then ((P.card : ℝ))⁻¹ else 0
 
@@ -150,7 +150,7 @@ theorem momentStat_wPair (P : Finset (O × O)) (z : O → Ω → ℝ) (ω : Ω) 
 
 end Average
 
-/-! ## 2. Clause (a): the exact moment relation `E[m̂ | 𝒟] = 𝒜θ` -/
+/-! ## 2. Clause (a): the moment relation `E[m̂ | 𝒟] = 𝒜θ` -/
 
 section ClauseA
 
@@ -219,8 +219,8 @@ theorem moment_eq_design_mulVec
 
 /-! ### `θ̂` and its unbiasedness
 
-The second claim of clause (a) needs nothing of the design matrix beyond `𝒜'𝒜` being invertible,
-so it is stated for an arbitrary matrix; `plugin_moment_unbiased` below is the composite. -/
+The second claim of clause (a) requires only that `𝒜'𝒜` be invertible, so it is stated for an
+arbitrary matrix; `plugin_moment_unbiased` below combines the two claims. -/
 
 variable {Cl : Type*} [Fintype Cl] [DecidableEq Cl]
 
@@ -238,8 +238,8 @@ theorem isUnit_det_gram_of_injective {A : Matrix Rw Cl ℝ} (hA : Function.Injec
   rw [hconj]
   exact isUnit_det_of_posDef (Matrix.PosDef.conjTranspose_mul_self A hA)
 
-/-- **Theorem 9(a), second claim.** `E[θ̂ | 𝒟] = θ`: `θ̂` is a linear function of `m̂` whose
-coefficients are scalars for the functional `E`. -/
+/-- **Theorem 9(a), second claim.** `E[θ̂ | 𝒟] = θ`, since `θ̂` is a linear function of `m̂`
+whose coefficients are constant under the functional `E`. -/
 theorem thetaHat_unbiased (E : (Ω → ℝ) →ₗ[ℝ] ℝ) (A : Matrix Rw Cl ℝ) (hA : IsUnit (Aᵀ * A).det)
     (th : Cl → ℝ) (mh : Rw → Ω → ℝ) (hm : ∀ r, E (mh r) = (A *ᵥ th) r) (j : Cl) :
     E (thetaHat A mh j) = th j := by
@@ -288,8 +288,8 @@ The norm laws for `frobNorm` are those of `Multiway/Sqrt.lean`. -/
 
 /-! ## 4. Clause (b): the plug-in meat
 
-Three things are proved: it is positive semidefinite in every sample; its distance from the
-target is controlled by the `ℓ¹` deviation of `θ̂` from `θ` at the sharp constant `1`; and
+The plug-in meat is positive semidefinite in every sample, its distance from the target is bounded
+by the `ℓ¹` deviation of `θ̂` from `θ` with constant `1`, and
 `∑_{t ∈ 𝒯_e} w^{(e)}_tw^{(e)'}_t ⪯ c_max ∑_o x̃_ox̃_o'`. -/
 
 section ClauseB
@@ -309,7 +309,7 @@ theorem obsGram_posSemidef (xt : O → K → ℝ) : (IdentE2.obsGram xt).PosSemi
   exact Matrix.posSemidef_conjTranspose_mul_self _
 
 omit [DecidableEq D] [DecidableEq K] in
-/-- `∑_{t ∈ 𝒯_e} w^{(e)}_tw^{(e)'}_t ⪰ 0`: it is the Gram matrix of the cell weights. -/
+/-- `∑_{t ∈ 𝒯_e} w^{(e)}_tw^{(e)'}_t ⪰ 0`, as the Gram matrix of the cell weights. -/
 theorem weightGram_posSemidef (c : D → O → L) (xt : O → K → ℝ) (e : Finset D) :
     (IdentE2.weightGram c xt e).PosSemidef := by
   classical
@@ -349,7 +349,7 @@ noncomputable def plugTarget (c : D → O → L) (xt : O → K → ℝ) (lev : E
     + ∑ e : Es, sige (lev e) • IdentE2.weightGram c xt (lev e)
 
 omit [Fintype K] [DecidableEq K] in
-/-- `plugTarget` is `nS_n`: this is `IdentE2.targetplug`, reindexed from the `Finset` `𝓔` to
+/-- `plugTarget` is `nS_n`. This is `IdentE2.targetplug` reindexed from the `Finset` `𝓔` to
 the index type `Es`. -/
 theorem plugTarget_eq_targetplug (c : D → O → L) (xt : O → K → ℝ)
     (levels Esets : Finset (Finset D)) (lev : Es → Finset D) (hlev : Function.Injective lev)
@@ -378,7 +378,7 @@ theorem plugMeat_posSemidef (c : D → O → L) (xt : O → K → ℝ) (lev : Es
 
 /-! ### The truncation, and the meat error -/
 
-/-- `|(x)_+ − y| ≤ |x − y|` whenever `y ≥ 0`: the truncations can only reduce the error. -/
+/-- `|(x)_+ − y| ≤ |x − y|` whenever `y ≥ 0`, so truncation does not increase the error. -/
 theorem abs_posPart_sub_le {x y : ℝ} (hy : 0 ≤ y) : |max x 0 - y| ≤ |x - y| := by
   rcases le_total 0 x with hx | hx
   · rw [max_eq_left hx]
@@ -545,7 +545,7 @@ theorem dotProduct_mulVec_smul (r : ℝ) (A : Matrix K K ℝ) (v : K → ℝ) :
 
 omit [DecidableEq K] in
 /-- `∑_{t ∈ 𝒯_e} w^{(e)}_tw^{(e)'}_t ⪯ c_max X̃'X̃`, where `cmax` bounds the size of every
-level-`e` cell. The proof is Cauchy--Schwarz inside each cell together with
+level-`e` cell. The proof applies Cauchy–Schwarz within each cell and
 `Multiway.sum_over_cells`. -/
 theorem weightGram_le_cmax_obsGram (c : D → O → L) (xt : O → K → ℝ) (e : Finset D)
     {cmax : ℕ} (hc : ∀ t ∈ cells c e, t.card ≤ cmax) :
@@ -588,7 +588,7 @@ end ClauseB
 
 For symmetric `B`, `tr((RBR)Ω'(RBR)Ω') = tr(BΩ*BΩ*) ≤ ‖Ω*‖²‖B‖_F²` with `Ω* = RΩ'R`, and
 `‖RBR‖_F ≤ ‖B‖_F` (`Multiway.Absorbed.rectFrobSq_conj_le`). The identity uses only cyclicity of
-the trace. The bound `‖Ω*‖ ≤ λ` is carried in its Loewner form `Ω*Ω* ⪯ λ²I`. A related bound in
+the trace. The bound `‖Ω*‖ ≤ λ` is stated in its Loewner form `Ω*Ω* ⪯ λ²I`. A related bound in
 Frobenius-operator form is `Multiway.UnionMeat.trace_conj_le`. -/
 
 section ConjBound
@@ -609,7 +609,7 @@ theorem frobSq_conj_le {R : Matrix O O ℝ} (hsym : Rᵀ = R) (hidem : R * R = R
   Absorbed.rectFrobSq_conj_le hsym hidem B
 
 omit [DecidableEq O] in
-/-- `tr((RBR)Ω'(RBR)Ω') = tr(BΩ*BΩ*)` with `Ω* = RΩ'R`, by cyclicity of the trace alone. -/
+/-- `tr((RBR)Ω'(RBR)Ω') = tr(BΩ*BΩ*)` with `Ω* = RΩ'R`, by cyclicity of the trace. -/
 theorem trace_conj_quad_eq (R B Om : Matrix O O ℝ) :
     ((R * B * R) * Om * (R * B * R) * Om).trace
       = (B * (R * Om * R) * B * (R * Om * R)).trace := by
@@ -648,9 +648,9 @@ theorem trace_quad_le_of_sq_le {B Om : Matrix O O ℝ} (hB : Bᵀ = B) (hOm : Om
   rw [h1]
   exact h2.trans (h3.trans_le (h9.trans h10))
 
-/-- The variance bound of Lemma SM.C.6 at `W = RBR`, carried through the two conjugation
-bounds into a bound in `‖B‖_F²` alone. `hquad` has the shape that
-`QuadformE2.var_quadForm_le_sites` delivers. -/
+/-- The variance bound of Lemma SM.C.6 at `W = RBR`, combined with the two conjugation bounds
+into a bound in terms of `‖B‖_F²`. The hypothesis `hquad` has the form of the conclusion of
+`QuadformE2.var_quadForm_le_sites`. -/
 theorem varQuad_conj_le {Ω' : Type*} (E : (Ω' → ℝ) →ₗ[ℝ] ℝ) {R B Om : Matrix O O ℝ}
     (hRsym : Rᵀ = R) (hRidem : R * R = R) (hB : Bᵀ = B) (hOm : Omᵀ = Om)
     {lam Cst : ℝ} (hlam : (R * Om * R) * (R * Om * R) ≤ lam ^ 2 • (1 : Matrix O O ℝ))
@@ -729,7 +729,7 @@ theorem bddInProb_const (c : ℝ) : Sequence.BddInProb P (fun (_ : ℕ) (_ : Ω)
   rw [measure_mono_null hsub (by simp)]
   exact zero_le
 
-/-- **Domination**: `|Z_n| ≤ |W_n|` a.e. with `W_n = O_p(1)` gives `Z_n = O_p(1)`. -/
+/-- If `|Z_n| ≤ |W_n|` a.e. and `W_n = O_p(1)`, then `Z_n = O_p(1)`. -/
 theorem bddInProb_of_abs_le {Z W : ℕ → Ω → ℝ} (hle : ∀ n, ∀ᵐ ω ∂P, |Z n ω| ≤ |W n ω|)
     (hW : Sequence.BddInProb P W) : Sequence.BddInProb P Z := by
   intro δ hδ
@@ -946,11 +946,11 @@ theorem thetaHat_sub_isBigOp
 
 /-! ### Clause (b), second claim: `n^{-1}M̂_PI − S_n = O_p(ϱ_n) →^p 0`
 
-The deterministic bound of Section 4 composed with the first claim, over a sequence of designs
-whose observation, regressor, dimension, label and level types all vary with `n`. -/
+The claim follows from the deterministic bound of Section 4 and the first claim, over a sequence
+of designs whose observation, regressor, dimension, label and level types all vary with `n`. -/
 
-/-- The `o(1) × O_p(1)` step in both forms: the product is `O_p` of the rate, and it converges
-to zero in probability. -/
+/-- If `0 ≤ Z_n ≤ k_n W_n` with `W_n = O_p(1)` and `k_n → 0`, then `Z_n = O_p(k_n)` and
+`Z_n` converges to zero in probability. -/
 theorem isBigOp_and_tendsto_of_le {Z W : ℕ → Ω → ℝ} {k : ℕ → ℝ}
     (hk : ∀ n, 0 < k n) (hZ0 : ∀ n ω, 0 ≤ Z n ω) (hW0 : ∀ n ω, 0 ≤ W n ω)
     (hle : ∀ n ω, Z n ω ≤ k n * W n ω)
@@ -1167,8 +1167,8 @@ end ClauseBOp
 
 /-! ## 8. Clause (c): Wald inference
 
-`Multiway/Wald.lean`'s `wald_of_clt` at the plug-in estimator. The normalization `a_n` is carried
-by `Wald.waldStat_smul` and `Wald.posDef_smul_iff`. -/
+Clause (c) applies `wald_of_clt` of `Multiway/Wald.lean` to the plug-in estimator. The
+normalization `a_n` cancels by `Wald.waldStat_smul` and `Wald.posDef_smul_iff`. -/
 
 section ClauseC
 
@@ -1179,8 +1179,8 @@ variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 variable {Ωp : Type*} {mΩp : MeasurableSpace Ωp} {P : Measure Ωp} [IsProbabilityMeasure P]
 variable {Ωq : Type*} {mΩq : MeasurableSpace Ωq} {P' : Measure Ωq} [IsProbabilityMeasure P']
 
-/-- **Theorem 9(c).** With `Vh n ω = 𝓡V̂_PI𝓡'`, `Sg = 𝓡H^{-1}SH^{-1}𝓡' ≻ 0` and
-`dev n ω = 𝓡(β̂_JM − β)`: if `√a_n dev_n` is asymptotically `N(0, Sg)` (`hCLT`, the restricted
+/-- **Theorem 9(c).** Let `Vh n ω = 𝓡V̂_PI𝓡'`, `Sg = 𝓡H^{-1}SH^{-1}𝓡' ≻ 0` and
+`dev n ω = 𝓡(β̂_JM − β)`. If `√a_n dev_n` is asymptotically `N(0, Sg)` (`hCLT`, the restricted
 form of Theorem 4(b)) and `a_n Vh_n →^p Sg` (`hV`), then `P(Vh_n ≻ 0) → 1` and the Wald statistic
 converges in distribution to `χ²_r`. -/
 theorem plugin_wald
@@ -1248,10 +1248,10 @@ theorem plugin_wald_of_meat
 
 end ClauseC
 
-/-! ## 9. Consistency witnesses
+/-! ## 9. Examples
 
-Each witness below applies the theorem it witnesses to an explicit model satisfying all of its
-hypotheses. The sequence-of-designs theorems are witnessed on growing designs or growing
+Each example below applies a theorem of this file to an explicit model satisfying all of its
+hypotheses. The theorems about sequences of designs are applied to growing designs or growing
 normalizations. -/
 
 section Witness
@@ -1266,7 +1266,7 @@ observations; `R = I − ιι'/2`; `s̄² = 7` and a single interaction level `{
 that `R Ω R = 5R` by `IdentE2.identE2_witness`. The residual vector is `ν̂ = (z, −z)` with
 `E[ν̂ν̂'] = 5R`. -/
 
-/-- The witness expectation: the average under the uniform law on `Bool`, as a linear
+/-- The expectation of the example, the average under the uniform law on `Bool` as a linear
 functional. -/
 noncomputable def wExp : (Bool → ℝ) →ₗ[ℝ] ℝ where
   toFun f := (f true + f false) / 2
@@ -1275,11 +1275,11 @@ noncomputable def wExp : (Bool → ℝ) →ₗ[ℝ] ℝ where
 
 @[simp] theorem wExp_apply (f : Bool → ℝ) : wExp f = (f true + f false) / 2 := rfl
 
-/-- The witness disturbance `z`, taking the values `2` and `1`, with second moment
+/-- The disturbance `z` of the example, taking the values `2` and `1`, with second moment
 `(2² + 1²)/2 = 5/2` under the uniform law on `Bool`. -/
 def wZ : Bool → ℝ := fun b => if b then 2 else 1
 
-/-- The witness residual vector `ν̂ = (z, −z)`, whose second-moment matrix is `5R` exactly. -/
+/-- The residual vector `ν̂ = (z, −z)` of the example, whose second-moment matrix is `5R`. -/
 def wNu : Fin 2 → Bool → ℝ := fun o b => (if o = 0 then (1 : ℝ) else -1) * wZ b
 
 theorem wNu_moment (o o' : Fin 2) :
@@ -1287,7 +1287,7 @@ theorem wNu_moment (o o' : Fin 2) :
   simp only [wExp_apply, Pi.mul_apply, wNu, wZ, Matrix.smul_apply, IdentE2.wR_apply, smul_eq_mul]
   fin_cases o <;> fin_cases o' <;> norm_num
 
-/-- Witness for `moment_eq_design_mulVec` (clause (a), first claim). -/
+/-- An example for `moment_eq_design_mulVec` (clause (a), first claim). -/
 theorem moment_eq_design_witness :
     wExp (momentStat (wDiag : Matrix (Fin 2) (Fin 2) ℝ) wNu)
       = (momentDesign IdentE2.wc IdentE2.wR (fun _ : Fin 1 => (wDiag : Matrix (Fin 2) (Fin 2) ℝ))
@@ -1314,8 +1314,8 @@ theorem moment_eq_design_witness :
     rw [IdentE2.identE2_witness]
     exact wNu_moment o o'
 
-/-- Witness for `thetaHat_unbiased` (clause (a), second claim): the identity design over one
-row and one column, with `m̂ ≡ 1` and `θ = 1`. -/
+/-- An example for `thetaHat_unbiased` (clause (a), second claim), with the identity design over
+one row and one column, `m̂ ≡ 1` and `θ = 1`. -/
 theorem thetaHat_unbiased_witness :
     wExp (thetaHat (1 : Matrix (Fin 1) (Fin 1) ℝ) (fun _ _ => (1 : ℝ)) 0) = 1 := by
   refine thetaHat_unbiased wExp (1 : Matrix (Fin 1) (Fin 1) ℝ) ?_ (fun _ => (1 : ℝ))
@@ -1326,16 +1326,16 @@ theorem thetaHat_unbiased_witness :
 
 /-! ### Clause (b): a one-observation, one-regressor design -/
 
-/-- The witness design for clause (b): one observation, one dimension, one regressor. -/
+/-- The design of the clause (b) examples, with one observation, one dimension and one regressor. -/
 def bc : Fin 1 → Fin 1 → Fin 1 := fun _ _ => 0
 
-/-- The witness regressor matrix for clause (b). -/
+/-- The regressor matrix of the clause (b) examples. -/
 def bxt : Fin 1 → Fin 1 → ℝ := fun _ _ => 1
 
-/-- The witness level map for clause (b): the single level is `∅`. -/
+/-- The level map of the clause (b) examples, whose single level is `∅`. -/
 def blev : Fin 1 → Finset (Fin 1) := fun _ => ∅
 
-/-- Witness for `frobNorm_plugMeat_sub_plugTarget_le`, at `σ² = 1` and `s̄² = 3`. -/
+/-- An example for `frobNorm_plugMeat_sub_plugTarget_le`, at `σ² = 1` and `s̄² = 3`. -/
 theorem plugMeat_error_witness :
     frobNorm (plugMeat bc bxt blev 4 (fun _ => 1) - plugTarget bc bxt blev 3 (fun _ => 1))
       ≤ devL1 blev 4 3 (fun _ => 1) (fun _ => 1)
@@ -1345,7 +1345,7 @@ theorem plugMeat_error_witness :
     (fun _ => zero_le_one) ?_
   norm_num
 
-/-- Witness for `weightGram_le_cmax_obsGram`, at `c_max = 1`. -/
+/-- An example for `weightGram_le_cmax_obsGram`, at `c_max = 1`. -/
 theorem weightGram_le_cmax_witness :
     ((((1 : ℕ) : ℝ)) • IdentE2.obsGram bxt
       - IdentE2.weightGram bc bxt (∅ : Finset (Fin 1))).PosSemidef := by
@@ -1358,7 +1358,7 @@ theorem weightGram_le_cmax_witness :
 
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 
-/-- Witness for `plugin_wald`: `Σ = I_r`, `𝓡V̂_PI𝓡' = I_r` at `a_n = 1`, and the identity
+/-- An example for `plugin_wald` with `Σ = I_r`, `𝓡V̂_PI𝓡' = I_r` at `a_n = 1`, and the identity
 deviation on `(EuclideanSpace ℝ ι, N(0, I_r))`. At `Σ̂ = I_r` the Wald statistic is `‖x‖²`
 (`Wald.waldStat_one`). -/
 theorem plugin_wald_witness :
@@ -1401,10 +1401,10 @@ is a point mass. -/
 
 open scoped ENNReal
 
-/-- The witness probability space for the `O_p` claims. -/
+/-- The probability space of the `O_p` examples. -/
 noncomputable def wP : Measure ℝ := Measure.dirac 0
 
-/-- The witness rate `ϱ_n = (n+1)^{-1}`. -/
+/-- The rate `ϱ_n = (n+1)^{-1}` of the `O_p` examples. -/
 noncomputable def wRho (n : ℕ) : ℝ := ((n : ℝ) + 1)⁻¹
 
 theorem wRho_pos (n : ℕ) : 0 < wRho n := by
@@ -1418,8 +1418,8 @@ theorem wRho_tendsto : Tendsto wRho atTop (𝓝 0) := by
   rw [he]
   exact tendsto_one_div_add_atTop_nhds_zero_nat
 
-/-- Witness for `thetaHat_sub_isBigOp`: one row and one column with `𝒜 = I₁`, and a moment
-off its mean by exactly `ϱ_n`. -/
+/-- An example for `thetaHat_sub_isBigOp` with one row and one column, `𝒜 = I₁`, and a moment
+that differs from its mean by `ϱ_n`. -/
 theorem thetaHat_sub_witness :
     IsBigOp wP (fun n (ω : ℝ) => ∑ j : Fin 1,
       |thetaHat (1 : Matrix (Fin 1) (Fin 1) ℝ) (fun (_ : Fin 1) (_ : ℝ) => wRho n) j ω
@@ -1445,10 +1445,10 @@ theorem thetaHat_sub_witness :
 
 /-! #### A growing design for the second claim -/
 
-/-- The witness design: `n+1` observations, one fixed-effect dimension, one category. -/
+/-- The growing design, with `n+1` observations, one fixed-effect dimension and one category. -/
 def qc (n : ℕ) : Fin 1 → Fin (n + 1) → Fin 1 := fun _ _ => 0
 
-/-- The witness regressor matrix: one regressor, identically `1`, so `X̃'X̃ = n+1`. -/
+/-- The regressor matrix of the growing design, with one regressor equal to `1`, so `X̃'X̃ = n+1`. -/
 def qxt (n : ℕ) : ℝ → Fin (n + 1) → Fin 1 → ℝ := fun _ _ _ => 1
 
 /-- `𝓔 = ∅`. -/
@@ -1478,7 +1478,7 @@ theorem qobsGram_frobNorm (n : ℕ) (ω : ℝ) :
   simp only [Matrix.of_apply, Finset.sum_const, Finset.card_univ, Fintype.card_fin, one_smul]
   rw [Real.sqrt_sq hnn]
 
-/-- Witness for `plugMeat_sub_target_isBigOp` on the growing design above. -/
+/-- An example for `plugMeat_sub_target_isBigOp` on the growing design above. -/
 theorem plugMeat_sub_target_witness :
     IsBigOp wP (fun n ω => frobNorm (((Fintype.card (Fin (n + 1)) : ℝ))⁻¹
         • plugMeat (qc n) (qxt n ω) (qlev n) (qsh2 n ω) (fun e => qsg n e ω) - qSn n ω)) wRho
@@ -1513,8 +1513,8 @@ theorem qfrobNorm_one : frobNorm (1 : Matrix (Fin 1) (Fin 1) ℝ) = 1 := by
 
 theorem qrectFrobNorm_one : rectFrobNorm (1 : Matrix (Fin 1) (Fin 1) ℝ) = 1 := qfrobNorm_one
 
-/-- Witness for `tendstoInProb_restricted_of_meat`: one regressor, `Ĝ_n = 𝓡 = I₁`, and a meat
-that misses its target by exactly `ϱ_n`. -/
+/-- An example for `tendstoInProb_restricted_of_meat` with one regressor, `Ĝ_n = 𝓡 = I₁`, and a
+meat that differs from its target by `ϱ_n`. -/
 theorem tendstoInProb_restricted_witness :
     TendstoInMeasure wP
       (fun (n : ℕ) (_ : ℝ) => frobNorm ((1 : Matrix (Fin 1) (Fin 1) ℝ)
@@ -1544,9 +1544,9 @@ theorem tendstoInProb_restricted_witness :
     rw [hEq, frobNorm_smul, qfrobNorm_one, mul_one, abs_abs,
       abs_of_nonneg (wRho_pos n).le]
 
-/-- Witness for `plugin_wald_of_meat`: one regressor, `𝓡 = Ĝ_n = I₁`, meat equal to its
+/-- An example for `plugin_wald_of_meat` with one regressor, `𝓡 = Ĝ_n = I₁`, meat equal to its
 target, `Σ = I₁`, normalization `a_n = n + 1` and deviation `n^{-1/2}ω` on `(ℝ¹, N(0, I₁))`, so
-that `√a_n(β̂ − β) = ω` is exactly Gaussian. -/
+that `√a_n(β̂ − β) = ω` is Gaussian for every `n`. -/
 theorem plugin_wald_of_meat_witness :
     Tendsto (fun n : ℕ => (multivariateGaussian (0 : EuclideanSpace ℝ (Fin 1)) 1)
         {_ω : EuclideanSpace ℝ (Fin 1) | ((((n : ℝ) + 1)⁻¹)
@@ -1600,7 +1600,7 @@ end Witness
 /-! ## 10. Clause (b), second claim, under the conditional law
 
 The two `O_p` inputs are read under the regular conditional law `ℙ_ω := condExpKernel P 𝒟 ω` at
-`P`-almost every `ω`, and the conclusion `n^{-1}M̂_PI − S_n ⟶^p 0` holds under `P`. The step is
+`P`-almost every `ω`, and the conclusion `n^{-1}M̂_PI − S_n ⟶^p 0` holds under `P`, by
 `PrimitiveDesign.CondP.tendstoInMeasure_of_deconditioning`. The level map `c` and the level index
 `lev` are deterministic. -/
 
@@ -1615,7 +1615,7 @@ variable {Ω : Type*} {𝒟 : MeasurableSpace Ω} [mΩ : MeasurableSpace Ω]
 /-- **Theorem 9(b), second claim, conditional form.** `hdev` and `hbr` hold under
 `ℙ_ω := condExpKernel P 𝒟 ω` for `P`-almost every `ω`, and the conclusion is convergence in
 probability under `P`. It is derived from `plugMeat_sub_target_isBigOp` via
-`PrimitiveDesign.CondP.tendstoInMeasure_of_deconditioning`. `hmeas` asks the deviation sets to be
+`PrimitiveDesign.CondP.tendstoInMeasure_of_deconditioning`. `hmeas` requires the deviation sets to be
 measurable. -/
 theorem plugMeat_sub_target_tendstoInProb_uncond
     {Oq Dq Lq Kq Esq : ℕ → Type*}
@@ -1653,11 +1653,11 @@ theorem plugMeat_sub_target_tendstoInProb_uncond
   exact (plugMeat_sub_target_isBigOp (P := condExpKernel P 𝒟 ω) c xt lev sh2 sg sbar sige Sn
     hSn hnn halpha hrho0 hcmax0 hcard h1 h2 hrho).2
 
-/-! ### Witness for the conditional second claim
+/-! ### An example for the conditional second claim
 
-The space is `Multiway/CLTMartingale.lean`'s two-coin space `Ω = Bool × Bool`, with
+The space is the two-coin space `Ω = Bool × Bool` of `Multiway/CLTMartingale.lean`, with
 `𝒟 = σ(first coin)` a proper sub-σ-field and `ℙ_ω ≠ P`. The design is degenerate (`x̃ ≡ 0`,
-`ŝ² ≡ 0`, `σ̂²_e ≡ 0`) and the limit is carried by `ϱ_n = (n+1)^{-1}`. -/
+`ŝ² ≡ 0`, `σ̂²_e ≡ 0`), so the statistic is identically zero, and the rate is `ϱ_n = (n+1)^{-1}`. -/
 
 section PluginDecondWitness
 
@@ -1697,7 +1697,7 @@ theorem pWeightGram (n : ℕ) (y : Omg) (e : Finset (Fin 1)) :
 theorem pFrobNorm_zero : frobNorm (0 : Matrix (Fin 1) (Fin 1) ℝ) = 0 := by
   simp [frobNorm, frobSq]
 
-/-- Witness for the conditional second claim, with a proper `𝒟`. -/
+/-- An example for the conditional second claim, with a proper `𝒟`. -/
 theorem plugMeat_sub_target_tendstoInProb_uncond_witness :
     (∃ B : Set Omg, MeasurableSet B ∧ ¬ MeasurableSet[Dsig] B)
     ∧ ¬ (∀ᵐ ω ∂Pw, condExpKernel Pw Dsig ω = Pw)
@@ -1807,11 +1807,11 @@ theorem thetaHat_sub_isBigOp_cond
     simpa [pow_two, Pi.mul_def] using hd0.mul hd0
   exact h2.enorm
 
-/-! ### Witness for the conditional first claim
+/-! ### An example for the conditional first claim
 
 On `Ω = Bool × Bool` with two fair coins and `𝒟 = σ(first coin)`, `m̂` depends on both coins,
 `ℙ_ω ≠ P`, and the conditional second moment `(pScale ω)²(pRowc r)²` depends on `ω`. The moment
-system is overidentified: `𝒜` is `2 × 1` with `𝒜'𝒜 = 2` and `θ̂ = (m̂₀ + m̂₁)/2`. The statistic
+system is overidentified, with `𝒜` of size `2 × 1`, `𝒜'𝒜 = 2` and `θ̂ = (m̂₀ + m̂₁)/2`. The statistic
 equals `(3/2)(n+1)^{-1}(pScale y)`. -/
 
 namespace PluginCondVarWitness
@@ -1830,17 +1830,17 @@ theorem pB_tendsto : Tendsto pB atTop (𝓝 0) := by
     simpa [Pi.inv_def] using h.inv_tendsto_atTop
   exact h2
 
-/-- The design-measurable scale: `2` where the design coin is `true`, `1` where it is
-`false`. -/
+/-- The design-measurable scale, equal to `2` where the design coin is `true` and `1` where it
+is `false`. -/
 def pScale (y : Omg) : ℝ := if y.1 then 2 else 1
 
-/-- The disturbance sign, carried by the second coin. -/
+/-- The disturbance sign, a function of the second coin. -/
 def pSign (y : Omg) : ℝ := if y.2 then 1 else -1
 
-/-- The row loading: `1` on the first moment row and `2` on the second. -/
+/-- The row loading, `1` on the first moment row and `2` on the second. -/
 def pRowc (r : Fin 2) : ℝ := ((r : ℕ) : ℝ) + 1
 
-/-- The moment design `𝒜`: two rows, one column, both entries `1`. -/
+/-- The moment design `𝒜`, with two rows, one column and both entries equal to `1`. -/
 def pA : Matrix (Fin 2) (Fin 1) ℝ := fun _ _ => 1
 
 /-- The parameter `θ = 1`. -/
@@ -1903,8 +1903,8 @@ theorem pRowc_le (r : Fin 2) : pRowc r ≤ 2 := by
 theorem pMeas (n : ℕ) (r : Fin 2) : AEMeasurable (pMh n r) Pw :=
   (measurable_of_countable _).aemeasurable
 
-/-- The normalized deviation of moment row `r`: the design scale times the disturbance sign
-times the row loading. -/
+/-- The normalized deviation of moment row `r`, the product of the design scale, the disturbance
+sign and the row loading. -/
 theorem pDevEq (n : ℕ) (r : Fin 2) (y : Omg) :
     (pMh n r y - (pA *ᵥ pTh) r) / pB n = pScale y * pSign y * pRowc r := by
   have h : pMh n r y - (pA *ᵥ pTh) r = pB n * (pScale y * pSign y * pRowc r) := by
@@ -1959,8 +1959,8 @@ theorem pStat (n : ℕ) (y : Omg) :
   have hpt : pTh 0 = (1 : ℝ) := rfl
   rw [hpt, add_sub_cancel_left, abs_mul, pSign_abs, mul_one, abs_of_pos hpos]
 
-/-- Witness for the conditional first claim: proper `𝒟`, `ℙ_ω ≠ P`, an overidentified
-nonsingular moment design, and a random statistic of the exact order of the rate. -/
+/-- An example for the conditional first claim, with a proper `𝒟`, `ℙ_ω ≠ P`, an overidentified
+nonsingular moment design and a random statistic of the exact order of the rate. -/
 theorem thetaHat_sub_isBigOp_cond_witness :
     (∃ B : Set Omg, MeasurableSet B ∧ ¬ MeasurableSet[Dsig] B)
     ∧ ¬ (∀ᵐ ω ∂Pw, condExpKernel Pw Dsig ω = Pw)

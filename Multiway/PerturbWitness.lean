@@ -1,13 +1,13 @@
 import Multiway.ClusterShock
 
 /-!
-# A witness for the perturbation step of Theorem 11
+# An example for the perturbation step of Theorem 11
 
-This file exhibits a model satisfying every hypothesis of
-`RateAgnostic.perturb_tendstoInProb_of_moments`, the perturbation step of Theorem 11(b)
-(rate-agnostic inference under multiway clustering) at `ϖ = Πν`, and applies the theorem to it.
+The hypotheses of `RateAgnostic.perturb_tendstoInProb_of_moments`, the perturbation step of
+Theorem 11(b) (rate-agnostic inference under multiway clustering) at `ϖ = Πν`, hold on the
+following model, and the theorem is applied to it.
 
-The model: `𝒪_j = Fin (j+1)` with each observation its own cluster (so `D_j = 1`), disturbances
+Take `𝒪_j = Fin (j+1)` with every observation a cluster by itself (so `D_j = 1`), disturbances
 `ν_o` independent fair signs on `ClusterShock.bigCoins`, `x̃_{ok} ≡ 1` with `K = 1`,
 `Π = n^{-1}J` the mean projector, and `λ_j = n_j = j+1`, so `δ_j = (j+1)^{-1} → 0`. The design
 is deterministic (`𝒟 = ⊥`).
@@ -64,7 +64,7 @@ theorem pwNu_pow_four (j : ℕ) (o : Fin (j + 1)) :
   have h : pwNu j o ω ^ 4 = (pwNu j o ω ^ 2) ^ 2 := by ring
   rw [h, pwNu_sq j o ω, one_pow]
 
-/-- `‖ν‖² = n_j` identically: every coordinate is a sign. -/
+/-- `‖ν‖² = n_j` identically, since every coordinate is a sign. -/
 theorem pw_sum_sq_nu (j : ℕ) (ω : ℕ → Bool) :
     ∑ o : Fin (j + 1), pwNu j o ω ^ 2 = (j : ℝ) + 1 := by
   rw [Finset.sum_congr rfl fun o (_ : o ∈ Finset.univ) => pwNu_sq j o ω]
@@ -156,7 +156,7 @@ theorem pwPr_trace (j : ℕ) (ω : ℕ → Bool) : (pwPr j ω).trace = 1 + 0 := 
 
 /-! ## The conditional covariance vanishes off the sharing graph
 
-Off the diagonal the two signs sit on different coordinates, so the integral of their product
+Off the diagonal the two signs depend on different coordinates, so the integral of their product
 factorizes and vanishes. -/
 
 theorem pw_integral_nu_mul (j : ℕ) {o o' : Fin (j + 1)} (h : o ≠ o') :
@@ -323,10 +323,10 @@ theorem pw_acc :
   refine RateAgnostic.tendstoInMeasure_zero_of_tendsto_const ?_
   simpa using tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)
 
-/-! ## The witness -/
+/-! ## The theorem applied to the model -/
 
-/-- A model of `RateAgnostic.perturb_tendstoInProb_of_moments`: every hypothesis is supplied on the
-growing product model of this file, and the theorem is applied to it. -/
+/-- `RateAgnostic.perturb_tendstoInProb_of_moments` applied to the growing product model above,
+with every hypothesis verified. -/
 theorem perturb_tendstoInProb_of_moments_witness :
     TendstoInMeasure ClusterShock.bigCoins
       (fun (j : ℕ) (ω : ℕ → Bool) =>
@@ -351,7 +351,7 @@ theorem perturb_tendstoInProb_of_moments_witness :
 
 /-! ## Non-degeneracy of the model -/
 
-/-- `E[‖ν‖² ∣ 𝒟] = n_j`: the bound `a_j = C^{1/2} n_j` at `C = 1` holds with equality. -/
+/-- `E[‖ν‖² ∣ 𝒟] = n_j`, so the bound `a_j = C^{1/2} n_j` at `C = 1` holds with equality. -/
 theorem pw_condExp_l2Norm_nu_sq (j : ℕ) :
     ClusterShock.bigCoins[fun ω => RateAgnostic.l2Norm (fun o => pwNu j o ω) ^ 2
         | (⊥ : MeasurableSpace (ℕ → Bool))] = fun _ => (j : ℝ) + 1 := by
@@ -369,7 +369,7 @@ theorem pw_condOmega_diag (j : ℕ) (o : Fin (j + 1)) :
     simpa [Pi.mul_apply, sq] using h
   rw [he, condExp_const bot_le]
 
-/-- The exhibited point: coordinates `0` and `1` up, coordinate `2` down. -/
+/-- The point with coordinates `0` and `1` up and coordinate `2` down. -/
 def pwOmega : ℕ → Bool := fun i => if i = 2 then false else true
 
 /-- At `j = 2` and `ω = pwOmega`, `ν = (1,1,-1)`, `ϖ = Πν = (1/3,1/3,1/3)` and
@@ -411,7 +411,7 @@ theorem wrNu_apply (n : ℕ) (o : WrO n) (ω : ℕ → Bool) :
   rw [wrNu, Sharing.nuRV_apply]
   simp [wrDims, wrZ, wrIdx, wrC]
 
-/-- The cluster shock and the idiosyncratic shock of one observation sit on different
+/-- The cluster shock and the idiosyncratic shock of one observation depend on different
 coordinates. -/
 theorem wr_idx_ne (n : ℕ) (o : WrO n) :
     3 * o.1.val ≠ 3 * o.1.val + 1 + o.2.val := by omega
@@ -426,7 +426,7 @@ theorem wr_integral_cross (n : ℕ) (o : WrO n) :
     (measurable_bigSign _).aestronglyMeasurable,
     integral_bigSign (3 * o.1.val), zero_mul]
 
-/-- `ν_o² = 2 + 2c_{g(o)}ε_o` pointwise: the two squares are `1` each. -/
+/-- `ν_o² = 2 + 2c_{g(o)}ε_o` pointwise, since both squares equal `1`. -/
 theorem wrNu_sq_apply (n : ℕ) (o : WrO n) (ω : ℕ → Bool) :
     wrNu n o ω * wrNu n o ω
       = 2 + 2 * (bigSign (3 * o.1.val) ω * bigSign (3 * o.1.val + 1 + o.2.val) ω) := by

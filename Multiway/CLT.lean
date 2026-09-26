@@ -55,7 +55,7 @@ theorem tendstoInDistribution_of_law_eq {ι E Ω' Ω'' : Type*} {mE : Measurable
     rw! [hlaw]
     exact h.tendsto
 
-/-- The degenerate case of the Cramér--Wold reduction, at `t = 0`: the constant sequence `0`
+/-- The degenerate case of the Cramér–Wold reduction, at `t = 0`: the constant sequence `0`
 converges in distribution to the constant `0` on any probability space. -/
 theorem tendstoInDistribution_zero {Ω'' : Type*} [MeasurableSpace Ω''] {μ'' : Measure Ω''}
     [IsProbabilityMeasure μ''] :
@@ -570,7 +570,7 @@ theorem tendsto_adjoint_apply {A : ℕ → (EuclideanSpace ℝ (Fin K) →L[ℝ]
       tendsto_iff_norm_sub_tendsto_zero.mp hAlim
     simpa using h0.mul_const ‖t‖
 
-/-- From the score's limit law to the slope's, in either regime: given the limit law of
+/-- From the score's limit law to the slope's. In either regime, given the limit law of
 `n^{-1/2}X̃'ν` and `(n^{-1}X̃'X̃)^{-1} → H^{-1}`, Slutsky's theorem, applied one direction at a
 time and assembled by Cramér–Wold, gives the limit law of `√n(β̂_MFE - β)`. -/
 theorem slope_clt_of_score
@@ -781,8 +781,8 @@ theorem clt_a
       hmean hL2 hint4 hvar hmom Smat hSpd hSn hlin4 A Hinv hAsolve hAlim bMFE hbMFEmeas hbMFE
 
 
-/-- **Theorem 4(a)** with the inverse Gram limit derived: from `n^{-1}X̃'X̃ → H` with `H`
-positive definite, the inverses `A n = Ring.inverse (n^{-1}X̃'X̃)` and `Ring.inverse H` are
+/-- **Theorem 4(a)** with the inverse Gram limit derived from `n^{-1}X̃'X̃ → H` with `H`
+positive definite; the inverses `A n = Ring.inverse (n^{-1}X̃'X̃)` and `Ring.inverse H` are
 constructed. -/
 theorem clt_a_of_gram_limit
     {O : ℕ → Type} [∀ n, Fintype (O n)] (hcard : ∀ n, Fintype.card (O n) = n)
@@ -1226,9 +1226,9 @@ end Main
 
 /-! ### A model for `clt_a`
 
-A sequence of designs on which every hypothesis of `clt_a` holds: `𝒪_n = Fin n`, `K = M = 1`,
-`𝒮_n = ℝ∙d_n` with `d_n` the indicator of the first observation, and the regressor `a ↦ a_0v_n`
-with `v_n` the indicator of the remaining observations. The fixed effect and the Regime-1
+Every hypothesis of `clt_a` holds on the following sequence of designs. Take `𝒪_n = Fin n`,
+`K = M = 1`, `𝒮_n = ℝ∙d_n` with `d_n` the indicator of the first observation, and the
+regressor `a ↦ a_0v_n` with `v_n` the indicator of the remaining observations. The fixed effect and the Regime-1
 component are nonzero elements of `𝒮_n`, and the errors are an i.i.d. Rademacher array. For
 `n ≥ 2`, `Var(⟪√n(β̂_n - β), t⟫) = (t_0)²·n/(n-1)`, so the limit is non-degenerate. -/
 
@@ -1316,7 +1316,7 @@ theorem xvec_mem_orth (n : ℕ) : xvec n ∈ (ℝ ∙ dvec n)ᗮ := by
   simp only [dvec, xvec, PiLp.inner_apply, RCLike.inner_apply, conj_trivial]
   exact Finset.sum_eq_zero fun x _ => by split <;> simp
 
-/-- `Q_[Δ]X = X` on this design: the regressor is already within-transformed. -/
+/-- `Q_[Δ]X = X` on this design, since the regressor is orthogonal to `dvec n`. -/
 theorem jointWithin_Xmap (n : ℕ) (a : EuclideanSpace ℝ (Fin 1)) :
     jointWithin (⨆ m, feSpace n m) (Xmap n a) = Xmap n a := by
   rw [iSup_feSpace, jointWithin_apply, (Submodule.starProjection_apply_eq_zero_iff _).2, sub_zero]
@@ -1345,8 +1345,8 @@ theorem eq_zero_of_apply_zero {a : EuclideanSpace ℝ (Fin 1)} (h : a 0 = 0) : a
 
 theorem xvec_apply (n : ℕ) (o : Fin n) : xvec n o = if o.val = 0 then 0 else 1 := rfl
 
-/-- The within rows of the witness design, read through `⟪·,t⟫`: `x̃_o = 0` at the first
-observation and `x̃_o = 1` at every other. -/
+/-- On this design `⟪x̃_o,t⟫ = 0` at the first observation and `⟪x̃_o,t⟫ = t_0` at every
+other. -/
 theorem inner_withinRow_witness (n : ℕ) (o : Fin n) (t : EuclideanSpace ℝ (Fin 1)) :
     ⟪withinRow (⨆ m, feSpace n m) (Xmap n) o, t⟫ = t 0 * (if o.val = 0 then (0:ℝ) else 1) := by
   rw [real_inner_comm, inner_withinRow, jointWithin_Xmap]
@@ -1354,7 +1354,7 @@ theorem inner_withinRow_witness (n : ℕ) (o : Fin n) (t : EuclideanSpace ℝ (F
   rw [PiLp.smul_apply, xvec_apply]
   simp
 
-/-- `X̃'X̃ = (n-1)I₁` on the witness design. -/
+/-- `X̃'X̃ = (n-1)I₁` on this design. -/
 theorem gram_witness (n : ℕ) (a : EuclideanSpace ℝ (Fin 1)) :
     gram (⨆ m, feSpace n m) (Xmap n) a = ((n - 1 : ℕ) : ℝ) • a := by
   refine ext_inner_left ℝ fun b => ?_
@@ -1364,7 +1364,7 @@ theorem gram_witness (n : ℕ) (a : EuclideanSpace ℝ (Fin 1)) :
     inner_fin_one]
   ring
 
-/-- The witness design is identified for `n ≥ 2`. -/
+/-- The design is identified for `n ≥ 2`. -/
 theorem identified_witness {n : ℕ} (hn : 2 ≤ n) : Identified (⨆ m, feSpace n m) (Xmap n) := by
   intro a ha
   rw [iSup_feSpace, Submodule.mem_span_singleton] at ha
@@ -1413,7 +1413,7 @@ theorem sum_inner_sq (n : ℕ) (t : EuclideanSpace ℝ (Fin 1)) {p : ℕ} (hp : 
     split <;> simp [hp]
   rw [Finset.sum_congr rfl fun o _ => hterm o, sum_ite_fin]
 
-/-- On the witness design `S_n = (n-1)/n → 1 = S`. -/
+/-- On this design `S_n = (n-1)/n → 1 = S`. -/
 theorem hSn_witness (t : EuclideanSpace ℝ (Fin 1)) :
     Tendsto (fun n : ℕ => (n : ℝ)⁻¹ *
         ∑ o : Fin n, ⟪withinRow (⨆ m, feSpace n m) (Xmap n) o, t⟫ ^ 2 * (1:ℝ)) atTop
@@ -1428,7 +1428,7 @@ theorem hSn_witness (t : EuclideanSpace ℝ (Fin 1)) :
   refine Tendsto.congr (fun n => (hfun n).symm) ?_
   simpa using tendsto_pred_div.mul_const ((t 0) ^ 2)
 
-/-- The fourth-power Lindeberg input on the witness design. -/
+/-- The fourth-power Lindeberg input on this design. -/
 theorem hlin4_witness (t : EuclideanSpace ℝ (Fin 1)) :
     Tendsto (fun n : ℕ => ((n : ℝ) ^ 2)⁻¹ *
         ∑ o : Fin n, ⟪withinRow (⨆ m, feSpace n m) (Xmap n) o, t⟫ ^ 4) atTop (𝓝 0) := by
@@ -1445,7 +1445,7 @@ theorem hlin4_witness (t : EuclideanSpace ℝ (Fin 1)) :
     simpa using (tendsto_inv_atTop_nhds_zero_nat (𝕜 := ℝ)).mul_const ((t 0) ^ 4)
   simpa using tendsto_pred_div.mul h2
 
-/-- `(n^{-1}X̃'X̃)^{-1} = n/(n-1)` on the witness design. -/
+/-- `(n^{-1}X̃'X̃)^{-1} = n/(n-1)` on this design. -/
 noncomputable def Aop (n : ℕ) :
     EuclideanSpace ℝ (Fin 1) →L[ℝ] EuclideanSpace ℝ (Fin 1) :=
   ((n : ℝ) / ((n - 1 : ℕ) : ℝ)) • ContinuousLinearMap.id ℝ (EuclideanSpace ℝ (Fin 1))
@@ -1464,12 +1464,12 @@ theorem gramCLM_witness (n : ℕ) :
   rw [gramCLM_apply, gram_witness]
   rfl
 
-/-- `H = I₁` is positive definite on the witness design. -/
+/-- `H = I₁` is positive definite. -/
 theorem hHpos_witness (a : EuclideanSpace ℝ (Fin 1)) (ha : a ≠ 0) :
     0 < ⟪a, (1 : EuclideanSpace ℝ (Fin 1) →L[ℝ] EuclideanSpace ℝ (Fin 1)) a⟫ :=
   real_inner_self_pos.2 ha
 
-/-- On the witness design `n^{-1}X̃'X̃ = (n-1)/n → I₁`. -/
+/-- On this design `n^{-1}X̃'X̃ = (n-1)/n → I₁`. -/
 theorem hHlim_witness :
     Tendsto (fun n : ℕ => (n : ℝ)⁻¹ • gramCLM (⨆ m, feSpace n m) (Xmap n)) atTop
       (𝓝 (1 : EuclideanSpace ℝ (Fin 1) →L[ℝ] EuclideanSpace ℝ (Fin 1))) := by
@@ -1583,8 +1583,8 @@ theorem variance_bW (ξ : ℕ × ℕ → Ω → ℝ)
   rw [hsq]
   field_simp
 
-/-- Every hypothesis of `clt_a` holds on the witness model, and its conclusion follows. The
-first two conjuncts say `β̂_n` is both a joint-projection Mundlak slope and a multiway
+/-- Every hypothesis of `clt_a` holds on this model, and its conclusion follows. The
+first two conjuncts state that `β̂_n` is both a joint-projection Mundlak slope and a multiway
 fixed-effects slope; the last is the variance formula of `variance_bW`. -/
 theorem clt_a_witness (β : EuclideanSpace ℝ (Fin 1)) :
     ∃ (Ω : Type) (_ : MeasurableSpace Ω) (P : Measure Ω) (_ : IsProbabilityMeasure P)
@@ -1807,10 +1807,9 @@ end Deconditioning
 
 /-! ### The unconditional limit law from a measurable design
 
-Here the frozen conditional law is `ProbabilityTheory.condExpKernel P 𝒟`, and the freezing
-property is proved in `Multiway.CLTMartingale.CondD`: a `𝒟`-measurable variable is almost surely
-constant under the conditional law. The hypotheses are that `β̂_n` is a measurable function of
-a `𝒟`-measurable design and the disturbances, with `Ω` standard Borel. -/
+The frozen conditional law is `ProbabilityTheory.condExpKernel P 𝒟`. Under it a `𝒟`-measurable
+variable is almost surely constant, which is proved in `Multiway.CLTMartingale.CondD`. The
+hypotheses are that `β̂_n` is a measurable function of a `𝒟`-measurable design and the disturbances, with `Ω` standard Borel. -/
 
 section FrozenDesign
 
@@ -1948,7 +1947,7 @@ theorem tendsto_stat (ω : Omg) :
   simpa [dsn, smul_smul] using h
 
 /-- Every hypothesis of `clt_a_unconditional_of_design` holds on the two-coin model, and its
-conclusion follows. The first conjunct says the design is nonzero, varies with `n`, and is
+conclusion follows. The first conjunct states that the design is nonzero, depends on `n` and is
 random. -/
 theorem design_witness (β : EuclideanSpace ℝ (Fin 1)) :
     (∀ n ω, dsn n ω 0 = ((n : ℝ) + 1)⁻¹ * (if ω.1 then (1 : ℝ) else -1))
@@ -2090,7 +2089,7 @@ A sequence of designs on which every hypothesis of `clt_b` holds, with `hdir` su
 
 namespace Witness
 
-/-- Every hypothesis of `clt_b` holds on the witness model, and its conclusion follows. -/
+/-- Every hypothesis of `clt_b` holds on this model, and its conclusion follows. -/
 theorem clt_b_witness (β : EuclideanSpace ℝ (Fin 1)) :
     ∃ (Ω : Type) (_ : MeasurableSpace Ω) (P : Measure Ω) (_ : IsProbabilityMeasure P)
       (ξ : ℕ × ℕ → Ω → ℝ),
@@ -2173,9 +2172,9 @@ end Witness
 
 The disturbance is
 `ν = ∑_m a^{(m)} + ∑_{2≤|e|≤M}∑_{t∈𝒯_e}h^{(e)}(U_t)·𝟙_{cell t} + ε`, with the interaction terms
-indexed by a finite type `G` (one element per pair `(e,t)`). This section proves
-`Var(X̃'ν ∣ 𝒟) = ∑_o x̃_ox̃_o'σ²_ε(o) + ∑_{g}σ_g² w_g w_g' = nS_n` along a realization of `𝒟`,
-and consistency `β̂ ⟶^p β` for both estimators. The orthogonality `hZorth` of distinct interaction
+indexed by a finite type `G` (one element per pair `(e,t)`). Along a realization of `𝒟`,
+`Var(X̃'ν ∣ 𝒟) = ∑_o x̃_ox̃_o'σ²_ε(o) + ∑_{g}σ_g² w_g w_g' = nS_n`, and both estimators are
+consistent. The orthogonality `hZorth` of distinct interaction
 terms is proved in `Multiway.CLTMartingale.Orth`. -/
 
 /-- `X̃'(∑_i v_i) = ∑_i X̃'v_i`. -/
@@ -2438,9 +2437,8 @@ theorem clt_b_consistency
 The design is that of `clt_a_witness`; the disturbance adds two level-`{1,2}` interaction terms
 on the cells `{1,2}` and `{3,4}`, with kernel `h(u,v) = ψ(u)ψ(v)`, so that
 `Z_0 = ψ(U^{(1)}_1)ψ(U^{(2)}_1)` and `Z_1 = ψ(U^{(1)}_1)ψ(U^{(2)}_2)` share a latent variable.
-The witness computes `Var(⟪X̃'ν,t⟫) = (n-1)t_0² + 8t_0²` through `variance_score_eq_E2`, shows that
-the Regime-1 identity fails on this design, and derives consistency through
-`clt_b_consistency`. -/
+On this model `Var(⟪X̃'ν,t⟫) = (n-1)t_0² + 8t_0²` by `variance_score_eq_E2`, the Regime-1 identity
+fails, and consistency follows from `clt_b_consistency`. -/
 
 namespace Witness
 
@@ -2647,7 +2645,7 @@ theorem isMFESlope_bE2 (β : EuclideanSpace ℝ (Fin 1)) {n : ℕ} (hn : 2 ≤ n
   rw [hsub, gram_witness, smul_smul, mul_inv_cancel₀ hn1, one_smul]
 
 omit [MeasurableSpace Ω] [IsProbabilityMeasure P] in
-/-- On the witness design `S_n = n^{-1}[(n-1) + 8]` in direction `t`, so `S = 1 ≻ 0`. -/
+/-- On this design `S_n = n^{-1}[(n-1) + 8]` in direction `t`, so `S = 1 ≻ 0`. -/
 theorem hSn_E2 (t : EuclideanSpace ℝ (Fin 1)) :
     Tendsto (fun n : ℕ => (n : ℝ)⁻¹ *
       ((∑ g : Fin 2, ⟪score (⨆ m, feSpace n m) (Xmap n) (wE2 n g), t⟫ ^ 2 * (1:ℝ))
@@ -2673,8 +2671,8 @@ theorem hSn_E2 (t : EuclideanSpace ℝ (Fin 1)) :
 
 end E2Design
 
-/-- The Regime-2 variance identity and consistency hold on a model with a genuine Regime-2
-disturbance, and the Regime-1 identity fails there. -/
+/-- The Regime-2 variance identity and consistency hold on a model with two nonzero interaction
+terms, and the Regime-1 identity fails there. -/
 theorem clt_b_regime2_witness (β : EuclideanSpace ℝ (Fin 1)) :
     ∃ (Ω : Type) (_ : MeasurableSpace Ω) (P : Measure Ω) (_ : IsProbabilityMeasure P)
       (ξ : ℕ × ℕ → Ω → ℝ),
@@ -3118,8 +3116,8 @@ namespace Witness
 
 open DegenerateSum
 
-/-- The coordinate map: coordinate `0` of both sub-tuples carries the shared variable
-`ξ_{(0,1)}`, coordinate `1` a private one. -/
+/-- The coordinate map, which sends coordinate `0` of both sub-tuples to the shared variable
+`ξ_{(0,1)}` and coordinate `1` to a private one. -/
 def e2coord (t : Fin 2) : Fin 2 → ℕ × ℕ := ![(0, 1), (0, t.val + 2)]
 
 /-- The rank-one kernel `h(u,v) = uv` on `Fin 2 → ℝ`. -/
@@ -3249,7 +3247,7 @@ theorem e2_unshared : e2coord 1 1 ∉ tupleSupport e2coord 0 := by
 
 end Deg
 
-/-- The hypotheses of `Orth.integral_degenTerm_mul_eq_zero_of_or` hold on the witness model,
+/-- The hypotheses of `Orth.integral_degenTerm_mul_eq_zero_of_or` hold on this model,
 the kernel is not identically zero, and the orthogonality follows. -/
 theorem orth_witness :
     ∃ (Ω : Type) (_ : MeasurableSpace Ω) (P : Measure Ω) (_ : IsProbabilityMeasure P)
@@ -3285,7 +3283,7 @@ namespace Witness
 open DegenerateSum
 
 
-/-- The Rademacher law is carried by `{-1,1}`. -/
+/-- Under the Rademacher law `|x| ≤ 1` almost surely. -/
 theorem ae_abs_le_one_rade : ∀ᵐ x ∂rade, |x| ≤ 1 := by
   have hm0 : MeasurableSet {x : ℝ | |x| ≤ 1} :=
     measurableSet_le measurable_id.abs measurable_const
@@ -3404,8 +3402,8 @@ section Lind
 
 open CLTMartingale CLTMartingale.Step45
 
-/-- The coordinate map: coordinate `0` carries the shared dimension-0 variable `ξ_{(0,0)}`,
-coordinate `1` a private dimension-1 variable. -/
+/-- The coordinate map, which sends coordinate `0` to the shared dimension-0 variable `ξ_{(0,0)}`
+and coordinate `1` to a private dimension-1 variable. -/
 def lcoord : Fin 2 → Fin 2 → ℕ × ℕ := fun t k => (k.val, if k.val = 0 then 0 else t.val + 1)
 
 /-- The index of the sub-tuple's `k`-th coordinate inside dimension `k`. -/
@@ -3529,7 +3527,7 @@ theorem lsep (t s : Fin 2) (hts : t ≠ s) :
   · have h : t.val + 1 = s.val + 1 := congrArg Prod.snd hk
     exact hts (Fin.ext (by omega))
 
-/-- Every hypothesis of `lindeberg_rowDiff_of_multilinear` holds on the witness model. -/
+/-- Every hypothesis of `lindeberg_rowDiff_of_multilinear` holds on this model. -/
 theorem lindeberg_witness :
     ∃ (Ω : Type) (_ : MeasurableSpace Ω) (P : Measure Ω) (_ : IsProbabilityMeasure P)
       (ξ : ℕ × ℕ → Ω → ℝ),
@@ -3595,11 +3593,11 @@ abbrev mIota : Fin 2 → Type := fun γ => Fin (γ.val + 1)
 abbrev mTup : Fin 2 → Type := fun _ => Fin 2
 
 /-- The sites: component `0` uses `(0,0)` and `(0,1)`; component `1` uses `(0,3)` together
-with `(1,t+1)`. All five are distinct. -/
+with `(1,t+1)`; the five sites are distinct. -/
 def mcoord : ∀ γ : Fin 2, mTup γ → mIota γ → ℕ × ℕ :=
   fun γ t k => (k.val, if k.val = 0 then (if γ.val = 0 then t.val else 3) else t.val + 1)
 
-/-- The kernel of every component is the product over its own level. -/
+/-- The kernel of every component is the product over its level. -/
 def mker : ∀ γ : Fin 2, (mIota γ → ℝ) → ℝ := fun _ x => ∏ k, x k
 
 /-- Unit coefficients. -/
@@ -4138,7 +4136,7 @@ theorem inner_bpRade (r r' : Fin 2 → Fin 2) :
 theorem norm_bpRade (r : Fin 2 → Fin 2) : ‖bpRade r‖ = 1 :=
   (TensorBasis.orthonormal_basisProd (fun _ : Fin 2 => radeBasis)).1 r
 
-/-- The witness kernel `h^{(e)} = ψ_1 ⊗ ψ_1 + ψ_0 ⊗ ψ_1`. -/
+/-- The kernel `h^{(e)} = ψ_1 ⊗ ψ_1 + ψ_0 ⊗ ψ_1` of the model. -/
 noncomputable def xwit : Lp ℝ 2 (Measure.pi (fun _ : Fin 2 => rade)) := bpRade rho1 + bpRade rho2
 
 /-- The truncation set `{(1,1)}`, a proper subset of the index set. -/
@@ -4166,7 +4164,7 @@ theorem norm_xwit_sq : ‖xwit‖ ^ 2 = 2 := by
   rw [xwit, pow_two, h, norm_bpRade, norm_bpRade]
   norm_num
 
-/-- The pointwise representative of the witness kernel. -/
+/-- The pointwise representative of `h^{(e)}`. -/
 noncomputable def G0 : (Fin 2 → ℝ) → ℝ :=
   fun u => Step2.prodKernel psiR rho1 u + Step2.prodKernel psiR rho2 u
 
@@ -4183,8 +4181,8 @@ theorem coeFn_xwit : G0 =ᵐ[Measure.pi (fun _ : Fin 2 => rade)] (xwit : (Fin 2 
   rw [xwit, h1]
   simp only [Pi.add_apply, h2, h3]
 
-/-- A model for the tensor-basis layer: the two-point latent law, the complete basis
-`{1, sgn}`, a level with `k = 2`, and a proper truncation set; the truncation gap is `1` and the
+/-- A model for the tensor-basis layer, with the two-point latent law, the complete basis
+`{1, sgn}`, a level with `k = 2` and a proper truncation set. The truncation gap is `1` and the
 truncated kernel has second moment `1`. -/
 theorem seam_witness :
     ∃ (Ω : Type) (_ : MeasurableSpace Ω) (P : Measure Ω) (_ : IsProbabilityMeasure P)
@@ -4283,7 +4281,7 @@ theorem sgn_sq (x : ℝ) : sgn x ^ 2 = 1 := by
   rw [pow_two]; exact sgn_mul_self x
 
 /-- A model for the factorization `D^γ_κ = ψ_{r_{k⋆}}(U_w)·A^γ_w`: at the step `κ = 1`
-revealing the site `(1,1)`, two sub-tuples complete, so the block `A^γ` is a genuine sum. -/
+revealing the site `(1,1)`, two sub-tuples complete, so the block `A^γ` is a sum of two terms. -/
 theorem factor_witness :
     ∃ (Ω : Type) (_ : MeasurableSpace Ω) (P : Measure Ω) (_ : IsProbabilityMeasure P)
       (ξ : ℕ × ℕ → Ω → ℝ),
@@ -4314,8 +4312,8 @@ theorem factor_witness :
     exact Step2.abs_blockA_le hbs (coord := scoord) (ρ := rho1) (c := cwit) ω
   · exact Step2.stronglyMeasurable_blockA hbs (c := cwit) hrev_one
 
-/-- A model for the one-step conditional variance, with two components carrying different
-multi-indices at the revealed coordinate; the value is `5`. -/
+/-- A model for the one-step conditional variance, with two components whose multi-indices differ
+at the revealed coordinate; the value is `5`. -/
 theorem step_variance_witness :
     ∃ (Ω : Type) (_ : MeasurableSpace Ω) (P : Measure Ω) (_ : IsProbabilityMeasure P)
       (ξ : ℕ × ℕ → Ω → ℝ),
@@ -4473,7 +4471,7 @@ multi-indices `ρ γ` and coefficients `λ_γ`, the revealing order and its `k�
 It is stated for the latent array, with `cellc = 0`.
 
 The models below use `wal`, the uniform law on `{0,1,2,3} ⊂ ℝ`, with two Walsh functions as a
-bounded, mean-zero orthonormal system, so that two components can carry different basis indices
+bounded, mean-zero orthonormal system, so that two components can have different basis indices
 at `k⋆`. -/
 
 namespace Witness
@@ -4691,7 +4689,7 @@ theorem hstep4_witness : ∀ᶠ n : ℕ in atTop, |scW n ^ 2 - 4| ≤ 3 / 2 := b
     ring
   · norm_num [Fin.sum_univ_two]
 
-/-- The unpadded `δ(L)` equals `1` here, below `3/2`, and tends to `0`. -/
+/-- The padded `δ(L)` tends to `0` and exceeds the unpadded one at every `L`. -/
 theorem delta_pad_witness :
     Tendsto (fun L : ℕ => 3 * (∑ _e : Fin 2, (1 : ℝ) / ((L : ℝ) + 1)) + 1 / ((L : ℝ) + 1))
         atTop (𝓝 0)
@@ -4914,7 +4912,7 @@ section Lind3
 open DegenerateSum CLTMartingale
 
 
-/-- `(∑_{i∈s}a_i)⁴ ≤ |s|³∑_{i∈s}a_i⁴`: Cauchy--Schwarz twice. -/
+/-- `(∑_{i∈s}a_i)⁴ ≤ |s|³∑_{i∈s}a_i⁴`, by Cauchy–Schwarz applied twice. -/
 theorem pow_four_sum_le_card_pow_three {κ : Type*} (s : Finset κ) (f : κ → ℝ) :
     (∑ i ∈ s, f i) ^ 4 ≤ (s.card : ℝ) ^ 3 * ∑ i ∈ s, f i ^ 4 := by
   have h1 : (∑ i ∈ s, f i) ^ 2 ≤ (s.card : ℝ) * ∑ i ∈ s, f i ^ 2 := sq_sum_le_card_mul_sum_sq
@@ -5075,8 +5073,8 @@ theorem lindeberg_rowDiff_of_multiKernel
 
 /-- `lindeberg_rowDiff_of_multiKernel` at the kernel `h^{(e)}_L = ∑_𝐫λ_𝐫⨂_kψ_{r_k}`, with the
 independence, mean and bound conditions read off `IsBasisSystem`. `eqv` enumerates the level
-`e`, `site` indexes the latent variables `U^{(k)}_i` by dimension, and `sidx` gives the index in
-each dimension carried by a sub-tuple. -/
+`e`, `site` indexes the latent variables `U^{(k)}_i` by dimension, and `sidx` gives the index
+that a sub-tuple takes in each dimension. -/
 theorem lindeberg_rowDiff_multiKernel_of_basis
     {V T : Type*} [Fintype T] [DecidableEq T] {ι : Type*} [Fintype ι]
     {R : Type*} [DecidableEq R] {ψ : R → ℝ → ℝ} {Rpos : Set R} {B₀ : ℝ}
@@ -5136,7 +5134,7 @@ theorem lindeberg_rowDiff_multiKernel_of_basis
 
 /-! ### The directional limit on the array with cell steps
 
-Here the martingale array carries both the latent half and the cell steps, so the truncation
+The martingale array consists of the latent half and the cell steps, so the truncation
 limit is taken on `T_n(L) = ∑_tc_tg(U_t) + ∑_oc'x̃_oε_o`. `halg` is required on the latent half
 at `cellc = 0`, and `cellc L n` is the cell constant `∑_o(c'x̃_o)²σ²_ε(o)`. -/
 
@@ -5144,7 +5142,7 @@ section ComposeCell
 
 open DegenerateSum CLTMartingale CLTMartingale.Var CLTMartingale.Cell StatLean.TimeSeries
 
-/-- `scalar_clt_of_truncation` for the array carrying both the latent half and the cell steps
+/-- `scalar_clt_of_truncation` for the array formed from the latent half and the cell steps
 `∑_oc'x̃_oε_o`; `halg` is required on the latent half at `cellc = 0`. -/
 theorem scalar_clt_of_truncation_cell
     {ι : Type*} [Fintype ι] [Nonempty ι] {T : Type*} [Fintype T] [DecidableEq T]
@@ -5423,7 +5421,7 @@ section ComposeCellFull
 
 open DegenerateSum CLTMartingale CLTMartingale.Var CLTMartingale.Cell StatLean.TimeSeries
 
-/-- The directional limit law for the array carrying both halves of `T_n(L)`, with every
+/-- The directional limit law for the array formed from both halves of `T_n(L)`, with every
 intermediate hypothesis derived. -/
 theorem scalar_clt_of_truncation_cell_full
     {ι : Type*} [Fintype ι] [Nonempty ι] [DecidableEq ι] {T : Type*} [Fintype T] [DecidableEq T]
@@ -5768,7 +5766,7 @@ theorem clt_b_of_truncation_cell_full {K : ℕ}
     (hscale c) (hscalecell c) (hgapb c)
 
 end ComposeBCell
-/-! ### Models for the cell-carrying array
+/-! ### Models for the array with cell steps
 
 `halg_cell_witness` extends the `halg` model by two cells with coefficients `1` and `2`, so that
 `cellc = 5`. The cell sites `(9, q+3)` are revealed after every latent step, so the disturbances
@@ -5782,7 +5780,7 @@ namespace Witness
 open DegenerateSum CLTMartingale CLTMartingale.Cell StatLean.TimeSeries
 open scoped ENNReal
 
-/-! ### The cell model of the witness -/
+/-! ### The cell model -/
 
 /-- The cell sites `(9, q+3)`, revealed after the three latent steps. -/
 def cellSite : ℕ → ℕ × ℕ := fun q => (9, q + 3)
@@ -5892,8 +5890,8 @@ theorem isCellModel_witness
 /-! ### `halg` with cell steps -/
 
 set_option maxHeartbeats 1000000 in
-/-- `halg` for the array carrying both halves, at `cellc = 1·1 + 4·1 = 5`: the latent half is
-the model of `halg_witness`, and the cell half adds two cells with coefficients `1` and `2`. -/
+/-- `halg` for the array formed from both halves, at `cellc = 1·1 + 4·1 = 5`. The latent half
+is the model of `halg_witness`, and the cell half adds two cells with coefficients `1` and `2`. -/
 theorem halg_cell_witness :
     ∃ (Ω : Type) (_ : MeasurableSpace Ω) (P : Measure Ω) (_ : IsProbabilityMeasure P)
       (ξ : ℕ × ℕ → Ω → ℝ),
@@ -5930,7 +5928,7 @@ and two in dimension `1`. -/
 def siteW : ℕ → Fin 2 → Fin 2 → ℕ × ℕ :=
   fun _n k i => if k = 0 then (0, i.val) else (1, i.val + 1)
 
-/-- Which index of each dimension the sub-tuple `t` carries: `scoord` read off. -/
+/-- The index that the sub-tuple `t` takes in each dimension, read off `scoord`. -/
 def sidxW : ℕ → Fin 4 → ∀ _k : Fin 2, Fin 2 :=
   fun _n t k => if k = 0 then ⟨t.val % 2, Nat.mod_lt _ (by norm_num)⟩
     else ⟨t.val / 2, by have := t.isLt; omega⟩

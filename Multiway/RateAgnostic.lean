@@ -12,8 +12,8 @@ import Mathlib.MeasureTheory.Measure.Dirac.Basic
 This file formalizes parts (a) and (b) of Theorem 11 of the paper (rate-agnostic inference
 under multiway clustering) together with Lemma SM.B.13 (the infeasible union meat), whose
 convergence statement is the input to part (a). Part (c) is
-`Multiway.Wald.wald_of_clt_rateAgnostic`. Eigenvalue bounds are carried in Loewner form,
-`c • I ≤ Ω_n` and `Ω ≤ κ • I`, so `λ_min` and `λ_max` are never formed.
+`Multiway.Wald.wald_of_clt_rateAgnostic`. Eigenvalue bounds are stated in Loewner form, as
+`c • I ≤ Ω_n` and `Ω ≤ κ • I`.
 
 ## Main results
 
@@ -46,8 +46,8 @@ theorem rectFrobSq_eq_sum_col (F : Matrix α β ℝ) :
   exact Finset.sum_comm
 
 omit [DecidableEq α] [DecidableEq β] in
-/-- `‖Py‖² ≤ ‖P‖²‖y‖²`, written in coordinates: `Matrix.l2_opNorm_mulVec` with both sides
-squared. -/
+/-- `‖Py‖² ≤ ‖P‖²‖y‖²` in coordinates, obtained by squaring both sides of
+`Matrix.l2_opNorm_mulVec`. -/
 theorem sum_sq_mulVec_le (P : Matrix α γ ℝ) (y : γ → ℝ) :
     ∑ i : α, (P *ᵥ y) i ^ 2 ≤ ‖P‖ ^ 2 * ∑ k : γ, y k ^ 2 := by
   have h : ‖(EuclideanSpace.equiv α ℝ).symm (P *ᵥ y)‖
@@ -110,7 +110,7 @@ theorem norm_rectVec (F : Matrix α β ℝ) : ‖rectVec F‖ = rectFrobNorm F :
   rw [show ‖(rectVec F).ofLp (i, j)‖ = ‖F i j‖ from rfl, Real.norm_eq_abs, sq_abs]
 
 omit [DecidableEq α] [DecidableEq β] in
-/-- The triangle inequality for `‖·‖_F` in three-point form:
+/-- The triangle inequality
 `‖X - Z‖_F ≤ ‖X - Y‖_F + ‖Y - Z‖_F`. -/
 theorem rectFrobNorm_sub_le (X Y Z : Matrix α β ℝ) :
     rectFrobNorm (X - Z) ≤ rectFrobNorm (X - Y) + rectFrobNorm (Y - Z) := by
@@ -155,7 +155,7 @@ theorem restrictedStd_one (Om : Matrix κ κ ℝ) : restrictedStd Om 1 = (sqrtPD
   simp [restrictedStd]
 
 omit [Fintype r] [DecidableEq r] in
-/-- `‖Ω_n^{-1/2}‖² ≤ 1/λ_min(Ω_n)`: the restricted standardization bound at `A = I_K`. -/
+/-- The restricted standardization bound at `A = I_K`, `‖Ω_n^{-1/2}‖² ≤ 1/λ_min(Ω_n)`. -/
 theorem sq_opNorm_inv_sqrtPD_le {Om : Matrix κ κ ℝ} (hOm : Om.PosDef) {c : ℝ} (hc : 0 < c)
     (hcOm : c • (1 : Matrix κ κ ℝ) ≤ Om) : ‖(sqrtPD Om)⁻¹‖ ^ 2 ≤ c⁻¹ := by
   have hinj : Function.Injective (1 : Matrix κ κ ℝ).mulVec := by
@@ -165,7 +165,7 @@ theorem sq_opNorm_inv_sqrtPD_le {Om : Matrix κ κ ℝ} (hOm : Om.PosDef) {c : �
   rwa [restrictedStd_one] at h
 
 omit [Fintype r] [DecidableEq r] in
-/-- Theorem 11(a), first claim, deterministically:
+/-- The deterministic form of the first claim of Theorem 11(a),
 `‖Ω_n^{-1/2}E_nΩ_n^{-1/2}‖_F ≤ ‖E_n‖_F/λ_min(Ω_n)` with `E_n = 𝓜̃_n - Ω_n`. -/
 theorem rectFrobNorm_standardized_le {Om : Matrix κ κ ℝ} (hOm : Om.PosDef) {c : ℝ} (hc : 0 < c)
     (hcOm : c • (1 : Matrix κ κ ℝ) ≤ Om) (Mt : Matrix κ κ ℝ) :
@@ -204,7 +204,7 @@ theorem ratio_sub_one_eq {Om : Matrix κ κ ℝ} (hOm : Om.PosDef) {A : Matrix �
     simp only [Matrix.sub_mul, Matrix.mul_sub, Matrix.mul_assoc]
   rw [hexp, hone]
 
-/-- Theorem 11(a), second claim, deterministically:
+/-- The deterministic form of the second claim of Theorem 11(a),
 `‖𝒱_n^{-1/2}𝒱̃_n𝒱_n^{-1/2} - I_r‖_F ≤ ‖E_n‖_F/λ_min(Ω_n)`. -/
 theorem rectFrobNorm_ratio_sub_one_le {Om : Matrix κ κ ℝ} (hOm : Om.PosDef) {A : Matrix κ r ℝ}
     (hA : Function.Injective A.mulVec) {c : ℝ} (hc : 0 < c)
@@ -244,7 +244,7 @@ theorem tendstoInMeasure_zero_of_le {f g : ℕ → Ω → ℝ} (hnn : ∀ n ω, 
 
 /-- **Theorem 11(a).** If `‖𝓜̃_n - Ω_n‖_F/λ_min(Ω_n) → 0` in probability, then
 `‖Ω_n^{-1/2}(𝓜̃_n - Ω_n)Ω_n^{-1/2}‖_F → 0` and `‖𝒱_n^{-1/2}𝒱̃_n𝒱_n^{-1/2} - I_r‖_F → 0` in
-probability. Here `c n ω` is a lower Loewner bound for `Ω_n`. -/
+probability. The number `c n ω` is a lower Loewner bound for `Ω_n`. -/
 theorem rateAgnostic_a
     {Om : ℕ → Ω → Matrix κ κ ℝ} (hOm : ∀ n ω, (Om n ω).PosDef)
     {c : ℕ → Ω → ℝ} (hc : ∀ n ω, 0 < c n ω)
@@ -349,8 +349,8 @@ end PartA
 
 /-! ### Conditional-expectation tools
 
-The conditional variance of a finite sum as a double sum, the fourth-moment bound
-`|E[ν₁ν₂ν₃ν₄ ∣ 𝒟]| ≤ C` from the pointwise Young inequality, and a conditional Markov
+The lemmas below write the conditional variance of a finite sum as a double sum, prove
+`|E[ν₁ν₂ν₃ν₄ ∣ 𝒟]| ≤ C` from the pointwise Young inequality, and prove a conditional Markov
 inequality. -/
 
 section Conditional
@@ -391,7 +391,7 @@ theorem condExp_sq_sum_eq {J : Type*} (S : Finset J) (ζ : J → Ω → ℝ)
 
 /-- If each of `a, b, d, e` has conditional fourth moment at most `C`, then
 `|E[abde ∣ 𝒟]| ≤ C`. The proof uses the pointwise inequality `4|abde| ≤ a⁴ + b⁴ + d⁴ + e⁴`
-and monotonicity of `condExp`, without a conditional Hölder inequality. -/
+and monotonicity of `condExp`. -/
 theorem abs_condExp_prod_four_le {a b d e : Ω → ℝ} {Cm : ℝ}
     (hprod : Integrable (fun ω => a ω * b ω * (d ω * e ω)) μ)
     (ha : Integrable (fun ω => a ω ^ 4) μ) (hb : Integrable (fun ω => b ω ^ 4) μ)
@@ -434,7 +434,7 @@ theorem abs_condExp_prod_four_le {a b d e : Ω → ℝ} {Cm : ℝ}
   rw [abs_le]
   constructor <;> linarith
 
-/-- A conditional Markov inequality for the second moment:
+/-- A conditional Markov inequality for the second moment,
 `P(ε ≤ |X| ∣ 𝒟) ≤ ε^{-2} E[X² ∣ 𝒟]`, with the conditional probability written as the
 conditional expectation of the indicator. -/
 theorem condMarkov_sq {X : Ω → ℝ} {ε : ℝ} (hε : 0 < ε)
@@ -467,7 +467,7 @@ end Conditional
 
 /-! ### Counting the nonvanishing covariances
 
-Deterministic bookkeeping that turns `Multiway.Sharing.card_linkedQuads_le` into a bound on a
+The lemmas below turn `Multiway.Sharing.card_linkedQuads_le` into a deterministic bound on a
 double sum over pairs of linked pairs. -/
 
 section Counting
@@ -560,7 +560,7 @@ end Counting
 /-! ### Quadratic-form bounds for kernels on the sharing graph
 
 For a kernel supported on the sharing graph with bounded entries, `quadForm_le_of_graphSupported`
-gives the Loewner bound `A ⪯ κ(D_n+1)I` directly from `|x_ox_{o'}| ≤ (x_o²+x_{o'}²)/2` and the
+gives the Loewner bound `A ⪯ κ(D_n+1)I` from `|x_ox_{o'}| ≤ (x_o²+x_{o'}²)/2` and the
 row count, without a spectral decomposition. -/
 
 section GraphQuadForm
@@ -572,7 +572,7 @@ variable (c : D → O → L) (dims : Finset D)
 
 omit [DecidableEq O] [DecidableEq D] in
 /-- Summing an indicator of the sharing graph over the second index counts the closed
-neighbourhood of the first. The real-valued form of `Multiway.Sharing.sum_ite_closedNbhd`. -/
+neighbourhood of the first. This is the real-valued form of `Multiway.Sharing.sum_ite_closedNbhd`. -/
 theorem sum_ite_linked_right (o : O) (t : ℝ) :
     (∑ o' : O, if Linked c dims o o' then t else 0)
       = ((closedNbhd c dims o).card : ℝ) * t := by
@@ -603,7 +603,7 @@ theorem quadForm_le_of_graphSupported (A : Matrix O O ℝ) {kap : ℝ} (hkap : 0
   have hdot : x ⬝ᵥ (A *ᵥ x) = ∑ o : O, ∑ o' : O, x o * (A o o' * x o') := by
     rw [dotProduct]
     exact Finset.sum_congr rfl fun o _ => by rw [Matrix.mulVec, dotProduct, Finset.mul_sum]
-  -- the Young step, term by term
+  -- apply Young's inequality to each term
   have hterm : ∀ o o' : O, x o * (A o o' * x o')
       ≤ (if Linked c dims o o' then kap * (x o ^ 2) / 2 else 0)
         + (if Linked c dims o o' then kap * (x o' ^ 2) / 2 else 0) := by
@@ -621,7 +621,7 @@ theorem quadForm_le_of_graphSupported (A : Matrix O O ℝ) {kap : ℝ} (hkap : 0
         mul_nonneg (abs_nonneg (x o)) (abs_nonneg (x o'))]
     · rw [ite_eq_right h, ite_eq_right h, hz o o' h]
       simp
-  -- the two sums, one per index
+  -- bound the sum over each index
   have hD : ∀ o : O, ((closedNbhd c dims o).card : ℝ) ≤ (maxDegree c dims : ℝ) + 1 := by
     intro o
     have := card_closedNbhd_le c dims o
@@ -673,8 +673,8 @@ theorem quadForm_le_of_graphSupported (A : Matrix O O ℝ) {kap : ℝ} (hkap : 0
   linarith [hsplit, hS1, hS2]
 
 omit [DecidableEq D] in
-/-- `Ω ⪯ C^{1/2}(D_n+1)I`, the Loewner form of the first bound of Lemma SM.B.11(d), as
-consumed by `trace_conj_proj_le`. -/
+/-- `Ω ⪯ C^{1/2}(D_n+1)I`, the Loewner form of the first bound of Lemma SM.B.11(d), in
+the form used by `trace_conj_proj_le`. -/
 theorem le_smul_one_of_graphSupported {A : Matrix O O ℝ} (hA : A.IsHermitian) {kap : ℝ}
     (hkap : 0 ≤ kap) (hb : ∀ o o', |A o o'| ≤ kap)
     (hz : ∀ o o', ¬ Linked c dims o o' → A o o' = 0) :
@@ -725,9 +725,9 @@ end TraceBound
 
 /-! ### Lemma SM.B.13, first claim
 
-`E[‖𝓜̃_n - Ω_n‖_F² ∣ 𝒟] ≤ 64K²B⁴C δ_n λ_min(Ω_n)²`. The theorems below take the vanishing
-condition `hzero`, the covariance bound `hbd` and the centering as hypotheses;
-`infeasibleMeat_condVar_le_of_regime3` is the form with all of them discharged. -/
+The claim is `E[‖𝓜̃_n - Ω_n‖_F² ∣ 𝒟] ≤ 64K²B⁴C δ_n λ_min(Ω_n)²`. The theorems below take the
+vanishing condition `hzero`, the covariance bound `hbd` and the centering as hypotheses;
+`infeasibleMeat_condVar_le_of_regime3` proves all of them under Regime 3. -/
 
 section InfeasibleMeat
 
@@ -764,7 +764,7 @@ theorem unionMeat_sub_apply (c : D → O → L) (dims : Finset D) (xt : O → κ
   rw [← Finset.sum_sub_distrib]
   exact Finset.sum_congr rfl fun p _ => by rw [centeredSummand]; ring
 
--- `𝒟` precedes the ambient `mΩ`, as elsewhere in this package.
+-- `𝒟` precedes the ambient `mΩ`, so that `mΩ` is the instance used by synthesis.
 variable (𝒟 : MeasurableSpace Ω) {mΩ : MeasurableSpace Ω} {μ : Measure Ω}
 
 omit [DecidableEq D] [Fintype κ] [DecidableEq κ] in
@@ -888,9 +888,9 @@ theorem condExp_frobSq_unionMeat_sub_le (c : D → O → L) (dims : Finset D)
 
 omit [DecidableEq D] [DecidableEq κ] in
 /-- **Lemma SM.B.13, first claim.** `E[‖𝓜̃_n - Ω_n‖_F² ∣ 𝒟] ≤ 64K²B⁴C δ_n λ_min(Ω_n)²`,
-given the per-quadruple bound `hbd : |Cov(ξ_{o₁o₂},ξ_{o₃o₄} ∣ 𝒟)| ≤ 2B⁴C`. See
-`abs_condExp_centeredSummand_mul_le` and `infeasibleMeat_condVar_le_of_regime3` for the
-discharge of `hbd`, `hzero` and `hint`. -/
+given the per-quadruple bound `hbd : |Cov(ξ_{o₁o₂},ξ_{o₃o₄} ∣ 𝒟)| ≤ 2B⁴C`. The hypotheses `hbd`, `hzero` and `hint` are
+proved under Regime 3 in `abs_condExp_centeredSummand_mul_le` and
+`infeasibleMeat_condVar_le_of_regime3`. -/
 theorem infeasibleMeat_condVar_le (c : D → O → L) (dims : Finset D)
     {xt : O → κ → Ω → ℝ} {nu : O → Ω → ℝ} {Om : O → O → Ω → ℝ} {B Cm lmin : ℝ}
     (hC : 0 ≤ Cm) (hl : 0 < lmin)
@@ -922,11 +922,11 @@ theorem infeasibleMeat_condVar_le (c : D → O → L) (dims : Finset D)
 
 end InfeasibleMeat
 
-/-! ### Satisfiability of the hypotheses
+/-! ### Examples
 
-Each theorem below applies a main result of this file with every hypothesis discharged in a
-concrete model, showing that the hypotheses are jointly satisfiable. The model for
-`infeasibleMeat_condVar_le` has every centered summand identically zero. -/
+Each theorem below applies a main result of this file to a concrete model on which its
+hypotheses hold. In the model for `infeasibleMeat_condVar_le` every centered summand is
+identically zero. -/
 
 section Witness
 
@@ -948,7 +948,7 @@ theorem tendstoInMeasure_const_zero {Ω : Type*} {mΩ : MeasurableSpace Ω} (P :
   rw [heq]
   exact tendsto_const_nhds
 
-/-- The one-dimensional identity design is positive definite and its own lower Loewner bound. -/
+/-- The `1 × 1` identity matrix is positive definite. -/
 theorem witness_one_posDef : (1 : Matrix (Fin 1) (Fin 1) ℝ).PosDef := Matrix.PosDef.one
 
 theorem witness_one_le : (1 : ℝ) • (1 : Matrix (Fin 1) (Fin 1) ℝ) ≤ 1 := by
@@ -1042,8 +1042,8 @@ end Witness
 /-! ### Vector and Frobenius norms
 
 `l2Norm` is the Euclidean norm of an observation-indexed vector, written as the square root of a
-sum of squares. The Frobenius facts are the triangle inequality over a `Finset` sum and the norm
-of a scaled outer product. -/
+sum of squares. For `‖·‖_F` the section proves the triangle inequality over a `Finset` sum and
+computes the norm of a scaled outer product. -/
 
 /-- `‖u‖`, the Euclidean norm of an observation-indexed vector. -/
 noncomputable def l2Norm {O : Type*} [Fintype O] (u : O → ℝ) : ℝ :=
@@ -1123,9 +1123,8 @@ end Outer
 
 /-! ### The bilinear graph bound `∑_{o∼o'}|u_o||v_{o'}| ≤ (D_n+1)‖u‖‖v‖`
 
-Proved by Cauchy–Schwarz over `linkedPairs`, using the row count `#N(o) ≤ D_n+1` on the first
-index and the column count on the second, without forming the sharing matrix or its
-eigenvalues. -/
+The proof applies Cauchy–Schwarz over `linkedPairs`, with the row count `#N(o) ≤ D_n+1` on the
+first index and the column count on the second. -/
 
 section GraphBilinear
 
@@ -1298,8 +1297,8 @@ section Bridge
 
 variable {Ω : Type*} (𝒟 : MeasurableSpace Ω) {mΩ : MeasurableSpace Ω} {P : Measure Ω}
 
-/-- A conditional Markov inequality for the first moment: for `X ≥ 0`, the pointwise bound
-`𝟙{ε ≤ X} ≤ ε⁻¹X` passed through the conditional expectation. -/
+/-- A conditional Markov inequality for the first moment, obtained for `X ≥ 0` by taking
+conditional expectations in `𝟙{ε ≤ X} ≤ ε⁻¹X`. -/
 theorem condMarkov_abs {X : Ω → ℝ} {ε : ℝ} (hε : 0 < ε) (hX0 : ∀ ω, 0 ≤ X ω)
     (hX : Integrable X P)
     (hind : Integrable (Set.indicator {ω | ε ≤ X ω} (fun _ => (1 : ℝ))) P) :
@@ -1365,8 +1364,8 @@ theorem tendstoInMeasure_zero_of_tendsto_const {b : ℕ → ℝ} (hb : Tendsto b
     linarith
   exact Tendsto.congr' (hnull.mono fun n hn => hn.symm) tendsto_const_nhds
 
-/-- Bounded convergence for convergence in probability: if `0 ≤ Y_n ≤ 1` and `Y_n → 0` in
-probability, then `∫Y_n → 0`. The proof uses `∫Y_n ≤ η + P(Y_n ≥ η)`. -/
+/-- If `0 ≤ Y_n ≤ 1` and `Y_n → 0` in probability, then `∫Y_n → 0` (bounded
+convergence). The proof uses `∫Y_n ≤ η + P(Y_n ≥ η)`. -/
 theorem tendsto_integral_of_tendstoInMeasure_le_one [IsProbabilityMeasure P]
     {Y : ℕ → Ω → ℝ} (hmeas : ∀ n, Measurable (Y n))
     (h0 : ∀ n ω, 0 ≤ Y n ω) (h1 : ∀ n ω, Y n ω ≤ 1)
@@ -1481,7 +1480,7 @@ theorem tendstoInMeasure_zero_of_condExp_le [IsProbabilityMeasure P] (hm : 𝒟 
   rw [Real.dist_eq, sub_zero, abs_of_nonneg (hZ0 n ω)] at hω'
   exact hω'
 
-/-- The same passage from a conditional second-moment bound. -/
+/-- If `E[Z_n² ∣ 𝒟] ≤ ρ_n` and `ρ_n → 0` in probability, then `Z_n → 0` in probability. -/
 theorem tendstoInMeasure_zero_of_condExp_sq_le [IsProbabilityMeasure P] (hm : 𝒟 ≤ mΩ)
     [SigmaFinite (P.trim hm)] {Z ρ : ℕ → Ω → ℝ}
     (hZmeas : ∀ n, Measurable (Z n)) (hZ0 : ∀ n ω, 0 ≤ Z n ω)
@@ -1509,10 +1508,10 @@ end Bridge
 /-! ## Lemma SM.B.13, second claim
 
 `infeasibleMeat_tendstoInProb` proves `‖𝓜̃_n - Ω_n‖_F/λ_min(Ω_n) ⟶^p 0` over a sequence of
-designs whose observation, cluster and coefficient types vary with the index. The key step,
-`condExp_sq_div`, pulls the `𝒟`-measurable random divisor `λ_min(Ω_n)^{-2}` out of the
-conditional expectation; this is legitimate because the first claim's bound
-`64K²B⁴Cδ_nλ_min(Ω_n)²` equals `64K²B⁴C·nD_n³` and so does not depend on `λ_min`. The
+designs whose observation, cluster and coefficient types vary with the index. The lemma
+`condExp_sq_div` pulls the `𝒟`-measurable random divisor `λ_min(Ω_n)^{-2}` out of the
+conditional expectation. The first claim's bound `64K²B⁴Cδ_nλ_min(Ω_n)²` equals
+`64K²B⁴C·nD_n³`, which does not depend on `λ_min`. The
 integrability hypothesis `hdivint` is removed in `infeasibleMeat_tendstoInProb_nodiv`. -/
 
 section MeatLimit
@@ -1521,7 +1520,7 @@ open Sharing
 
 variable {Ω : Type*} (𝒟 : MeasurableSpace Ω) {mΩ : MeasurableSpace Ω} {P : Measure Ω}
 
-/-- Pulling a `𝒟`-measurable random divisor out of a conditional second moment:
+/-- A `𝒟`-measurable random divisor comes out of a conditional second moment,
 `E[(F/λ)² ∣ 𝒟] = E[F² ∣ 𝒟]/λ²`. -/
 theorem condExp_sq_div [IsProbabilityMeasure P] {F lam : Ω → ℝ}
     (hlam : Measurable[𝒟] lam)
@@ -1555,7 +1554,7 @@ theorem sq_rectFrobNorm_unionMeat_sub (c : D → O → L) (dims : Finset D)
   rfl
 
 omit [DecidableEq D] [DecidableEq κ] in
-/-- The first claim of Lemma SM.B.13 divided through by the random `λ_min(Ω_n)`:
+/-- The first claim of Lemma SM.B.13 divided by the random `λ_min(Ω_n)²`,
 `E[(‖𝓜̃_n - Ω_n‖_F/λ_min(Ω_n))² ∣ 𝒟] ≤ 64K²B⁴Cδ_n`, with `δ_n = nD_n³/λ²`. -/
 theorem condExp_sq_ratio_unionMeat_le [IsProbabilityMeasure P] (c : D → O → L) (dims : Finset D)
     {xt : O → κ → Ω → ℝ} {nu : O → Ω → ℝ} {Om : O → O → Ω → ℝ} {B Cm : ℝ} (hC : 0 ≤ Cm)
@@ -1667,8 +1666,8 @@ combining the deterministic perturbation bound, a conditional Young inequality
 `2XY ≤ tX² + t⁻¹Y²` with deterministic `t = (b/a)^{1/2}` (valid for `a, b > 0`), the pull-out
 of the random divisor, and the conditional Markov passage. It takes as hypotheses the two
 conditional second-moment bounds `hnu`, `hvp` and the rate condition `hrate`;
-`perturb_tendstoInProb_of_accum` discharges `hrate` from the accumulation assumption, and
-`perturb_tendstoInProb_of_moments` also discharges `hnu` and `hvp`. -/
+`perturb_tendstoInProb_of_accum` proves `hrate` from the accumulation assumption, and
+`perturb_tendstoInProb_of_moments` also proves `hnu` and `hvp`. -/
 
 section PerturbSequence
 
@@ -1676,8 +1675,8 @@ open Sharing
 
 variable {Ω : Type*} (𝒟 : MeasurableSpace Ω) {mΩ : MeasurableSpace Ω} {P : Measure Ω}
 
-/-- Conditional Young inequality: from `E[X² ∣ 𝒟] ≤ a` and `E[Y² ∣ 𝒟] ≤ b` with real
-`a, b > 0`, `E[2XY + Y² ∣ 𝒟] ≤ 2(ab)^{1/2} + b`. -/
+/-- Conditional Young inequality. If `E[X² ∣ 𝒟] ≤ a` and `E[Y² ∣ 𝒟] ≤ b` with real
+`a, b > 0`, then `E[2XY + Y² ∣ 𝒟] ≤ 2(ab)^{1/2} + b`. -/
 theorem condExp_two_mul_add_sq_le [IsProbabilityMeasure P] {X Y : Ω → ℝ}
     (hXint : Integrable (fun ω => X ω ^ 2) P) (hYint : Integrable (fun ω => Y ω ^ 2) P)
     (hmix : Integrable (fun ω => 2 * X ω * Y ω + Y ω ^ 2) P)
@@ -1734,7 +1733,7 @@ theorem condExp_two_mul_add_sq_le [IsProbabilityMeasure P] {X Y : Ω → ℝ}
 /-! ### The rate arithmetic
 
 `rate_le_of_sharing_e` bounds the majorant at one index, `tendstoInMeasure_zero_sqrt` shows that
-convergence in probability to zero survives the square root, and `rate_tendstoInProb_of_accum`
+convergence in probability to zero is preserved by the square root, and `rate_tendstoInProb_of_accum`
 supplies the rate hypothesis `hrate` of `perturb_tendstoInProb`. -/
 
 /-- The rate arithmetic at one index. With `a_n = C^{1/2}n` and `b_n = C^{1/2}(d_{[Δ]}+K)(D_n+1)`,
@@ -1993,8 +1992,8 @@ theorem perturb_tendstoInProb [IsProbabilityMeasure P] (hm : 𝒟 ≤ mΩ)
   simp only [Pi.mul_apply]
   field_simp
 
-/-- `perturb_tendstoInProb` with `hrate` discharged, at `a_n = C^{1/2}n` and
-`b_n = C^{1/2}(d_{[Δ]}+K)(D_n+1)`, whose positivity follows from `C > 0`, `n > 0` and
+/-- `perturb_tendstoInProb` with `hrate` proved, at `a_n = C^{1/2}n` and
+`b_n = C^{1/2}(d_{[Δ]}+K)(D_n+1)`, which are positive by `C > 0`, `n > 0` and
 `d_{[Δ]} ≥ 1`. The remaining hypotheses are the conditional second-moment bounds `hnu`, `hvp`,
 Lemma SM.B.11(e) (`hsharing`) and the accumulation condition `hacc`. -/
 theorem perturb_tendstoInProb_of_accum [IsProbabilityMeasure P] (hm : 𝒟 ≤ mΩ)
@@ -2041,18 +2040,18 @@ theorem perturb_tendstoInProb_of_accum [IsProbabilityMeasure P] (hm : 𝒟 ≤ m
 
 end PerturbSequence
 
-/-! ## Witnesses for the sequence theorems
+/-! ## Examples for the sequence theorems
 
-The witness design grows with `j`: `O j = Fin (j+1)` observations, one maintained dimension, and
-each observation in its own cluster, so the sharing graph is the diagonal and `D_j = 1`. The
-witness for `perturb_tendstoInProb` takes `ν ≡ 1` and `ϖ ≡ 1`, so `𝓜̃_n ≠ 0`. -/
+The example design grows with `j`. It has `O j = Fin (j+1)` observations and one maintained
+dimension, and every cluster is a singleton, so the sharing graph is the diagonal and `D_j = 1`.
+The example for `perturb_tendstoInProb` takes `ν ≡ 1` and `ϖ ≡ 1`, so `𝓜̃_n ≠ 0`. -/
 
 section SeqWitness
 
 open Sharing
 
-/-- The `j`-th design of the sequence witness: `j+1` observations, one maintained dimension,
-each observation its own cluster. -/
+/-- The `j`-th example design, with `j+1` observations, one maintained dimension and singleton
+clusters. -/
 def seqC (j : ℕ) : Fin 1 → Fin (j + 1) → Fin (j + 1) := fun _ o => o
 
 def seqDims (_j : ℕ) : Finset (Fin 1) := Finset.univ
@@ -2063,7 +2062,7 @@ theorem seqLinked_iff (j : ℕ) (o o' : Fin (j + 1)) :
   · rintro ⟨d, -, h⟩; exact h
   · intro h; exact ⟨0, Finset.mem_univ _, h⟩
 
-/-- The witness graph has no open edges, so `D_j = max{1,0} = 1`. -/
+/-- The sharing graph of the example has no open edges, so `D_j = max{1,0} = 1`. -/
 theorem seq_maxDegree (j : ℕ) : maxDegree (seqC j) (seqDims j) = 1 := by
   have h0 : (Finset.univ.sup fun o : Fin (j + 1) =>
       (openNbhd (seqC j) (seqDims j) o).card) = 0 := by
@@ -2087,7 +2086,7 @@ private theorem seq_meat_zero (j : ℕ) (ω : Unit) :
   ext k l
   simp [unionMeat, scoreVar]
 
-/-- The hypotheses of `infeasibleMeat_tendstoInProb` are satisfiable, on the growing design
+/-- The hypotheses of `infeasibleMeat_tendstoInProb` hold on the growing design
 with `λ_j = j+1`, so that `δ_j = 1/(j+1) → 0`. -/
 theorem infeasibleMeat_tendstoInProb_witness :
     TendstoInMeasure (Measure.dirac ())
@@ -2179,8 +2178,8 @@ private theorem seq_l2Norm_one (j : ℕ) :
   rw [sq_l2Norm]
   simp
 
-/-- The hypotheses of `perturb_tendstoInProb` are satisfiable, on the growing design with
-`ν ≡ 1`, `ϖ ≡ 1` and `λ_j = (j+1)²`; here `𝓜̃_n ≠ 0`. -/
+/-- The hypotheses of `perturb_tendstoInProb` hold on the growing design with
+`ν ≡ 1`, `ϖ ≡ 1` and `λ_j = (j+1)²`, and `𝓜̃_n ≠ 0`. -/
 theorem perturb_tendstoInProb_witness :
     TendstoInMeasure (Measure.dirac ())
       (fun (j : ℕ) (ω : Unit) =>
@@ -2229,9 +2228,9 @@ private theorem seq_l2Norm_inv (j : ℕ) :
   simp
   field_simp
 
-/-- The hypotheses of `perturb_tendstoInProb_of_accum` are jointly satisfiable, on the growing
+/-- The hypotheses of `perturb_tendstoInProb_of_accum` hold on the growing
 design with `ν ≡ 1`, `ϖ ≡ (j+1)^{-1}`, `C^{1/2} = B = 1`, `K = 0`, `d_{[Δ]} = 1` and
-`λ_j = j+1`, giving `δ_j = (j+1)^{-1} → 0`. Here `ν̂_FE = ν - ϖ` differs from both `0` and `ν`,
+`λ_j = j+1`, giving `δ_j = (j+1)^{-1} → 0`. The residual `ν̂_FE = ν - ϖ` differs from both `0` and `ν`,
 and `hnu` holds with equality. -/
 theorem perturb_tendstoInProb_of_accum_witness :
     TendstoInMeasure (Measure.dirac ())
@@ -2314,8 +2313,8 @@ section CondOmegaKernel
 
 variable {O Ω : Type*}
 
-/-- The conditional covariance kernel `Ω_{oo'} := E[ν_oν_{o'} ∣ 𝒟]`, in the shape `scoreVar`
-consumes; `scoreVar c dims xt (condOmegaKernel 𝒟 P nu)` is `Ω_n = X̃'ΩX̃` restricted to the
+/-- The conditional covariance kernel `Ω_{oo'} := E[ν_oν_{o'} ∣ 𝒟]`, in the form taken by
+`scoreVar`; `scoreVar c dims xt (condOmegaKernel 𝒟 P nu)` is `Ω_n = X̃'ΩX̃` restricted to the
 sharing graph. -/
 noncomputable def condOmegaKernel (𝒟 : MeasurableSpace Ω) {mΩ : MeasurableSpace Ω}
     (P : Measure Ω) (nu : O → Ω → ℝ) : O → O → Ω → ℝ :=
@@ -2332,8 +2331,8 @@ open scoped ENNReal
 
 variable {O Ω : Type*} {mΩ : MeasurableSpace Ω} {P : Measure Ω}
 
-/-- `4⁻¹ + 4⁻¹ = 2⁻¹` in `ℝ≥0∞`: the Hölder triple `MemLp.mul` needs to send `ν ∈ L⁴` to
-`ν_oν_{o'} ∈ L²`. -/
+/-- `4⁻¹ + 4⁻¹ = 2⁻¹` in `ℝ≥0∞`, the exponent relation used with `MemLp.mul` to send
+`ν ∈ L⁴` to `ν_oν_{o'} ∈ L²`. -/
 instance holderTriple_four_four_two : ENNReal.HolderTriple 4 4 2 := ⟨by
   rw [show (4 : ℝ≥0∞) = 2 * 2 by norm_num, ENNReal.mul_inv (by norm_num) (by norm_num),
     ← two_mul, ← mul_assoc, ENNReal.mul_inv_cancel (by norm_num) (by norm_num), one_mul]⟩
@@ -2348,8 +2347,8 @@ end Moments
 
 /-! ### The conditional covariance of two products
 
-The identity `E[(U - E[U ∣ 𝒟])(V - E[V ∣ 𝒟]) ∣ 𝒟] = E[UV ∣ 𝒟] - E[U ∣ 𝒟]E[V ∣ 𝒟]`, which
-needs no independence, and its vanishing under conditional independence. -/
+The identity `E[(U - E[U ∣ 𝒟])(V - E[V ∣ 𝒟]) ∣ 𝒟] = E[UV ∣ 𝒟] - E[U ∣ 𝒟]E[V ∣ 𝒟]` holds
+without independence, and the covariance vanishes under conditional independence. -/
 
 section Generic
 
@@ -2591,9 +2590,9 @@ theorem integrable_centeredSummand_mul {xt : O → κ → Ω → ℝ} {B : ℝ}
     (Filter.Eventually.of_forall fun ω => norm_weight_le hB k l p q ω)
 
 omit [DecidableEq D] [Fintype κ] [DecidableEq κ] in
-/-- The conditional covariance of two centered summands vanishes off `𝓛_n`: the separation
+/-- The conditional covariance of two centered summands vanishes off `𝓛_n`. The separation
 gives conditional independence of the two blocks under Regime 3, and the `𝒟`-measurable
-weight comes out by pull-out. -/
+weight is pulled out of the conditional expectation. -/
 theorem condExp_centeredSummand_mul_eq_zero (hdims : dims.Nonempty)
     (hreg : Regime3 𝒟 h𝒟 c dims nu P) (hmeas : ∀ o, Measurable (nu o))
     (hprod : ∀ o o', MemLp (nu o * nu o') 2 P) {xt : O → κ → Ω → ℝ} {B : ℝ}
@@ -2695,8 +2694,8 @@ end FourFold
 
 /-! ### Examples on a Gaussian model
 
-Two observations under a product of two standard Gaussians, `ν_o` the `o`-th coordinate, each
-observation in its own cluster. Here `Ω_{oo} = 1` and `Ω_n = 13` at weights `x̃ = 2, 3`, and the
+Two observations under a product of two standard Gaussians, `ν_o` the `o`-th coordinate, and
+singleton clusters. Then `Ω_{oo} = 1` and `Ω_n = 13` at weights `x̃ = 2, 3`, and the
 centered summands are almost surely non-zero, so the conclusions are not trivial identities. -/
 
 section RegimeWitness
@@ -2716,8 +2715,8 @@ theorem witG_prod (o o' : WitO) : MemLp (witGNu o * witGNu o') 2 witGP :=
 theorem witG_mem_linkedPairs (o : WitO) : (o, o) ∈ linkedPairs witC2 witDims :=
   Finset.mem_filter.2 ⟨Finset.mem_univ _, ⟨0, Finset.mem_univ 0, rfl⟩⟩
 
-/-- `(0,0,1,1) ∉ 𝓛_n` in the example model: both pairs are linked, and every cross-link is
-`0 ∼ 1`, which fails. -/
+/-- `(0,0,1,1) ∉ 𝓛_n` in the example model, since both pairs are linked and every cross-link
+is `0 ∼ 1`, which fails. -/
 theorem witG_not_mem_linkedQuads :
     ((0 : WitO), (0 : WitO), (1 : WitO), (1 : WitO)) ∉ linkedQuads witC2 witDims := by
   intro h
@@ -2813,7 +2812,7 @@ variable {Ω : Type*} (𝒟 : MeasurableSpace Ω) {mΩ : MeasurableSpace Ω}
 
 /-- **Lemma SM.B.13**, second claim, under Regime 3: `infeasibleMeat_tendstoInProb` with `hint`,
 `hzero` and `hbd` supplied, at `Ω_n := scoreVar (c j) (dims j) (xt j) (condOmegaKernel 𝒟 P (nu j))`.
-See `infeasibleMeat_tendstoInProb_of_regime3_nodiv` for a form without `hOmbd` and `hdivint`. -/
+The form without `hOmbd` and `hdivint` is `infeasibleMeat_tendstoInProb_of_regime3_nodiv`. -/
 theorem infeasibleMeat_tendstoInProb_of_regime3 [IsProbabilityMeasure P] (hm : 𝒟 ≤ mΩ)
     [SigmaFinite (P.trim hm)]
     {O D L κ : ℕ → Type*} [∀ j, Fintype (O j)] [∀ j, DecidableEq (O j)]
@@ -3503,7 +3502,7 @@ end ConsumerPerturb
 /-! ### Examples on a two-point model
 
 `Ω = Bool` under the fair coin with `𝒟 = ⊥`, so `ν` is random and not `𝒟`-measurable. All three
-bounds are attained: `Ω_{01} = 1 = C^{1/2}`, `E[‖ν‖² ∣ 𝒟] = 2 = nC^{1/2}`, and
+bounds are attained, with `Ω_{01} = 1 = C^{1/2}`, `E[‖ν‖² ∣ 𝒟] = 2 = nC^{1/2}` and
 `E[‖Πν‖² ∣ 𝒟] = 2 = C^{1/2}(D_n+1)tr(Π)` at `Π = ½J`. -/
 
 section MomentWitness
@@ -3704,7 +3703,7 @@ end NoDivWitness
 /-! ## Theorem 11 with almost-everywhere matrix hypotheses
 
 When `Ω_n` is built from `E[ν_oν_{o'} ∣ 𝒟]`, its properties hold only almost everywhere. The
-statements below carry the hypotheses on `Ω_n` as `∀ᵐ ω` rather than `∀ ω`, with the same
+statements below assume the hypotheses on `Ω_n` for almost every `ω` and have the same
 conclusions as `rateAgnostic_a` and `rateAgnostic_b`; the positivity `hc` stays pointwise. -/
 
 section AlmostEverywhere

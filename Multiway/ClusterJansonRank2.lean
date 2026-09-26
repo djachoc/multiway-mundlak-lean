@@ -5,17 +5,17 @@ Released under Apache 2.0 license as described in the file LICENSE.
 import Multiway.ClusterJansonB
 
 /-!
-# A rank-2 witness on a non-trivial `𝒟`
+# A rank-2 example on a non-trivial `𝒟`
 
-This file exhibits a design satisfying every hypothesis of the vector form of Theorem 5(a)
+This file gives a design satisfying every hypothesis of the vector form of Theorem 5(a)
 (`ClusterJanson.cltcluster_a_general_betaJM_janson_unconditional_vector_of_dep`) at `r = 2`,
 on the proper sub-σ-field `Dw`, with a random `𝒟`-measurable design, a non-transitive `J = 2`
 sharing relation, and a restricted variance `𝒱_n` that is not a multiple of the identity.
 
 ## The design
 
-`N_n = 2(n+3)` observations indexed by `Fin (n+3) × Fin 2`; observation `(o, j)` carries the
-`j`-th regressor alone at level `w_j` (`w_0 = 1`, `w_1 = 2`). Hence
+`N_n = 2(n+3)` observations indexed by `Fin (n+3) × Fin 2`; observation `(o, j)` has regressor
+vector `w_j e_j`, with `e_j` the `j`-th unit vector, `w_0 = 1` and `w_1 = 2`. Hence
 `X̃_n'X̃_n = diag(n+3, 4(n+3))`, `𝓡_n = I_2`, `Ω_n = I` and
 `𝒱_n = diag((n+3)^{-1}, (4(n+3))^{-1})`. The dependency graph is `pathG` on the first index,
 so `D_n = 5`, `λ_min(Ω_n) = n+3` and `δ_n = 250/(n+3) → 0`. The disturbances are fair signs.
@@ -23,7 +23,8 @@ so `D_n = 5`, `λ_min(Ω_n) = n+3` and `δ_n = 250/(n+3) → 0`. The disturbance
 ## Main results
 
 * `rk2_restrictedVar_ne_smul_one`: `𝒱_n` is not a multiple of the identity.
-* `cltcluster_a_general_betaJM_janson_unconditional_vector_rank2_witness`: the witness.
+* `cltcluster_a_general_betaJM_janson_unconditional_vector_rank2_witness`: Theorem 5(a) on this
+  design.
 -/
 
 namespace Multiway.ClusterJanson
@@ -54,7 +55,7 @@ theorem one_le_rk2w_sq (k : Fin 2) : (1 : ℝ) ≤ (rk2w k) ^ 2 := by
 theorem rk2w_sq_le_four (k : Fin 2) : (rk2w k) ^ 2 ≤ 2 ^ 2 := by
   fin_cases k <;> norm_num [rk2w]
 
-/-- `X̃_n`: observation `(o, j)` carries the `j`-th regressor alone, at level `w_j`. -/
+/-- `X̃_n`: the row of observation `(o, j)` is `w_j e_j`. -/
 noncomputable def rk2Xt (n : ℕ) : Matrix (Fin (n + 3) × Fin 2) (Fin 2) ℝ :=
   fun p k => if p.2 = k then rk2w k else 0
 
@@ -322,7 +323,7 @@ noncomputable def rk2Dep {μ : Measure Aw} [IsProbabilityMeasure μ]
       (Measurable.of_eval fun k : ↥A => meas_rk2vSign n (k : Fin (n + 3) × Fin 2))
       (Measurable.of_eval fun k : ↥Bs => meas_rk2vSign n (k : Fin (n + 3) × Fin 2)) hP1
 
-/-- Every closed neighbourhood has at most `3 × 2 = 6` members, so `D_n = 5` serves. -/
+/-- Every closed neighbourhood has at most `3 × 2 = 6` members, so `D_n = 5` bounds the degree. -/
 theorem rk2Dep_nbhd_card {μ : Measure Aw} [IsProbabilityMeasure μ]
     (hmap : Measure.map (Prod.snd : Aw → Cw) μ = P1) (n : ℕ) (p : Fin (n + 3) × Fin 2) :
     ((rk2Dep hmap n).nbhd p).card ≤ 6 := by
@@ -340,7 +341,8 @@ theorem rk2Dep_nbhd_card {μ : Measure Aw} [IsProbabilityMeasure μ]
 
 /-! ### The random design, the estimator and the rate -/
 
-/-- the design at index `n`, with the sign of the design coin: `𝒟`-measurable and non-constant -/
+/-- the design at index `n` times the sign of the design coin; it is `𝒟`-measurable and
+non-constant -/
 noncomputable def rk2gXt (n : ℕ) (y : Aw) : Matrix (Fin (n + 3) × Fin 2) (Fin 2) ℝ :=
   sgnA y • rk2Xt n
 
@@ -379,7 +381,7 @@ theorem tendsto_rk2_accumRate :
 
 end Rank2Witness
 
-/-! ### The witness -/
+/-! ### The example -/
 
 section Rank2
 
@@ -388,7 +390,7 @@ open Matrix
 open Multiway.SteinCluster.FrozenDesignWitness
 open Multiway.ClusterJanson.Rank2Witness
 
-/-- **Rank-2 witness for Theorem 5(a).** The design coin is fair; `𝒟` is a proper sub-σ-field;
+/-- **Rank-2 example for Theorem 5(a).** The design coin is fair; `𝒟` is a proper sub-σ-field;
 `ℙ_ω ≠ P`; the design `±X̃_n` is random; the sharing relation is not transitive; the restriction
 dimension is `2`; `𝒱_n` is not a multiple of the identity for any `n`, `ω` and scalar; and
 `𝒱_n^{-1/2}𝓡_n(β̂_JM − β) ⟶ᵈ N(0, I_2)` under `P`. -/

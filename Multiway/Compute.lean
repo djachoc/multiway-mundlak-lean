@@ -36,8 +36,8 @@ open scoped RealInnerProductSpace
 
 /-! ## Splitting a subspace along a subspace of it
 
-For `T ≤ S`: `T ⊔ (S ⊓ Tᗮ) = S`, the projector onto `S ⊓ Tᗮ` agrees with the projector onto `S`
-on `Tᗮ`, and the dimensions subtract. -/
+Let `T ≤ S`. Then `T ⊔ (S ⊓ Tᗮ) = S`, the projector onto `S ⊓ Tᗮ` agrees with the projector onto
+`S` on `Tᗮ`, and the dimensions subtract. -/
 
 section Split
 
@@ -45,7 +45,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDim
 variable {S T : Submodule ℝ E}
 
 omit [FiniteDimensional ℝ E] in
-/-- `T` and `S ⊓ Tᗮ` are orthogonal, whatever `S` is. -/
+/-- `T` and `S ⊓ Tᗮ` are orthogonal for every `S`. -/
 theorem isOrtho_inf_orthogonal (S T : Submodule ℝ E) : T ⟂ (S ⊓ Tᗮ) :=
   (Submodule.isOrtho_iff_le.mpr inf_le_right).symm
 
@@ -59,8 +59,8 @@ theorem sup_inf_orthogonal_eq (hTS : T ≤ S) : T ⊔ (S ⊓ Tᗮ) = S := by
   rw [Submodule.starProjection_orthogonal_val]
   exact Submodule.sub_mem _ hx (hTS (T.starProjection_apply_mem x))
 
-/-- On `Tᗮ` the projector onto `S ⊓ Tᗮ` is the projector onto `S`: the reduced design's
-projector is the restriction of the original one. -/
+/-- On `Tᗮ` the projector onto `S ⊓ Tᗮ` is the projector onto `S`, so the projector of the reduced
+design is the restriction of the original one. -/
 theorem starProjection_inf_orthogonal_eq (hTS : T ≤ S) {x : E} (hx : x ∈ Tᗮ) :
     (S ⊓ Tᗮ).starProjection x = S.starProjection x := by
   have hsup : T ⊔ (S ⊓ Tᗮ) = S := sup_inf_orthogonal_eq hTS
@@ -121,7 +121,7 @@ theorem inner_residualMaker_singleton (he : e ∈ S) : ⟪e, residualMaker S x e
 space. -/
 noncomputable def deletedSpace (S : Submodule ℝ E) (e : E) : Submodule ℝ E := S ⊓ (ℝ ∙ e)ᗮ
 
-/-- Restriction to `𝒪 ∖ {o}` inside the original ambient space: the component of `u`
+/-- Restriction to `𝒪 ∖ {o}` inside the original ambient space. It is the component of `u`
 orthogonal to `e_o`, which is `u - u_o e_o` when `⟪e, e⟫ = 1`. -/
 noncomputable def deleteObs (e : E) (u : E) : E := u - ⟪e, u⟫ • e
 
@@ -135,7 +135,7 @@ theorem span_singleton_le (he : e ∈ S) : (ℝ ∙ e) ≤ S :=
   (Submodule.span_singleton_le_iff_mem e S).mpr he
 
 /-- The joint within transformation of the reduced design, applied to the restricted column,
-is the original `Q_[Δ]u`: the residual maker of the reduced design is `Q_[Δ]` with row and
+is the original `Q_[Δ]u`, so the residual maker of the reduced design is `Q_[Δ]` with row and
 column `o` deleted. -/
 theorem within_deletedSpace (he : e ∈ S) (hee : ⟪e, e⟫ = 1) (u : E) :
     deleteObs e u - (deletedSpace S e).starProjection (deleteObs e u)
@@ -175,7 +175,7 @@ end Singleton
 
 /-! ## Clause (b): the closed form once one dimension is absorbed
 
-Here `Δ_{m*}` enters through its index map `f : O → L`, with `P_{m*} = proj f` the projector onto
+The matrix `Δ_{m*}` is represented by its index map `f : O → L`, with `P_{m*} = proj f` the projector onto
 `𝒮_{m*} = fibreSpace f`; `Δ_{-m*}` is a matrix `Dr` with column space `𝒮_{-m*}`. The reduced
 spectral decomposition `W'W = U_pD_pU_p'` (with `U_p'U_p = I_p`, `D_p ≻ 0`) is a hypothesis
 `hspec`, and `D_p^{-1/2}` is the inverse of `sqrtPD`. -/
@@ -338,7 +338,7 @@ theorem specProj_mul_eq_self (hD : Dp.PosDef) (hU : Upᵀ * Up = 1)
     _ = W * Up * Upᵀ := by rw [sqrtPD_inv_mul hD, Matrix.mul_one]
     _ = W := mul_eigenvectors_eq_self hU hspec
 
-/-- `col(VV') = col(W)`: one inclusion because `V = W(U_pD_p^{-1/2})`, the other because
+/-- `col(VV') = col(W)`. One inclusion holds because `V = W(U_pD_p^{-1/2})`, the other because
 `VV'W = W`. -/
 theorem colSpace_specProj (hD : Dp.PosDef) (hU : Upᵀ * Up = 1)
     (hspec : Wᵀ * W = Up * Dp * Upᵀ) : colSpace (specProj W Up Dp) = colSpace W := by
@@ -538,7 +538,7 @@ end Annihilate
 /-! ### The error bound
 
 `‖Γ_k - Q_[Δ]Γ_0‖_F = ‖P_[Δ]Γ_k‖_F ≤ ‖Δ'Γ_k‖_F / σ⁺_min(Δ)`. The hypothesis `hσ` is the
-defining property of `σ⁺_min(Δ)` used, and `hker` is `Δ'Q_[Δ] = 0`. -/
+property of `σ⁺_min(Δ)` that the proof uses, and `hker` is `Δ'Q_[Δ] = 0`. -/
 
 section Bound
 
@@ -630,7 +630,7 @@ theorem sweepList_apply_of_pairwise (hconst : ∀ m, C₀ ≤ P m)
 
 variable [Fintype D] [Nonempty D]
 
-/-- Under pairwise orthogonality one sweep suffices: by Proposition 1 (Dimension-wise Mundlak
+/-- Under pairwise orthogonality one sweep suffices. By Proposition 1 (Dimension-wise Mundlak
 equivalence), `Γ_1 = Q_[Δ]Γ_0`. -/
 theorem sweepList_eq_orthogonal (hconst : ∀ m, C₀ ≤ P m)
     (hpair : ∀ m ℓ, m ≠ ℓ → ∀ x : E,
