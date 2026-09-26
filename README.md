@@ -128,9 +128,9 @@ Théorème 2 bis is in `Multiway/Marcinkiewicz.lean`.
 ## Ported modules
 
 Nine modules come from CausalSmith, the
-[`Causalean`](https://github.com/Jiyuan-Tan/CausalSmith) library of Jiyuan Tan, under the Apache
+[Causalean](https://github.com/Jiyuan-Tan/CausalSmith) library of Jiyuan Tan, under the Apache
 License 2.0. Eight of them are the Stein-method central limit theorem for dependency graphs in
-`Multiway/SteinCLT/`, and `Multiway/Cumulant.lean` comes from that library's moment-problem file.
+[`Multiway/SteinCLT/`](Multiway/SteinCLT), and [`Multiway/Cumulant.lean`](Multiway/Cumulant.lean) comes from that library's moment-problem file.
 Each begins with the notice the license requires, which names the original file and the changes
 made to it. In the eight Stein-method modules the changes are the paths of the imported files and
 one repair after a lemma was renamed in Mathlib, and no name, namespace or attribution of the
@@ -138,9 +138,9 @@ original was altered. `Multiway/Cumulant.lean` takes only the form of one defini
 library; the rest of the file was written here.
 
 Four modules come from [Stat-Lean](https://statlean.github.io/website/), the Lean 4
-formalization of statistical theory ([`StatLean/Stat-Lean`](https://github.com/StatLean/Stat-Lean)),
+formalization of statistical theory ([StatLean/Stat-Lean](https://github.com/StatLean/Stat-Lean)),
 copyright 2024 Junwei Lu, under the Apache License 2.0. They are the Brown martingale central
-limit theorem in `Multiway/BrownCLT/`. Each begins with the notice the license requires, which
+limit theorem in [`Multiway/BrownCLT/`](Multiway/BrownCLT). Each begins with the notice the license requires, which
 names the original file and the changes made to it. The changes are the paths of the imported
 files, repairs to proofs that no longer compiled under the newer Mathlib, and shorter
 explanatory comments.
