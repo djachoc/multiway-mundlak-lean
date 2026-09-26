@@ -155,7 +155,9 @@ explanatory comments.
             Rios-Avila, Fernando},
   title  = {Mundlak regressions in multiway panels with irregular support:
             Failure, repair, and inference},
-  note   = {Unpublished manuscript},
+  note   = {Unpublished manuscript. Every result is formalized and
+            checked in Lean 4 at
+            \url{https://github.com/djachoc/multiway-mundlak-lean}},
   year   = {2026}
 }
 ```
