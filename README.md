@@ -29,7 +29,7 @@ lake exe cache get
 lake build
 ```
 
-Lean is pinned in `lean-toolchain` and Mathlib in `lake-manifest.json`, so this is the build the
+Lean is pinned in [`lean-toolchain`](lean-toolchain) and Mathlib in [`lake-manifest.json`](lake-manifest.json), so this is the build the
 results were checked against. `lake exe cache get` downloads Mathlib's compiled artifacts and
 takes a few minutes; without it `lake build` compiles Mathlib from source, which takes hours.
 After the first build, `lake build` recompiles only an edited module and its dependents.
@@ -37,7 +37,7 @@ After the first build, `lake build` recompiles only an edited module and its dep
 ## Verification
 
 `lake build` checks that every file elaborates. It does not rule out a `sorry`, which elaborates
-with a warning and leaves the build green. `Verify.lean` has one [`#print axioms`](https://lean-lang.org/doc/reference/latest/ValidatingProofs/#validating-printing-axioms)
+with a warning and leaves the build green. [`Verify.lean`](Verify.lean) has one [`#print axioms`](https://lean-lang.org/doc/reference/latest/ValidatingProofs/#validating-printing-axioms)
 directive per public declaration and is run separately.
 
 ```
@@ -45,8 +45,8 @@ lake env lean Verify.lean
 ```
 
 No declaration reports [`sorryAx`](https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#sorryAx), and no axiom appears outside the three named above. Seven
-directives print under a name other than the one asked for, because `Multiway/Wald.lean`
-re-exports them from `Multiway/Sqrt.lean` and `#print axioms` resolves an alias to the original.
+directives print under a name other than the one asked for, because [`Multiway/Wald.lean`](Multiway/Wald.lean)
+re-exports them from [`Multiway/Sqrt.lean`](Multiway/Sqrt.lean) and `#print axioms` resolves an alias to the original.
 
 > **For readers new to Lean**
 >
@@ -71,7 +71,7 @@ re-exports them from `Multiway/Sqrt.lean` and `#print axioms` resolves an alias 
 ## Finding a result
 
 A result can span several modules, and a module can hold several results. Theorem 4 is spread
-over eight modules. `Multiway/Sharing.lean` holds all five clauses of Lemma SM.B.11 together with
+over eight modules. [`Multiway/Sharing.lean`](Multiway/Sharing.lean) holds all five clauses of Lemma SM.B.11 together with
 Proposition SM.D.3. Modules are named after their mathematical content.
 
 [`results/map.tsv`](results/map.tsv) is the index, and [`results/README.md`](results/README.md)
@@ -119,11 +119,11 @@ hypotheses are consistent but does not exercise the matrix algebra.
 
 Two results from outside the paper are formalized here because its proofs use them. Theorem 2 of
 Janson (1988, p. 307), the central limit theorem for sums over a dependency graph, is in
-`Multiway/JansonCLT.lean` with his Theorem 1 and Lemmas 1 to 4. Janson states Remark 3, which
+[`Multiway/JansonCLT.lean`](Multiway/JansonCLT.lean) with his Theorem 1 and Lemmas 1 to 4. Janson states Remark 3, which
 extends the theorem to unbounded summands by truncation, without proof. The paper does not use
 it: the proof of Theorem 5(b) truncates the summands itself and applies Theorem 2 to the truncated
-array, and that argument is formalized in `Multiway/ClusterJansonB.lean`. Marcinkiewicz's
-Théorème 2 bis is in `Multiway/Marcinkiewicz.lean`.
+array, and that argument is formalized in [`Multiway/ClusterJansonB.lean`](Multiway/ClusterJansonB.lean). Marcinkiewicz's
+Théorème 2 bis is in [`Multiway/Marcinkiewicz.lean`](Multiway/Marcinkiewicz.lean).
 
 ## Ported modules
 
@@ -134,7 +134,7 @@ License 2.0. Eight of them are the Stein-method central limit theorem for depend
 Each begins with the notice the license requires, which names the original file and the changes
 made to it. In the eight Stein-method modules the changes are the paths of the imported files and
 one repair after a lemma was renamed in Mathlib, and no name, namespace or attribution of the
-original was altered. `Multiway/Cumulant.lean` takes only the form of one definition from that
+original was altered. [`Multiway/Cumulant.lean`](Multiway/Cumulant.lean) takes only the form of one definition from that
 library; the rest of the file was written here.
 
 Four modules come from [Stat-Lean](https://github.com/StatLean/Stat-Lean), the Lean 4
