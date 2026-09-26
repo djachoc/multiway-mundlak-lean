@@ -137,9 +137,8 @@ one repair after a lemma was renamed in Mathlib, and no name, namespace or attri
 original was altered. `Multiway/Cumulant.lean` takes only the form of one definition from that
 library; the rest of the file was written here.
 
-Four modules come from [Stat-Lean](https://statlean.github.io/website/), the Lean 4
-formalization of statistical theory ([StatLean/Stat-Lean](https://github.com/StatLean/Stat-Lean)),
-copyright 2024 Junwei Lu, under the Apache License 2.0. They are the Brown martingale central
+Four modules come from [Stat-Lean](https://github.com/StatLean/Stat-Lean), the Lean 4
+formalization of statistical theory, copyright 2024 Junwei Lu, under the Apache License 2.0. They are the Brown martingale central
 limit theorem in [`Multiway/BrownCLT/`](Multiway/BrownCLT). Each begins with the notice the license requires, which
 names the original file and the changes made to it. The changes are the paths of the imported
 files, repairs to proofs that no longer compiled under the newer Mathlib, and shorter
