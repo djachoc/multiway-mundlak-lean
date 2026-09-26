@@ -14,8 +14,9 @@
 [Fernando Rios-Avila](https://friosavila.github.io/)
 
 This development formalizes in <a href="https://lean-lang.org"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/lean-logo-official-TM-white-2400x900.svg"><img src="assets/lean-logo-official-TM-transparent-2400x900.svg" alt="Lean" height="18" align="absmiddle"></picture></a> 4, with Mathlib, the 43 labelled results of the
-paper and its supplemental materials, each one stated and proved. There is no `sorry`, and
-no declaration depends on an axiom other than `propext`, `Classical.choice` and `Quot.sound`.
+paper and its supplemental materials, each one stated and proved. There is no [`sorry`](https://lean-lang.org/doc/reference/latest/Tactic-Proofs/Tactic-Reference/#sorry),
+and no declaration depends on an axiom other than [`propext`](https://lean-lang.org/theorem_proving_in_lean4/Axioms-and-Computation/#propositional-extensionality),
+[`Classical.choice`](https://lean-lang.org/theorem_proving_in_lean4/Axioms-and-Computation/#choice) and [`Quot.sound`](https://lean-lang.org/theorem_proving_in_lean4/Axioms-and-Computation/#quotients).
 
 The methods of the paper are implemented for Stata in
 [`cre`](https://github.com/djachoc/cre-stata).
@@ -36,16 +37,29 @@ After the first build, `lake build` recompiles only an edited module and its dep
 ## Verification
 
 `lake build` checks that every file elaborates. It does not rule out a `sorry`, which elaborates
-with a warning and leaves the build green. `Verify.lean` has one `#print axioms` directive
-per public declaration and is run separately.
+with a warning and leaves the build green. `Verify.lean` has one [`#print axioms`](https://lean-lang.org/doc/reference/latest/ValidatingProofs/#validating-printing-axioms)
+directive per public declaration and is run separately.
 
 ```
 lake env lean Verify.lean
 ```
 
-No declaration reports `sorryAx`, and no axiom appears outside the three named above. Seven
+No declaration reports [`sorryAx`](https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#sorryAx), and no axiom appears outside the three named above. Seven
 directives print under a name other than the one asked for, because `Multiway/Wald.lean`
 re-exports them from `Multiway/Sqrt.lean` and `#print axioms` resolves an alias to the original.
+
+### For readers new to Lean
+
+Lean accepts a proof only when every step follows from its rules of logic and from a short list of axioms, and `#print axioms` lists the axioms a result
+rests on. The word `sorry` stands in for a step that has not been proved. Lean accepts it with
+a warning and counts it as an axiom named `sorryAx`, so a result with an unproved step shows
+`sorryAx` in its list. `propext`, `Classical.choice` and `Quot.sound` are the three axioms of
+Lean's standard logic, used by Mathlib and by almost every development built on it. The first
+says that two statements that imply each other are equal, the second that an element can be
+chosen from any nonempty collection, and the third that two elements identified by a relation
+are equal in the quotient it defines. Together they amount to ordinary mathematics, classical
+logic with the axiom of choice, so a result that depends only on these three is proved from those
+foundations.
 
 ## Finding a result
 
@@ -84,8 +98,8 @@ lake-manifest.json       the pinned Mathlib revision
 
 ## Reading the statements
 
-Each Lean statement transcribes a printed one. Some hypotheses
-are measurability or nonemptiness conditions that the paper leaves implicit. Where the paper
+Each Lean statement restates a result as it is printed in the paper or its supplemental
+materials. Some hypotheses are measurability or nonemptiness conditions that the paper leaves implicit. Where the paper
 writes convergence in probability, a few statements give almost everywhere convergence along a
 realization of the conditioning variables.
 
@@ -110,16 +124,19 @@ Nine modules come from CausalSmith, the
 [`Causalean`](https://github.com/Jiyuan-Tan/CausalSmith) library of Jiyuan Tan, under the Apache
 License 2.0. Eight of them are the Stein-method central limit theorem for dependency graphs in
 `Multiway/SteinCLT/`, and `Multiway/Cumulant.lean` comes from that library's moment-problem file.
-Each has the notice the license requires, naming the upstream path and the changes made.
-Those changes are re-rooted imports and one repair for a Mathlib rename. No upstream declaration
-name, namespace or attribution was altered.
+Each begins with the notice the license requires, which names the original file and the changes
+made to it. In the eight Stein-method modules the changes are the paths of the imported files and
+one repair after a lemma was renamed in Mathlib, and no name, namespace or attribution of the
+original was altered. `Multiway/Cumulant.lean` takes only the form of one definition from that
+library; the rest of the file was written here.
 
 Four modules come from [Stat-Lean](https://statlean.github.io/website/), the Lean 4
 formalization of statistical theory ([`StatLean/Stat-Lean`](https://github.com/StatLean/Stat-Lean)),
 copyright 2024 Junwei Lu, under the Apache License 2.0. They are the Brown martingale central
-limit theorem in `Multiway/BrownCLT/`. Each has the notice the license requires, naming the
-upstream path and the changes made: re-rooted imports, proof repairs for the newer Mathlib and
-shortened docstrings.
+limit theorem in `Multiway/BrownCLT/`. Each begins with the notice the license requires, which
+names the original file and the changes made to it. The changes are the paths of the imported
+files, repairs to proofs that no longer compiled under the newer Mathlib, and shorter
+explanatory comments.
 
 ## Citation
 
