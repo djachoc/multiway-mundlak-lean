@@ -36,7 +36,7 @@ After the first build, `lake build` recompiles only an edited module and its dep
 
 ## Verification
 
-`lake build` checks that every file elaborates. It does not rule out a `sorry`, which elaborates
+`lake build` checks that every file elaborates. It does not rule out a [`sorry`](https://lean-lang.org/doc/reference/latest/Tactic-Proofs/Tactic-Reference/#sorry), which elaborates
 with a warning and leaves the build green. [`Verify.lean`](Verify.lean) has one [`#print axioms`](https://lean-lang.org/doc/reference/latest/ValidatingProofs/#validating-printing-axioms)
 directive per public declaration and is run separately.
 
@@ -46,23 +46,23 @@ lake env lean Verify.lean
 
 No declaration reports [`sorryAx`](https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#sorryAx), and no axiom appears outside the three named above. Seven
 directives print under a name other than the one asked for, because [`Multiway/Wald.lean`](Multiway/Wald.lean)
-re-exports them from [`Multiway/Sqrt.lean`](Multiway/Sqrt.lean) and `#print axioms` resolves an alias to the original.
+re-exports them from [`Multiway/Sqrt.lean`](Multiway/Sqrt.lean) and [`#print axioms`](https://lean-lang.org/doc/reference/latest/ValidatingProofs/#validating-printing-axioms) resolves an alias to the original.
 
 > **For readers new to Lean**
 >
 > Lean accepts a proof only when every step follows from its rules of logic and from a short
-> list of axioms, the basic facts that are assumed rather than proved. `#print axioms` lists the
+> list of axioms, the basic facts that are assumed rather than proved. [`#print axioms`](https://lean-lang.org/doc/reference/latest/ValidatingProofs/#validating-printing-axioms) lists the
 > axioms a result depends on.
 >
-> The word `sorry` marks a step that has not been proved. Lean accepts it with a warning and
-> records it as an axiom named `sorryAx`, so a result with an unproved step shows `sorryAx` in
+> The word [`sorry`](https://lean-lang.org/doc/reference/latest/Tactic-Proofs/Tactic-Reference/#sorry) marks a step that has not been proved. Lean accepts it with a warning and
+> records it as an axiom named [`sorryAx`](https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#sorryAx), so a result with an unproved step shows [`sorryAx`](https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#sorryAx) in
 > that list. None of the results here does.
 >
-> `propext`, `Classical.choice` and `Quot.sound` are the three axioms of Lean's standard logic,
-> used by Mathlib and by almost every development built on it. `propext` says that two
+> [`propext`](https://lean-lang.org/theorem_proving_in_lean4/Axioms-and-Computation/#propositional-extensionality), [`Classical.choice`](https://lean-lang.org/theorem_proving_in_lean4/Axioms-and-Computation/#choice) and [`Quot.sound`](https://lean-lang.org/theorem_proving_in_lean4/Axioms-and-Computation/#quotients) are the three axioms of Lean's standard logic,
+> used by Mathlib and by almost every development built on it. [`propext`](https://lean-lang.org/theorem_proving_in_lean4/Axioms-and-Computation/#propositional-extensionality) says that two
 > statements that are logically equivalent, each implying the other, can replace each other
-> anywhere. `Classical.choice` is the axiom of choice: from any collection known to have a
-> member, one member can be picked, even when no rule says which. `Quot.sound` says that when
+> anywhere. [`Classical.choice`](https://lean-lang.org/theorem_proving_in_lean4/Axioms-and-Computation/#choice) is the axiom of choice: from any collection known to have a
+> member, one member can be picked, even when no rule says which. [`Quot.sound`](https://lean-lang.org/theorem_proving_in_lean4/Axioms-and-Computation/#quotients) says that when
 > objects are grouped into classes, as the fractions 1/2 and 2/4 are treated as one number,
 > two objects in the same class are equal. Together these three give ordinary mathematics,
 > classical logic with the axiom of choice, so a result that depends only on them is proved from
