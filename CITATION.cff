@@ -1,0 +1,44 @@
+cff-version: 1.2.0
+message: If you refer to this formalization, please cite the paper below.
+title: >-
+  Lean 4 formalization of "Mundlak Regressions in Multiway Panels with
+  Irregular Support: Failure, Repair, and Inference"
+abstract: >-
+  A Lean 4 development, with Mathlib, stating and proving every labelled result
+  of the paper and its supplemental materials. The development compiles with no
+  sorry, and every checked declaration depends only on propext,
+  Classical.choice and Quot.sound.
+type: software
+license: Apache-2.0
+repository-code: https://github.com/djachoc/multiway-mundlak-lean
+authors:
+  - family-names: Harrison
+    given-names: Benjamin O.
+    affiliation: Emory University
+  - family-names: Canavire Bacarreza
+    given-names: Gustavo
+    affiliation: World Bank and Universidad Privada Boliviana
+  - family-names: Jacho-Chavez
+    given-names: David
+    affiliation: Emory University
+  - family-names: Rios-Avila
+    given-names: Fernando
+    affiliation: >-
+      Universidad Privada Boliviana and London School of Economics and
+      Political Science
+preferred-citation:
+  type: unpublished
+  title: >-
+    Mundlak Regressions in Multiway Panels with Irregular Support: Failure,
+    Repair, and Inference
+  year: 2026
+  notes: Unpublished manuscript
+  authors:
+    - family-names: Harrison
+      given-names: Benjamin O.
+    - family-names: Canavire Bacarreza
+      given-names: Gustavo
+    - family-names: Jacho-Chavez
+      given-names: David
+    - family-names: Rios-Avila
+      given-names: Fernando

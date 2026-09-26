@@ -1,0 +1,26 @@
+Lean 4 formalization of the theoretical results of
+
+  Mundlak Regressions in Multiway Panels with Irregular Support:
+  Failure, Repair, and Inference
+
+Copyright 2026 Benjamin O. Harrison, Gustavo Canavire Bacarreza,
+David Jacho-Chavez and Fernando Rios-Avila.
+
+Licensed under the Apache License, Version 2.0. A copy is in LICENSE and at
+http://www.apache.org/licenses/LICENSE-2.0
+
+This development builds on Mathlib, Copyright the Mathlib Community, under the
+same license.
+
+Nine modules are ported from CausalSmith, the Causalean library, Copyright (c)
+2026 Jiyuan Tan, under the Apache License, Version 2.0. They are the eight
+files of Multiway/SteinCLT/ and Multiway/Cumulant.lean. Each carries at its
+head the notice that license requires, naming the upstream path and the changes
+made. The upstream copyright block, author line, declaration names, namespaces
+and docstrings are unaltered.
+
+The Lean wordmark in assets/ is a trademark of the Lean Focused Research
+Organization, used unaltered and with its (TM) intact, as published at
+https://lean-lang.org/logos/ under the policy at
+https://lean-lang.org/trademark-policy/. It indicates that this development is
+written in Lean, and implies no endorsement.
