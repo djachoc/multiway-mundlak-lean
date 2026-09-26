@@ -31,8 +31,7 @@ lake build
 Lean is pinned in `lean-toolchain` and Mathlib in `lake-manifest.json`, so this is the build the
 results were checked against. `lake exe cache get` downloads Mathlib's compiled artifacts and
 takes a few minutes; without it `lake build` compiles Mathlib from source, which takes hours.
-Only the first build is slow. Afterwards `lake build` recompiles an edited module and its
-dependents.
+After the first build, `lake build` recompiles only an edited module and its dependents.
 
 ## Verification
 
@@ -52,12 +51,12 @@ re-exports them from `Multiway/Sqrt.lean` and `#print axioms` resolves an alias 
 
 A result can span several modules, and a module can hold several results. Theorem 4 is spread
 over eight modules. `Multiway/Sharing.lean` holds all five clauses of Lemma SM.B.11 together with
-Proposition SM.D.3. Modules are named for the mathematics, not for the numbering of the paper.
+Proposition SM.D.3. Modules are named after their mathematical content.
 
 [`results/map.tsv`](results/map.tsv) is the index, and [`results/README.md`](results/README.md)
 is the same table rendered. Each row gives a printed result, the module that holds it and the
 declarations that state its clauses. To read a result, open that module. Its header states what
-the declarations prove. There are no per-result pages.
+the declarations prove.
 
 The figure below is drawn from the proofs in the manuscript and reads from left to right, from
 supporting results to the main ones. Lemma SM.B.6 is invoked by nine other proofs and
@@ -72,7 +71,7 @@ Theorems 3 and 4 by six each; Theorem 1 invokes nothing. Its source is
 Multiway.lean            the root module, importing every file below
 Multiway/                74 modules, and two directories
 Multiway/SteinCLT/       8 ported modules, the Stein-method chain
-Multiway/BrownCLT/       4 ported modules
+Multiway/BrownCLT/       4 ported modules, the Brown martingale central limit theorem
 Verify.lean              one #print axioms directive per public declaration
 results/map.tsv          the index, one row per printed result
 results/README.md        the same table rendered
@@ -114,6 +113,13 @@ License 2.0. Eight of them are the Stein-method central limit theorem for depend
 Each has the notice the license requires, naming the upstream path and the changes made.
 Those changes are re-rooted imports and one repair for a Mathlib rename. No upstream declaration
 name, namespace or attribution was altered.
+
+Four modules come from [Stat-Lean](https://statlean.github.io/website/), the Lean 4
+formalization of statistical theory ([`StatLean/Stat-Lean`](https://github.com/StatLean/Stat-Lean)),
+copyright 2024 Junwei Lu, under the Apache License 2.0. They are the Brown martingale central
+limit theorem in `Multiway/BrownCLT/`. Each has the notice the license requires, naming the
+upstream path and the changes made: re-rooted imports, proof repairs for the newer Mathlib and
+shortened docstrings.
 
 ## Citation
 
