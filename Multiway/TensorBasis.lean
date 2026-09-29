@@ -111,7 +111,7 @@ private theorem ae_eval {j : ι} (p : α j → Prop) (h : ∀ᵐ x ∂(μ j), p 
 variable [DecidableEq ι]
 
 omit [Fintype ι] in
-/-- Reading an update off coordinatewise. -/
+/-- Applying `F i` at coordinate `i` commutes with updating the `j`-th coordinate. -/
 private theorem apply_update {β : ι → Sort*} {γ : Sort*} (F : ∀ i, β i → γ) (g : ∀ i, β i)
     (j : ι) (z : β j) (i : ι) :
     F i (Function.update g j z i) = Function.update (fun i => F i (g i)) j (F j z) i := by

@@ -1,5 +1,6 @@
 /-
-Copyright (c) 2026. All rights reserved.
+Copyright (c) 2026 Benjamin O. Harrison, Gustavo Canavire Bacarreza, David Jacho-Chavez and
+Fernando Rios-Avila.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
 import Multiway.JansonMoments
@@ -255,7 +256,7 @@ theorem cumulant_tendsto_zero {P : ℕ → ProbabilityMeasure ℝ}
   rw [← hlq] at hlt
   exact absurd (hjjeq (φ l)) (ne_of_lt hlt)
 
-/-- **Janson, Theorem 1**, conclusion `(1.4)`: `(1.1)`–`(1.3)` give convergence in
+/-- **Janson, Theorem 1**, conclusion `(1.4)`. Under `(1.1)`–`(1.3)`, the laws converge in
 distribution to `N (mu, sigma ^ 2)`; `sigma ^ 2 = 0` is allowed. -/
 theorem tendsto_gaussPM {P : ℕ → ProbabilityMeasure ℝ}
     (hint : ∀ n p, Integrable (fun x : ℝ => x ^ p) (P n : Measure ℝ))

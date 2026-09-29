@@ -1,36 +1,27 @@
 /-
-PORTED FILE — NOTICE REQUIRED BY THE APACHE LICENSE, VERSION 2.0, SECTION 4.
+Notice required by Section 4 of the Apache License, Version 2.0.
 
-Upstream repository : CausalSmith (the `Causalean` library)
-Upstream path       : Causalean/Mathlib/Probability/SteinMethod/DependencyCLT.lean
-Upstream toolchain  : leanprover/lean4:v4.33.0
-Upstream licence    : Apache License, Version 2.0
-                      http://www.apache.org/licenses/LICENSE-2.0
-Upstream copyright  : Copyright (c) 2026 Jiyuan Tan. All rights reserved. The upstream
-                      copyright block and author line are kept verbatim immediately below.
+This file is a modified copy of a file of CausalSmith, the Causalean library of Jiyuan Tan
+(https://github.com/Jiyuan-Tan/CausalSmith), Copyright (c) 2026 Jiyuan Tan, licensed under the
+Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0); see LICENSE and NOTICE.
 
-MODIFICATIONS: this file has been modified in this package to
-build against leanprover/lean4:v4.34.0 and its matching Mathlib. The changes made here,
-relative to the upstream v4.33.0 file, are:
-  * this notice was prepended;
-  * every `import` line naming a sibling module of this chain was re-rooted from
-    `Causalean.Mathlib.Probability.SteinMethod.…` to `Multiway.SteinCLT.…`, the upstream
-    file names `Bounds_Part1.lean` / `Bounds_Part2.lean` becoming `BoundsPart1.lean` /
-    `BoundsPart2.lean` so that the module names carry no underscore;
-  * ONE proof-level repair: `Mathlib.MeasureTheory.Order.Group.Lattice` was added to the
-    import list, because `Measurable.abs` (the `to_additive` image of `Measurable.mabs`) is
-    no longer reachable through the upstream import set at this Mathlib pin. Without it the
-    dot-notation `(hmeas i).abs` unfolds `Measurable` and reports `Invalid field 'abs': the
-    environment does not contain 'Function.abs'`. No proof text changed.
-No mathematical content, no declaration name, no namespace (the upstream namespace
-`Causalean.Mathlib.Probability.SteinMethod` is kept exactly as written), no docstring and no
-attribution of the upstream file was removed or altered.
+Original path      : Causalean/Mathlib/Probability/SteinMethod/DependencyCLT.lean
+Original toolchain : leanprover/lean4:v4.33.0
+This toolchain     : leanprover/lean4:v4.34.0, with the matching Mathlib
 
-Lean's new module system (`module`, `public import`, `@[expose] public section`) is kept
-exactly as upstream wrote it: v4.34.0 accepts these files unchanged in that respect, so no
-`module` or `public` marker was stripped.
-
-Every repair is marked in place with a `-- PORT v4.34.0:` comment saying what changed.
+Changes made to the original:
+  * this notice was added;
+  * each import of a sibling module of this chain names `Multiway.SteinCLT.…` in place of
+    `Causalean.Mathlib.Probability.SteinMethod.…`, and the original files `Bounds_Part1.lean`
+    and `Bounds_Part2.lean` are `BoundsPart1.lean` and `BoundsPart2.lean` here;
+  * the import `Mathlib.MeasureTheory.Order.Group.Lattice` was added, since `Measurable.abs`,
+    used at `(hmeas i).abs`, is not reachable through the original imports at this version. No
+    proof text was changed.
+No mathematical content, declaration name, docstring or attribution of the original was removed
+or altered. The namespace `Causalean.Mathlib.Probability.SteinMethod`, the module-system markers
+(`module`, `public import` and, where present, `@[expose] public section`) and the copyright block
+and author line that follow this notice are as in the original. Each change is marked in place by a comment beginning
+`PORT v4.34.0`.
 -/
 /-
 Copyright (c) 2026 Jiyuan Tan. All rights reserved.
@@ -59,9 +50,8 @@ public import Mathlib.Probability.Independence.Basic
 public import Mathlib.Probability.Independence.Integration
 public import Mathlib.Analysis.Calculus.MeanValue
 public import Mathlib.MeasureTheory.Integral.Bochner.Basic
--- PORT v4.34.0: `Measurable.abs` (the `to_additive` image of `Measurable.mabs`) is not
--- reachable through the imports above at this Mathlib pin, so its home module is named
--- explicitly. Used at `(hmeas i).abs` below. No other change.
+-- PORT v4.34.0: added, since `Measurable.abs`, used at `(hmeas i).abs` below, is not reachable
+-- through the imports above in this Mathlib.
 public import Mathlib.MeasureTheory.Order.Group.Lattice
 
 /-!

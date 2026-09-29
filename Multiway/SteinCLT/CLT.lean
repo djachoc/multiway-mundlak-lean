@@ -1,35 +1,27 @@
 /-
-PORTED FILE — NOTICE REQUIRED BY THE APACHE LICENSE, VERSION 2.0, SECTION 4.
+Notice required by Section 4 of the Apache License, Version 2.0.
 
-Upstream repository : CausalSmith (the `Causalean` library)
-Upstream path       : Causalean/Mathlib/Probability/SteinMethod/CLT.lean
-Upstream toolchain  : leanprover/lean4:v4.33.0
-Upstream licence    : Apache License, Version 2.0
-                      http://www.apache.org/licenses/LICENSE-2.0
-Upstream copyright  : Copyright (c) 2026 Jiyuan Tan. All rights reserved. The upstream
-                      copyright block and author line are kept verbatim immediately below.
+This file is a modified copy of a file of CausalSmith, the Causalean library of Jiyuan Tan
+(https://github.com/Jiyuan-Tan/CausalSmith), Copyright (c) 2026 Jiyuan Tan, licensed under the
+Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0); see LICENSE and NOTICE.
 
-MODIFICATIONS: this file has been modified in this package to
-build against leanprover/lean4:v4.34.0 and its matching Mathlib. The changes made here,
-relative to the upstream v4.33.0 file, are:
-  * this notice was prepended;
-  * every `import` line naming a sibling module of this chain was re-rooted from
-    `Causalean.Mathlib.Probability.SteinMethod.…` to `Multiway.SteinCLT.…`, the upstream
-    file names `Bounds_Part1.lean` / `Bounds_Part2.lean` becoming `BoundsPart1.lean` /
-    `BoundsPart2.lean` so that the module names carry no underscore;
-  * ONE proof-level repair, in `stein_cdf_clt`: `Measure.isProbabilityMeasure_map` no longer
-    exists at this Mathlib pin, having been replaced by the iff-form
-    `Measure.isProbabilityMeasure_map_iff`. The single call site now takes the right-to-left
-    direction of that iff, which is the same statement. No other proof text changed.
-No mathematical content, no declaration name, no namespace (the upstream namespace
-`Causalean.Mathlib.Probability.SteinMethod` is kept exactly as written), no docstring and no
-attribution of the upstream file was removed or altered.
+Original path      : Causalean/Mathlib/Probability/SteinMethod/CLT.lean
+Original toolchain : leanprover/lean4:v4.33.0
+This toolchain     : leanprover/lean4:v4.34.0, with the matching Mathlib
 
-Lean's new module system (`module`, `public import`, `@[expose] public section`) is kept
-exactly as upstream wrote it: v4.34.0 accepts these files unchanged in that respect, so no
-`module` or `public` marker was stripped.
-
-Every repair is marked in place with a `-- PORT v4.34.0:` comment saying what changed.
+Changes made to the original:
+  * this notice was added;
+  * each import of a sibling module of this chain names `Multiway.SteinCLT.…` in place of
+    `Causalean.Mathlib.Probability.SteinMethod.…`;
+  * in the proof of `stein_cdf_clt`, the original call to `Measure.isProbabilityMeasure_map`,
+    which is not in Mathlib at this version, is replaced by the right-to-left direction of
+    `Measure.isProbabilityMeasure_map_iff`, which states the same fact. No other proof text was
+    changed.
+No mathematical content, declaration name, docstring or attribution of the original was removed
+or altered. The namespace `Causalean.Mathlib.Probability.SteinMethod`, the module-system markers
+(`module`, `public import` and, where present, `@[expose] public section`) and the copyright block
+and author line that follow this notice are as in the original. Each change is marked in place by a comment beginning
+`PORT v4.34.0`.
 -/
 /-
 Copyright (c) 2026 Jiyuan Tan. All rights reserved.
@@ -228,8 +220,8 @@ theorem stein_cdf_clt
     unfold depSum; exact Finset.measurable_sum _ (fun i _ => hmeas n i)
   -- The law of `W n` is a probability measure.
   haveI : ∀ n, IsProbabilityMeasure ((μ n).map (depSum (X n))) := fun n =>
-    -- PORT v4.34.0: `Measure.isProbabilityMeasure_map` was replaced by the iff-form
-    -- `Measure.isProbabilityMeasure_map_iff`; same content, one direction taken.
+    -- PORT v4.34.0: the original calls `Measure.isProbabilityMeasure_map`, which this Mathlib
+    -- states as the right-to-left direction of `Measure.isProbabilityMeasure_map_iff`.
     (Measure.isProbabilityMeasure_map_iff (hWmeas n).aemeasurable).2 inferInstance
   -- Package the laws.
   set lawn : ℕ → ProbabilityMeasure ℝ :=

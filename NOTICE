@@ -12,12 +12,13 @@ http://www.apache.org/licenses/LICENSE-2.0
 This development builds on Mathlib, Copyright the Mathlib Community, under the
 same license.
 
-Nine modules are ported from CausalSmith, the Causalean library, Copyright (c)
-2026 Jiyuan Tan, under the Apache License, Version 2.0. They are the eight
-files of Multiway/SteinCLT/ and Multiway/Cumulant.lean. Each has at its
-head the notice that license requires, naming the upstream path and the changes
-made. The upstream copyright block, author line, declaration names, namespaces
-and docstrings are unaltered.
+Eight modules are ported from CausalSmith, the Causalean library, Copyright (c)
+2026 Jiyuan Tan, under the Apache License, Version 2.0. They are the seven
+files of Multiway/SteinCLT/, in which the upstream copyright block, author line,
+declaration names, namespaces and docstrings are unaltered, and
+Multiway/Cumulant.lean, which takes the form of one definition from that
+library. Each has at its head the notice that license requires, naming the
+upstream path and the changes made.
 
 Four modules are ported from Stat-Lean, the Lean 4 formalization of statistical
 theory (https://github.com/StatLean/Stat-Lean), Copyright 2024 Junwei Lu, under

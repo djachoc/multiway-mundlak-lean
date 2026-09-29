@@ -1,5 +1,6 @@
 /-
-Copyright (c) 2026. All rights reserved.
+Copyright (c) 2026 Benjamin O. Harrison, Gustavo Canavire Bacarreza, David Jacho-Chavez and
+Fernando Rios-Avila.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
 import Multiway.JansonExpansion
@@ -167,12 +168,12 @@ section Witness
 
 open Cumulant Cumulant.SkewWitness
 
-/-- The index map of the example: slots `0` and `1` read the first coordinate, slot `2` the
-second. -/
+/-- The index map of the example, under which slots `0` and `1` read the first coordinate and
+slot `2` the second. -/
 def wπ : Fin 3 → Fin 2 := ![0, 0, 1]
 
-/-- The dependency relation of the example: two variables are adjacent if and only if they read
-the same coordinate. -/
+/-- The dependency relation of the example, under which two variables are adjacent if and only
+if they read the same coordinate. -/
 def wG : Fin 3 → Fin 3 → Prop := fun i k => wπ i = wπ k
 
 instance instDecidableRelWG : DecidableRel wG := fun i k => inferInstanceAs (Decidable (wπ i = wπ k))

@@ -2570,8 +2570,8 @@ theorem integral_zE2_sq (g : Fin 2) : ∫ ω, zE2 ξ g ω ^ 2 ∂P = 1 := by
   rw [hrw, h, integral_xi_sq hlawξ, integral_xi_sq hlawξ, one_mul]
 
 include hlawξ hindepξ hmeasξ in
-/-- The two interaction terms are orthogonal: the shared factor contributes `𝔼[ψ²] = 1`, and
-the unshared factor has mean zero. -/
+/-- The two interaction terms are orthogonal, since the shared factor contributes `𝔼[ψ²] = 1`
+and the unshared factor has mean zero. -/
 theorem integral_zE2_mul (g g' : Fin 2) (hgg : g ≠ g') :
     ∫ ω, zE2 ξ g ω * zE2 ξ g' ω ∂P = 0 := by
   have hval : g.val ≠ g'.val := fun h => hgg (Fin.ext h)
@@ -3628,8 +3628,8 @@ theorem mcompleted_one_zero : completedAt (mcoord 1) lstep 0 = (∅ : Finset (Fi
 theorem mcompleted_one_one : completedAt (mcoord 1) lstep 1 = (Finset.univ : Finset (Fin 2)) := by
   decide
 
-/-- The separation condition of `integral_multiDegenSum_sq`, over the sigma type: every two
-distinct `(γ,t)` differ at some coordinate. -/
+/-- The separation condition of `integral_multiDegenSum_sq`, over the sigma type, namely
+that every two distinct `(γ,t)` differ at some coordinate. -/
 theorem mcoord_one_zero (t : mTup 1) : mcoord 1 t 0 = (0, 3) := rfl
 
 theorem mcoord_one_one (t : mTup 1) : mcoord 1 t 1 = (1, t.val + 1) := rfl
@@ -4101,8 +4101,8 @@ theorem coeFn_radeBasis (r : Fin 2) : (radeBasis r : ℝ → ℝ) =ᵐ[rade] psi
 
 /-! ### The tensor-basis model -/
 
-/-- The two-dimensional level `e = {1,2}`: coordinate `0` lies in dimension `0` and coordinate
-`1` in dimension `1`, so `scoord t` is injective for every sub-tuple. -/
+/-- The two-dimensional level `e = {1,2}`, in which coordinate `0` lies in dimension `0` and
+coordinate `1` in dimension `1`, so that `scoord t` is injective for every sub-tuple. -/
 def scoord : Fin 4 → Fin 2 → ℕ × ℕ :=
   fun t k => if k = 0 then (0, t.val % 2) else (1, t.val / 2 + 1)
 
@@ -4280,8 +4280,8 @@ theorem sgn_mul_self (x : ℝ) : sgn x * sgn x = 1 := by
 theorem sgn_sq (x : ℝ) : sgn x ^ 2 = 1 := by
   rw [pow_two]; exact sgn_mul_self x
 
-/-- A model for the factorization `D^γ_κ = ψ_{r_{k⋆}}(U_w)·A^γ_w`: at the step `κ = 1`
-revealing the site `(1,1)`, two sub-tuples complete, so the block `A^γ` is a sum of two terms. -/
+/-- A model for the factorization `D^γ_κ = ψ_{r_{k⋆}}(U_w)·A^γ_w`. At the step `κ = 1`
+revealing the site `(1,1)` two sub-tuples complete, so the block `A^γ` is a sum of two terms. -/
 theorem factor_witness :
     ∃ (Ω : Type) (_ : MeasurableSpace Ω) (P : Measure Ω) (_ : IsProbabilityMeasure P)
       (ξ : ℕ × ℕ → Ω → ℝ),
@@ -4374,7 +4374,7 @@ theorem varcomp_witness :
   Step2.abs_varcomp_le Finset.univ (fun _ => 2) (fun _ => 1 / 2) (fun _ => 4) 1 4 1
     (by norm_num) (fun _ _ => by norm_num) (fun _ _ => by norm_num) (fun _ _ => by norm_num)
 
-/-- The bound is attained: both sides equal `1`. -/
+/-- The bound is attained, both sides being equal to `1`. -/
 theorem varcomp_witness_value :
     |((∑ _e : Fin 2, ((2 : ℝ) - 1 / 2) * 4) + 1) / 4 - ((∑ _e : Fin 2, (2 : ℝ) * 4) + 1) / 4|
       = 1 ∧ (1 : ℝ) * ∑ _e : Fin 2, (1 : ℝ) / 2 = 1 := by
@@ -4421,8 +4421,8 @@ theorem hsept_scoord : ∀ t s : Fin 4, t ≠ s →
     rintro ⟨k, hk⟩
     fin_cases k <;> (simp [scoord] at hk; try omega)
 
-/-- `hsecond` with equality: four sub-tuples, coefficients `1/2` and second moment `1`, so
-`𝔼[T²] = 1`. -/
+/-- `hsecond` holds with equality for four sub-tuples with coefficients `1/2` and second
+moment `1`, so that `𝔼[T²] = 1`. -/
 theorem hsecond_witness :
     ∃ (Ω : Type) (_ : MeasurableSpace Ω) (P : Measure Ω) (_ : IsProbabilityMeasure P)
       (ξ : ℕ × ℕ → Ω → ℝ),
@@ -4701,8 +4701,8 @@ theorem delta_pad_witness :
 
 /-! ### Models for `hstep5` -/
 
-/-- The untruncated kernel: twice the retained one, so the tail is the retained kernel and the
-`L²` gap is positive. -/
+/-- The untruncated kernel, equal to twice the retained one, so that the tail is the retained
+kernel and the `L²` gap is positive. -/
 noncomputable def Gw : (Fin 2 → ℝ) → ℝ := fun u => 2 * Step2.prodKernel walPsi (rhoW 1) u
 
 /-- The retained kernel `h^{(e)}_L`. -/
@@ -4713,8 +4713,8 @@ theorem Gw_sub_gw : Gw - gw = Step2.prodKernel walPsi (rhoW 1) := by
   show 2 * Step2.prodKernel walPsi (rhoW 1) u - Step2.prodKernel walPsi (rhoW 1) u = _
   ring
 
-/-- `hstep5` at one level with the bound attained: four sub-tuples, coefficients `(t+1)/2`,
-`σ_{n,L} = 1/2` and tail second moment `1`, so the gap is `15/2`. -/
+/-- `hstep5` at one level, with the bound attained for four sub-tuples with coefficients
+`(t+1)/2`, `σ_{n,L} = 1/2` and tail second moment `1`, so that the gap is `15/2`. -/
 theorem hstep5_witness :
     ∃ (Ω : Type) (_ : MeasurableSpace Ω) (P : Measure Ω) (_ : IsProbabilityMeasure P)
       (ξ : ℕ × ℕ → Ω → ℝ),
@@ -4745,7 +4745,7 @@ theorem hstep5_witness :
       (fun _ => Set.mem_univ _) e' hne
   · norm_num [cwit, Fin.sum_univ_four]
 
-/-- `hstep5` summed over two levels of arities `1` and `2`, with the bound attained: the tail
+/-- `hstep5` summed over two levels of arities `1` and `2`, with the bound attained. The tail
 kernel is the full kernel, so `τ_e²(L) = 1` at both levels and `∑_e τ_e²(L)∑_tc²_t = 1`. -/
 theorem hstep5_multi_witness :
     ∃ (Ω : Type) (_ : MeasurableSpace Ω) (P : Measure Ω) (_ : IsProbabilityMeasure P)

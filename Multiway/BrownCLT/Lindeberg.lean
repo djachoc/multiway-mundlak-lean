@@ -1,20 +1,21 @@
 /-
-PORTED FILE — NOTICE REQUIRED BY THE APACHE LICENSE, VERSION 2.0, SECTION 4.
+Notice required by Section 4 of the Apache License, Version 2.0.
 
-Upstream repository : Stat-Lean (StatLean)
-Upstream path       : StatLean/HypothesisTesting/ForMathlib/LindebergCLT.lean
-Upstream toolchain  : leanprover/lean4:v4.29.1
-Upstream licence    : Apache License, Version 2.0
-                      http://www.apache.org/licenses/LICENSE-2.0
+This file is a modified copy of a file of Stat-Lean, the Lean 4 formalization of statistical
+theory (https://github.com/StatLean/Stat-Lean), Copyright 2024 Junwei Lu, licensed under the
+Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0); see LICENSE and NOTICE.
 
-MODIFICATIONS: this file has been modified in this package to
-build against leanprover/lean4:v4.34.0 and its matching Mathlib. The changes made here,
-relative to the upstream v4.29.1 file, are:
-  * this notice was prepended (the file is this package's `Multiway/BrownCLT/Lindeberg.lean`);
-  * docstrings and comments were shortened;
-  * proof steps rejected by the newer Mathlib were repaired in place; each such repair is
-    marked with a `-- PORT v4.34.0:` comment giving what changed.
-No mathematical content or attribution of the upstream file was removed.
+Original path      : StatLean/HypothesisTesting/ForMathlib/LindebergCLT.lean, here
+                     `Multiway/BrownCLT/Lindeberg.lean`
+Original toolchain : leanprover/lean4:v4.29.1
+This toolchain     : leanprover/lean4:v4.34.0, with the matching Mathlib
+
+Changes made to the original:
+  * this notice was added;
+  * proof steps that do not compile with this Mathlib were repaired in place, each marked by a
+    comment beginning `PORT v4.34.0`;
+  * docstrings and comments were shortened.
+No mathematical content or attribution of the original was removed.
 -/
 import Mathlib.Probability.CentralLimitTheorem
 import Mathlib.Topology.ContinuousMap.Bounded.Basic
@@ -27,9 +28,8 @@ import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import Mathlib.Analysis.Complex.RealDeriv
 import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
--- PORT v4.34.0: `Measurable.abs` (the `to_additive` image of `Measurable.mabs`) is no longer
--- reachable through the imports above (the upstream import graph was pruned between
--- v4.29.1 and v4.34.0), so its home module is now named explicitly.
+-- PORT v4.34.0: added, since `Measurable.abs` (the `to_additive` image of `Measurable.mabs`) is
+-- not reachable through the imports above in this Mathlib.
 import Mathlib.MeasureTheory.Order.Group.Lattice
 
 /-!
@@ -216,8 +216,8 @@ private lemma norm_prod_sub_prod_le {ι : Type*} {𝕜 : Type*} [RCLike 𝕜] (s
     refine (norm_add_le _ _).trans ?_
     rw [norm_mul, norm_mul]
     have hpg : ‖∏ i ∈ s, g i‖ ≤ 1 := by
-      -- PORT v4.34.0: the ordered-semiring `Finset.prod_le_one` is now `Finset.prod_le_one₀`;
-      -- the bare name was reused for the `OrderedCommMonoid` form.
+      -- PORT v4.34.0: the original's ordered-semiring `Finset.prod_le_one` is
+      -- `Finset.prod_le_one₀` in this Mathlib, where the bare name assumes `[MulLeftMono N]`.
       rw [norm_prod]; exact Finset.prod_le_one₀ (fun i _ => norm_nonneg _) hg'
     have h1 : ‖f a‖ * ‖(∏ i ∈ s, f i) - ∏ i ∈ s, g i‖ ≤ ∑ i ∈ s, ‖f i - g i‖ :=
       calc ‖f a‖ * ‖(∏ i ∈ s, f i) - ∏ i ∈ s, g i‖
@@ -272,8 +272,8 @@ private lemma tendsto_prod_charFun_lindeberg
   rcases eq_or_ne t 0 with rfl | ht
   · have hone : ∀ n i, charFun (P.map (X n i)) 0 = 1 := by
       intro n i
-      -- PORT v4.34.0: `Measure.isProbabilityMeasure_map`, which took an `AEMeasurable`
-      -- hypothesis, is now an unconditional instance on `Measure.map`.
+      -- PORT v4.34.0: the original's `Measure.isProbabilityMeasure_map`, which takes an
+      -- `AEMeasurable` hypothesis, is an unconditional instance on `Measure.map` in this Mathlib.
       haveI : IsProbabilityMeasure (P.map (X n i)) := inferInstance
       rw [charFun_zero, probReal_univ, Complex.ofReal_one]
     have hR : charFun (gaussianReal 0 1) 0 = 1 := by
@@ -531,8 +531,8 @@ private lemma tendsto_prod_charFun_lindeberg
       exact hlim.eventually_lt_const (by linarith)
     filter_upwards [hev1, hVarlt, hLinlt] with n hn1 hn2 hn3
     -- telescoping
-    -- PORT v4.34.0: `Measure.isProbabilityMeasure_map`, which took an `AEMeasurable`
-    -- hypothesis, is now an unconditional instance on `Measure.map`.
+    -- PORT v4.34.0: the original's `Measure.isProbabilityMeasure_map`, which takes an
+    -- `AEMeasurable` hypothesis, is an unconditional instance on `Measure.map` in this Mathlib.
     have hpm : ∀ i, IsProbabilityMeasure (P.map (X n i)) := fun i => inferInstance
     have htel := norm_prod_sub_prod_le (𝕜 := ℂ) Finset.univ
       (fun i => charFun (P.map (X n i)) t)
@@ -767,9 +767,9 @@ theorem weighted_iid_clt {m : ℕ → ℕ} {Y : ℕ → Ω → ℝ} {w : (n : �
           (Eventually.of_forall fun ω => sq_nonneg _) (Eventually.of_forall fun ω hω => ?_)
         -- `{ε < |X n i|} ⊆ {K < |Y i|}`.
         have h1 : ε < |(s n)⁻¹ * w n i| * |Y (↑i : ℕ) ω| := by
-          -- PORT v4.34.0: set membership is no longer unfolded by the default `simp` set
-          -- (`Set.mem_setOf_eq` was deprecated in favour of `Set.mem_ofPred_eq`), so the
-          -- `{a | …}` wrapper on `hω` has to be named explicitly.
+          -- PORT v4.34.0: the default `simp` set of this Mathlib does not unfold set membership
+          -- (`Set.mem_setOf_eq` is a deprecated alias of `Set.mem_ofPred_eq`), so the
+          -- `{a | …}` wrapper on `hω` is named explicitly.
           rw [← abs_mul]; simpa only [hXdef, Set.mem_ofPred_eq] using hω
         have h3 : ε < (ε / K) * |Y (↑i : ℕ) ω| :=
           lt_of_lt_of_le h1 (mul_le_mul_of_nonneg_right (haik i) (abs_nonneg _))

@@ -2,7 +2,8 @@ import Multiway
 
 /-!
 Prints the axioms each formalized result depends on, grouped by the result of the paper.
-The expected output for every declaration is `[propext, Classical.choice, Quot.sound]`.
+The expected output for every declaration is a subset of
+`[propext, Classical.choice, Quot.sound]`.
 
 Run with `lake env lean Verify.lean` from the package root.
 -/

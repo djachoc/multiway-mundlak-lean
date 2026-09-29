@@ -1104,7 +1104,7 @@ theorem tendstoInProb_zero_of_integral_sq_le {Z : ℕ → Ω → ℝ}
   exact hle j
 
 /-- Convergence in probability from a conditional bias bound `b_j` and a conditional variance
-bound `v_j`, both tending to `0`. The centering `A_j` need only be measurable. -/
+bound `v_j`, both tending to `0`. The centring `A_j` need only be measurable. -/
 theorem tendstoInProb_of_bias_condVar [IsProbabilityMeasure P] (h𝒟 : 𝒟 ≤ mΩ)
     {Q A : ℕ → Ω → ℝ} {b v : ℕ → ℝ}
     (hQ : ∀ j, MemLp (Q j) 2 P) (hA : ∀ j, AEStronglyMeasurable (A j) P)
@@ -1324,7 +1324,7 @@ theorem tendstoInProb_meatW_sub [IsProbabilityMeasure P] (h𝒟 : 𝒟 ≤ mΩ)
       (abs_meatMat_apply_le (hsym j) (hidem j) (hB j) _) (hi2 j) (hi4 j)
     intro o o'
     exact ((stronglyMeasurable_meatMat_apply 𝒟 (hw j) (R j) _ o o').mono h𝒟).aestronglyMeasurable
-  -- the centering is measurable
+  -- the centring is measurable
   have hAmeas : ∀ j, AEStronglyMeasurable (fun ω => ((Fintype.card (O j) : ℝ))⁻¹
       * ∑ o : O j, w j o ω * sig j o ω) P := by
     intro j
@@ -1733,7 +1733,7 @@ theorem l2_opNorm_le_frobNorm (A : Matrix K K ℝ) : ‖A‖ ≤ frobNorm A := b
   have h := Real.sqrt_le_sqrt hsum
   rwa [Real.sqrt_sq (norm_nonneg _), Real.sqrt_sq hnn] at h
 
-/-- `‖A‖_F ≤ √(card K)‖A‖`: the columns are the images of the standard basis. -/
+/-- `‖A‖_F ≤ √(card K)‖A‖`, since the columns are the images of the standard basis. -/
 theorem frobNorm_le_sqrt_card_mul_l2_opNorm (A : Matrix K K ℝ) :
     frobNorm A ≤ Real.sqrt (Fintype.card K) * ‖A‖ := by
   have hcol : ∀ j : K, ∑ i : K, (A i j) ^ 2 ≤ ‖A‖ ^ 2 := by

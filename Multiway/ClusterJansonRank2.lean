@@ -1,5 +1,6 @@
 /-
-Copyright (c) 2026. All rights reserved.
+Copyright (c) 2026 Benjamin O. Harrison, Gustavo Canavire Bacarreza, David Jacho-Chavez and
+Fernando Rios-Avila.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
 import Multiway.ClusterJansonB
@@ -18,7 +19,8 @@ sharing relation, and a restricted variance `𝒱_n` that is not a multiple of t
 vector `w_j e_j`, with `e_j` the `j`-th unit vector, `w_0 = 1` and `w_1 = 2`. Hence
 `X̃_n'X̃_n = diag(n+3, 4(n+3))`, `𝓡_n = I_2`, `Ω_n = I` and
 `𝒱_n = diag((n+3)^{-1}, (4(n+3))^{-1})`. The dependency graph is `pathG` on the first index,
-so `D_n = 5`, `λ_min(Ω_n) = n+3` and `δ_n = 250/(n+3) → 0`. The disturbances are fair signs.
+so `D_n = 5`, `λ_min(X̃_n'Ω_nX̃_n) = n+3` and `δ_n = 250/(n+3) → 0`. The disturbances are
+fair signs.
 
 ## Main results
 
@@ -43,7 +45,7 @@ open Matrix
 
 /-! ### The design and its Gram matrix -/
 
-/-- the two regressor levels, `w_0 = 1` and `w_1 = 2` -/
+/-- The two regressor levels, `w_0 = 1` and `w_1 = 2`. -/
 noncomputable def rk2w : Fin 2 → ℝ := fun k => if k = 0 then 1 else 2
 
 theorem rk2w_ne_zero (k : Fin 2) : rk2w k ≠ 0 := by
@@ -59,7 +61,7 @@ theorem rk2w_sq_le_four (k : Fin 2) : (rk2w k) ^ 2 ≤ 2 ^ 2 := by
 noncomputable def rk2Xt (n : ℕ) : Matrix (Fin (n + 3) × Fin 2) (Fin 2) ℝ :=
   fun p k => if p.2 = k then rk2w k else 0
 
-/-- the diagonal of the Gram matrix, `(n+3)w_k²` -/
+/-- The diagonal of the Gram matrix, `(n+3)w_k²`. -/
 noncomputable def rk2d (n : ℕ) : Fin 2 → ℝ := fun k => ((n : ℝ) + 3) * (rk2w k) ^ 2
 
 theorem rk2d_pos (n : ℕ) (k : Fin 2) : 0 < rk2d n k := by
@@ -217,7 +219,7 @@ theorem rk2_row_dot (n : ℕ) (p : Fin (n + 3) × Fin 2) :
 
 /-! ### The disturbances on the product coin space -/
 
-/-- the coin index of observation `(o, j)` at sample size `n` -/
+/-- The coin index of observation `(o, j)` at sample size `n`. -/
 def rk2Idx (n : ℕ) (p : Fin (n + 3) × Fin 2) : ℕ × ℕ := (n, 2 * p.1.val + p.2.val)
 
 theorem rk2Idx_injective (n : ℕ) : Function.Injective (rk2Idx n) := by
@@ -298,7 +300,7 @@ theorem card_pathFilter_le (n : ℕ) (o : Fin (n + 3)) :
     (Finset.univ.filter (fun o' : Fin (n + 3) => o'.val + 1 = o.val)))
   omega
 
-/-- the dependency graph under `ℙ_ω`: `(o, j) ∼ (o', j')` iff `|o − o'| ≤ 1` -/
+/-- The dependency graph under `ℙ_ω`, with `(o, j) ∼ (o', j')` iff `|o − o'| ≤ 1`. -/
 noncomputable def rk2Dep {μ : Measure Aw} [IsProbabilityMeasure μ]
     (hmap : Measure.map (Prod.snd : Aw → Cw) μ = P1) (n : ℕ) :
     DepGraph (rk2uSign n) μ where
@@ -341,12 +343,12 @@ theorem rk2Dep_nbhd_card {μ : Measure Aw} [IsProbabilityMeasure μ]
 
 /-! ### The random design, the estimator and the rate -/
 
-/-- the design at index `n` times the sign of the design coin; it is `𝒟`-measurable and
-non-constant -/
+/-- The design at index `n` times the sign of the design coin; it is `𝒟`-measurable and
+non-constant. -/
 noncomputable def rk2gXt (n : ℕ) (y : Aw) : Matrix (Fin (n + 3) × Fin 2) (Fin 2) ℝ :=
   sgnA y • rk2Xt n
 
-/-- the conditional second-moment matrix of the disturbances -/
+/-- The conditional second-moment matrix of the disturbances. -/
 noncomputable def rk2Om (n : ℕ) (_ : Aw) :
     Matrix (Fin (n + 3) × Fin 2) (Fin (n + 3) × Fin 2) ℝ := 1
 

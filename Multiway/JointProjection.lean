@@ -34,8 +34,8 @@ variable [AddCommGroup F] [Module ℝ F]
 
 /-! ### The two control spaces -/
 
-/-- `col(P_[Δ]X)`, the image of `col(X)` under `P_[Δ]`, spanned by the joint between
-component of the regressors. -/
+/-- `col(P_[Δ]X)`, the image of `col(X)` under `P_[Δ]`, spanned by the joint
+between-component part of the regressors. -/
 noncomputable def jointProjControls (S : Submodule ℝ E) (X : F →ₗ[ℝ] E) : Submodule ℝ E :=
   (LinearMap.range X).map (S.starProjection : E →L[ℝ] E).toLinearMap
 

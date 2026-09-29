@@ -5,7 +5,7 @@ import Mathlib.Algebra.Module.BigOperators
 /-!
 # Identification after residualization
 
-This file formalizes Lemma SM.B.10 of the paper (identification after residualization): for
+This file formalizes Lemma SM.B.10 of the paper (identification after residualization). For
 every fixed-effect dimension `m`, `R Sh_{m} R = R Δ_m Δ_m' R = 0`, hence
 `E[ν̂_FE ν̂_FE' | 𝒟] = R(s̄²I_n + ∑_{e ∈ 𝓔} σ_e² Sh^off_e)R`, a degenerate level contributes
 `∑_o x̃_o x̃_o'`, and `nS_n` has the stated plug-in form.

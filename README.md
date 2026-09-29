@@ -90,8 +90,8 @@ Theorems 3 and 4 by six each; Theorem 1 invokes nothing. Its source is
 
 ```
 Multiway.lean            the root module, importing every file below
-Multiway/                74 modules, and two directories
-Multiway/SteinCLT/       8 ported modules, the Stein-method chain
+Multiway/                73 modules, and two directories
+Multiway/SteinCLT/       7 ported modules, the Stein-method chain
 Multiway/BrownCLT/       4 ported modules, the Brown martingale central limit theorem
 Verify.lean              one #print axioms directive per public declaration
 results/map.tsv          the index, one row per printed result
@@ -106,9 +106,9 @@ lake-manifest.json       the pinned Mathlib revision
 ## Reading the statements
 
 Each Lean statement restates a result as it is printed in the paper or its supplemental
-materials. Some hypotheses are measurability or nonemptiness conditions that the paper leaves implicit. Where the paper
-writes convergence in probability, a few statements give almost everywhere convergence along a
-realization of the conditioning variables.
+materials. Some hypotheses are measurability or nonemptiness conditions that the paper leaves
+implicit. Where the paper writes convergence in probability, a few statements give almost
+everywhere convergence along a realization of the conditioning variables.
 
 Each result is also applied to an explicit example, in a declaration whose name ends in
 `_witness`: every object in the hypotheses is given a specific value, and the declaration proves
@@ -121,27 +121,28 @@ Two results from outside the paper are formalized here because its proofs use th
 Janson (1988, p. 307), the central limit theorem for sums over a dependency graph, is in
 [`Multiway/JansonCLT.lean`](Multiway/JansonCLT.lean) with his Theorem 1 and Lemmas 1 to 4. Janson states Remark 3, which
 extends the theorem to unbounded summands by truncation, without proof. The paper does not use
-it: the proof of Theorem 5(b) truncates the summands itself and applies Theorem 2 to the truncated
-array, and that argument is formalized in [`Multiway/ClusterJansonB.lean`](Multiway/ClusterJansonB.lean). Marcinkiewicz's
+it, since the proof of Theorem 5(b) truncates the summands itself and applies Theorem 2 to the
+truncated array, and that argument is formalized in [`Multiway/ClusterJansonB.lean`](Multiway/ClusterJansonB.lean). Marcinkiewicz's
 Théorème 2 bis is in [`Multiway/Marcinkiewicz.lean`](Multiway/Marcinkiewicz.lean).
 
 ## Ported modules
 
-Nine modules come from CausalSmith, the
+Eight modules come from CausalSmith, the
 [Causalean](https://github.com/Jiyuan-Tan/CausalSmith) library of Jiyuan Tan, under the Apache
-License 2.0. Eight of them are the Stein-method central limit theorem for dependency graphs in
+License 2.0. Seven of them are the Stein-method central limit theorem for dependency graphs in
 [`Multiway/SteinCLT/`](Multiway/SteinCLT), and [`Multiway/Cumulant.lean`](Multiway/Cumulant.lean) comes from that library's moment-problem file.
 Each begins with the notice the license requires, which names the original file and the changes
-made to it. In the eight Stein-method modules the changes are the paths of the imported files and
-one repair after a lemma was renamed in Mathlib, and no name, namespace or attribution of the
-original was altered. [`Multiway/Cumulant.lean`](Multiway/Cumulant.lean) takes only the form of one definition from that
+made to it. In the seven Stein-method modules the changes are the paths of the imported files,
+one added import, and, in two proofs, a call to a Mathlib lemma written in the form that the
+pinned Mathlib gives it. No name, namespace, docstring or attribution of the original was
+altered. [`Multiway/Cumulant.lean`](Multiway/Cumulant.lean) takes only the form of one definition from that
 library; the rest of the file was written here.
 
 Four modules come from [Stat-Lean](https://github.com/StatLean/Stat-Lean), the Lean 4
-formalization of statistical theory, copyright 2024 Junwei Lu, under the Apache License 2.0. They are the Brown martingale central
-limit theorem in [`Multiway/BrownCLT/`](Multiway/BrownCLT). Each begins with the notice the license requires, which
+formalization of statistical theory, copyright 2024 Junwei Lu, under the Apache License 2.0.
+They are the Brown martingale central limit theorem in [`Multiway/BrownCLT/`](Multiway/BrownCLT). Each begins with the notice the license requires, which
 names the original file and the changes made to it. The changes are the paths of the imported
-files, repairs to proofs that no longer compiled under the newer Mathlib, and shorter
+files, repairs to the proof steps that do not compile with the pinned Mathlib, and shorter
 explanatory comments.
 
 ## Citation

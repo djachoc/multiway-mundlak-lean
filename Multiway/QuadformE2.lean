@@ -1141,8 +1141,8 @@ variable [Fintype O] [DecidableEq O]
 /-- **Lemma SM.C.6**, from the level decomposition `hz : ζ_o = ∑_γ ξ^γ_o`, with constant
 `(2^M)⁴ · K · 4M G_max c_max`.
 
-`hLv` and `he` say the levels are subsets of `{1,…,M}` of size at least two, together with the
-symbol `ε`; `hG` and `hc` bound the category and cell sizes by `G_max` and `c_max`; `hsupp` and
+`hLv` bounds the number of levels by `2^M` and `he` gives each level at least two dimensions;
+`hG` and `hc` bound the category and cell sizes by `G_max` and `c_max`; `hsupp` and
 `hbdd` are the vanishing and boundedness of the assignment cumulants (supplied in
 `Multiway.QuadformE2Indep`). -/
 theorem var_quadForm_le_levels {Γ₀ D L : Type*} [DecidableEq D] [DecidableEq L] [Fintype D]

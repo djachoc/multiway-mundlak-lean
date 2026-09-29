@@ -1,5 +1,6 @@
 /-
-Copyright (c) 2026. All rights reserved.
+Copyright (c) 2026 Benjamin O. Harrison, Gustavo Canavire Bacarreza, David Jacho-Chavez and
+Fernando Rios-Avila.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
 import Mathlib.Analysis.Complex.TaylorSeries
@@ -97,8 +98,8 @@ noncomputable def constFormula (μ : Measure Ω) (X : Ω → ℝ) (n : ℕ) : �
       - cumulant X n μ)
 
 /-- **The block recursion for a constant family**, with the top block isolated. This is
-`partSum_recursion` read through `partSum_mixedCumulant`: the joint moment of `#s` copies of
-`X` is the cumulant of `s` plus the contributions of the proper blocks through `i₀`. -/
+`partSum_recursion` read through `partSum_mixedCumulant`, so that the joint moment of `#s`
+copies of `X` is the cumulant of `s` plus the contributions of the proper blocks through `i₀`. -/
 lemma moment_eq_mixedCumulant_add (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → ℝ)
     {ι : Type*} [DecidableEq ι] {s : Finset ι} {i₀ : ι} (hi : i₀ ∈ s) :
     (∫ ω, X ω ^ #s ∂μ)
@@ -1052,7 +1053,7 @@ theorem skew_recursion_terms_witness :
   · rw [SkewWitness.skew_cumulant_three, h0]
     norm_num
 
-/-- The cardinality reduction on the skewed law: the mixed cumulant of three copies of the
+/-- The cardinality reduction on the skewed law. The mixed cumulant of three copies of the
 coordinate, over an index set of size three other than `Fin 3`, is `κ_3 = 6`. -/
 theorem skew_cardinality_reduction_witness :
     mixedCumulant SkewWitness.skewLaw (fun _ : Fin 5 => (id : ℝ → ℝ))

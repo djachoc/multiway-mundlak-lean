@@ -26,8 +26,9 @@ variable {ι : Type*}
 
 /-! ### Orthogonality and the vanishing composite -/
 
-/-- `P_UP_V = 0` if and only if `U` and `V` are orthogonal. Mathlib has the forward direction;
-the converse turns a projector identity such as `R_mR_ℓ = 0` into an orthogonality statement. -/
+/-- `P_UP_V = 0` if and only if `U` and `V` are orthogonal. Mathlib has the reverse direction;
+the forward direction turns a projector identity such as `R_mR_ℓ = 0` into an orthogonality
+statement. -/
 theorem starProjection_comp_eq_zero_iff (U V : Submodule ℝ E) :
     (∀ x : E, U.starProjection (V.starProjection x) = 0) ↔ U ⟂ V := by
   constructor

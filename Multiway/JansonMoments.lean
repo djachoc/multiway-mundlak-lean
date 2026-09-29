@@ -1,5 +1,6 @@
 /-
-Copyright (c) 2026. All rights reserved.
+Copyright (c) 2026 Benjamin O. Harrison, Gustavo Canavire Bacarreza, David Jacho-Chavez and
+Fernando Rios-Avila.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
 import Multiway.CumulantCharFun
@@ -426,13 +427,13 @@ end Lemma1
 
 /-! ### Janson's `p_j`
 
-Janson writes `alpha_j = p_j (kappa_1, ..., kappa_j)` for a polynomial `p_j`. The definition
+Janson writes `α_j = p_j (κ_1, …, κ_j)` for a polynomial `p_j`. The definition
 `Janson.momentOf` gives `p_j` by the moment–cumulant recursion `Cumulant.moment_recursion`.
 -/
 
 section MomentOf
 
-/-- Janson's `p_j (kappa_1, ..., kappa_j)`, given by the moment–cumulant recursion. -/
+/-- Janson's `p_j (κ_1, …, κ_j)`, given by the moment–cumulant recursion. -/
 noncomputable def momentOf (c : ℕ → ℝ) : ℕ → ℝ
   | 0 => 1
   | (n + 1) => ∑ j ∈ Finset.range (n + 1), (n.choose j : ℝ) * c (j + 1) * momentOf c (n - j)
@@ -480,7 +481,7 @@ theorem cumulant_eq_of_integral_pow_eq {Q : Measure ℝ} [IsProbabilityMeasure Q
   exact momentOf_succ c n
 
 /-- The semiinvariant is a continuous function of the moments, since the `i = n` summand of
-`Cumulant.moment_recursion` is `kappa_{n+1}` alone. Hence convergence of the moments along a
+`Cumulant.moment_recursion` is `κ_{n+1}` alone. Hence convergence of the moments along a
 subsequence gives convergence of every semiinvariant. -/
 theorem tendsto_cumulant_of_tendsto_integral_pow {P : ℕ → ProbabilityMeasure ℝ}
     {Q : ProbabilityMeasure ℝ}
@@ -543,7 +544,7 @@ end MomentOf
 section Semiinvariant
 
 /-- **Janson's Lemma 1, existence half, in semiinvariant form.** There is a law `X` with
-`kappa_j (X) = c_j` for all `j >= 1`. -/
+`κ_j (X) = c_j` for all `j ≥ 1`. -/
 theorem exists_measure_cumulant_eq (P : ℕ → ProbabilityMeasure ℝ)
     (hint : ∀ n p, Integrable (fun x : ℝ => x ^ p) (P n : Measure ℝ))
     {c : ℕ → ℝ}

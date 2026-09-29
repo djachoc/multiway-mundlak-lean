@@ -1,5 +1,6 @@
 /-
-Copyright (c) 2026. All rights reserved.
+Copyright (c) 2026 Benjamin O. Harrison, Gustavo Canavire Bacarreza, David Jacho-Chavez and
+Fernando Rios-Avila.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
 import Mathlib.Analysis.Analytic.IsolatedZeros
@@ -46,8 +47,8 @@ The inequality `Re p w ≤ Re p (i · Im w)` for all `w` forces `deg p ≤ 2`. -
 
 section Endgame
 
-/-- Along the ray `r ↦ r * w`, the real part of `p` is a real polynomial in `r` whose
-`k`-th coefficient is `(p.coeff k * w ^ k).re`. -/
+/-- The real polynomial `r ↦ Re p(r w₁) - Re p(r w₂)`, whose `k`-th coefficient is
+`(p.coeff k * w₁ ^ k).re - (p.coeff k * w₂ ^ k).re`. -/
 private noncomputable def rayPoly (p : Polynomial ℂ) (w₁ w₂ : ℂ) : Polynomial ℝ :=
   ∑ k ∈ Finset.range (p.natDegree + 1),
     Polynomial.C ((p.coeff k * w₁ ^ k).re - (p.coeff k * w₂ ^ k).re) * Polynomial.X ^ k
@@ -244,8 +245,8 @@ open MeasureTheory ProbabilityTheory
 
 variable {μ : Measure ℝ} {p : Polynomial ℂ}
 
-/-- `μ` has a finite two-sided moment generating function: `exp (c * x)` is `μ`-integrable for
-every real `c`.  Equivalently, `integrableExpSet id μ = Set.univ`. -/
+/-- `μ` has a finite two-sided moment generating function, that is, `exp (c * x)` is
+`μ`-integrable for every real `c`.  Equivalently, `integrableExpSet id μ = Set.univ`. -/
 def HasAllExpMoments (μ : Measure ℝ) : Prop :=
   ∀ c : ℝ, Integrable (fun x : ℝ ↦ Real.exp (c * x)) μ
 
@@ -606,7 +607,7 @@ private lemma contDiff_exp_eval (p : Polynomial ℂ) {k : WithTop ℕ∞} :
     Complex.differentiable_exp.comp p.differentiable
   exact (hdiff.contDiff.restrict_scalars ℝ).comp Complex.ofRealCLM.contDiff
 
-/-- All moments of `μ` are finite when its characteristic function is `exp ∘ p`: the
+/-- All moments of `μ` are finite when its characteristic function is `exp ∘ p`; the
 `(2 n)`-th derivative of `charFun μ` yields the `(2 n + 2)`-nd moment. -/
 theorem integrable_pow_two_mul {μ : Measure ℝ} [IsProbabilityMeasure μ] {p : Polynomial ℂ}
     (hp : ∀ t : ℝ, charFun μ t = Complex.exp (p.eval (t : ℂ))) (n : ℕ) :

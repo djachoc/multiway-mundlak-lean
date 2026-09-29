@@ -1,5 +1,6 @@
 /-
-Copyright (c) 2026. All rights reserved.
+Copyright (c) 2026 Benjamin O. Harrison, Gustavo Canavire Bacarreza, David Jacho-Chavez and
+Fernando Rios-Avila.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
 import Multiway.JansonCLT
@@ -292,9 +293,9 @@ theorem acoord_bdd (n : ℕ) (i : Fin (2 * n + 2)) :
     (measurableSet_le measurable_id.abs measurable_const)] at h
   exact h
 
-/-- The dependency relation: `i` and `k` are adjacent if and only if they belong to the same pair
-`{2 q, 2 q + 1}`. Adding edges preserves the separation property, so this is a dependency graph,
-with maximal degree `M_n = 1`. -/
+/-- The dependency relation, under which `i` and `k` are adjacent if and only if they belong to
+the same pair `{2 q, 2 q + 1}`. Adding edges preserves the separation property, so this is a
+dependency graph, with maximal degree `M_n = 1`. -/
 def aG (n : ℕ) (i k : Fin (2 * n + 2)) : Prop := (i : ℕ) / 2 = (k : ℕ) / 2
 
 instance instDecidableAG (n : ℕ) : DecidableRel (aG n) :=
@@ -348,7 +349,7 @@ theorem aDep_degree (n : ℕ) (i : Fin (2 * n + 2)) :
   rw [Finset.card_erase_of_mem ((aDep n).self_mem_nbhd i)]
   omega
 
-/-- The maximal degree `M_n = 1` is attained: vertex `1` is a neighbour of vertex `0`. -/
+/-- The maximal degree `M_n = 1` is attained, since vertex `1` is a neighbour of vertex `0`. -/
 theorem aDep_degree_pos (n : ℕ) :
     1 ≤ #(((aDep n).nbhd ⟨0, by omega⟩).erase ⟨0, by omega⟩) := by
   classical

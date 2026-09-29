@@ -28,7 +28,7 @@ open Multiway.Quadform.CondIndepWitness
 /-- The three sites, `0` for `ε_o` and `1`, `2` for the two category-level shocks. -/
 abbrev Site : Type := Fin 3
 
-/-- The sample space: one fair sign per site, plus the design coordinate `none`. -/
+/-- The sample space, with one fair sign per site and the design coordinate `none`. -/
 abbrev Om : Type := Option Site → ℝ
 
 /-- `ε_o`, the idiosyncratic component. -/
@@ -134,13 +134,13 @@ theorem condExp_nuW_pow_four_le :
 
 /-! ### Pairwise conditional independence from mutual conditional independence -/
 
-/-- `a^{(m)}` is conditionally independent of `ε_o` given `𝒟`: mutual conditional independence
-read at two indices, by `ProbabilityTheory.iCondIndepFun.condIndepFun`. -/
+/-- `a^{(m)}` is conditionally independent of `ε_o` given `𝒟`, by mutual conditional
+independence read at two indices, through `ProbabilityTheory.iCondIndepFun.condIndepFun`. -/
 theorem condIndep_aW_epsW (m : Fin 2) :
     CondIndepFun (wD Site) (wD_le Site) (aW m) epsW (wP Site) :=
   (wCondIndep Site).condIndepFun (Fin.succ_ne_zero m)
 
-/-- `ε_o` is conditionally independent of `V = ∑_m a^{(m)}` given `𝒟`: the two shock sites are
+/-- `ε_o` is conditionally independent of `V = ∑_m a^{(m)}` given `𝒟`. The two shock sites are
 grouped against the innovation site by `iCondIndepFun.condIndepFun_prodMk`, and the pair is then
 added up by `CondIndepFun.comp`. -/
 theorem condIndep_epsW_sum :

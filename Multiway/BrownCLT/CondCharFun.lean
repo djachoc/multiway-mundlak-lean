@@ -1,22 +1,22 @@
 /-
-PORTED FILE — NOTICE REQUIRED BY THE APACHE LICENSE, VERSION 2.0, SECTION 4.
+Notice required by Section 4 of the Apache License, Version 2.0.
 
-Upstream repository : Stat-Lean (StatLean)
-Upstream path       : StatLean/TimeSeries/ForMathlib/Probability/MartingaleCLT/CondCharFun.lean
-Upstream toolchain  : leanprover/lean4:v4.29.1
-Upstream licence    : Apache License, Version 2.0
-                      http://www.apache.org/licenses/LICENSE-2.0
+This file is a modified copy of a file of Stat-Lean, the Lean 4 formalization of statistical
+theory (https://github.com/StatLean/Stat-Lean), Copyright 2024 Junwei Lu, licensed under the
+Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0); see LICENSE and NOTICE.
 
-MODIFICATIONS: this file has been modified in this package to
-build against leanprover/lean4:v4.34.0 and its matching Mathlib. The changes made here,
-relative to the upstream v4.29.1 file, are:
-  * this notice was prepended;
-  * the module path in the `import` lines was changed from `StatLean.TimeSeries.…` to
-    `Multiway.BrownCLT.…`, the modules being re-rooted under this package;
-  * docstrings and comments were shortened;
-  * proof steps rejected by the newer Mathlib were repaired in place; each such repair is
-    marked with a `-- PORT v4.34.0:` comment giving what changed.
-No mathematical content or attribution of the upstream file was removed.
+Original path      : StatLean/TimeSeries/ForMathlib/Probability/MartingaleCLT/CondCharFun.lean
+Original toolchain : leanprover/lean4:v4.29.1
+This toolchain     : leanprover/lean4:v4.34.0, with the matching Mathlib
+
+Changes made to the original:
+  * this notice was added;
+  * the import of the original's sibling module `StatLean.TimeSeries.….Defs` names
+    `Multiway.BrownCLT.Defs` here;
+  * proof steps that do not compile with this Mathlib were repaired in place, each marked by a
+    comment beginning `PORT v4.34.0`;
+  * docstrings and comments were shortened.
+No mathematical content or attribution of the original was removed.
 -/
 import Multiway.BrownCLT.Defs
 import Mathlib.MeasureTheory.Measure.CharacteristicFunction.Basic
@@ -412,8 +412,8 @@ private lemma abs_prod_sub_prod_le {ι : Type*} [DecidableEq ι] (s : Finset ι)
     rw [Finset.prod_insert ha, Finset.prod_insert ha, Finset.sum_insert ha]
     have hfs : |∏ i ∈ s, f i| ≤ 1 := by
       rw [Finset.abs_prod]
-      -- PORT v4.34.0: the ordered-semiring `Finset.prod_le_one` is now `Finset.prod_le_one₀`;
-      -- the bare name was reused for the `OrderedCommMonoid` form.
+      -- PORT v4.34.0: the original's ordered-semiring `Finset.prod_le_one` is
+      -- `Finset.prod_le_one₀` in this Mathlib, where the bare name assumes `[MulLeftMono N]`.
       exact Finset.prod_le_one₀ (fun i _ => abs_nonneg _) fun i _ => hf i
     have hkey : f a * (∏ i ∈ s, f i) - g a * ∏ i ∈ s, g i
         = (f a - g a) * (∏ i ∈ s, f i) + g a * ((∏ i ∈ s, f i) - ∏ i ∈ s, g i) := by ring
@@ -473,8 +473,8 @@ private lemma abs_prod_one_sub_le_exp {m : ℕ} {v : Fin m → ℝ} {u c : ℝ}
       rw [abs_le]; constructor <;> linarith
     have h2 := Real.add_one_le_exp (u ^ 2 / 2 * v i)
     linarith
-  -- PORT v4.34.0: the ordered-semiring `Finset.prod_le_prod` is now `Finset.prod_le_prod₀`;
-  -- the bare name was reused for the `OrderedCommMonoid` form.
+  -- PORT v4.34.0: the original's ordered-semiring `Finset.prod_le_prod` is
+  -- `Finset.prod_le_prod₀` in this Mathlib, where the bare name has another form.
   calc ∏ i, |1 - u ^ 2 / 2 * v i| ≤ ∏ i, Real.exp (u ^ 2 / 2 * v i) :=
         Finset.prod_le_prod₀ (fun i _ => abs_nonneg _) hstep
     _ = Real.exp (∑ i, u ^ 2 / 2 * v i) := (Real.exp_sum _ _).symm
@@ -571,7 +571,7 @@ private lemma prod_inv_one_sub_le_exp {m : ℕ} {v : Fin m → ℝ} {u c : ℝ}
   have hu : (0:ℝ) ≤ u ^ 2 := sq_nonneg u
   calc ∏ i ∈ s, (1 - u ^ 2 / 2 * v i)⁻¹
       ≤ ∏ i ∈ s, Real.exp (2 * (u ^ 2 / 2 * v i)) :=
-        -- PORT v4.34.0: `Finset.prod_le_prod` → `Finset.prod_le_prod₀` (name reused upstream).
+        -- PORT v4.34.0: the original's `Finset.prod_le_prod` is `Finset.prod_le_prod₀` here.
         Finset.prod_le_prod₀ (fun i _ => inv_nonneg.2 (by linarith [ha0 i, hvd i]))
           (fun i _ => inv_one_sub_le_exp_two_mul (ha0 i) (hvd i))
     _ = Real.exp (∑ i ∈ s, 2 * (u ^ 2 / 2 * v i)) := (Real.exp_sum _ _).symm
@@ -636,9 +636,9 @@ theorem norm_integral_mul_cexp_sub_taylor_le [IsProbabilityMeasure μ]
     have h1 : Integrable
         (fun ω => ((μ[fun ω' => X n i ω' ^ 2 | F n i.castSucc] ω : ℝ) : ℂ)) μ := by
       simpa using Complex.ofRealCLM.integrable_comp hvint
-    -- PORT v4.34.0: `simpa` no longer closes this — `Integrable.sub` now reports its
-    -- conclusion in the pointwise-`Pi` form `(fun _ => 1) - fun ω => …` rather than
-    -- `fun ω => 1 - …`, so the two are pushed together explicitly.
+    -- PORT v4.34.0: in this Mathlib `Integrable.sub` gives its conclusion in the form
+    -- `(fun _ => 1) - fun ω => …` rather than `fun ω => 1 - …`, so the original `simpa` does
+    -- not close the goal and the two forms are identified explicitly.
     have h2 := (integrable_const (1 : ℂ)).sub (h1.const_mul ((u : ℂ) ^ 2 / 2))
     simpa only [Pi.sub_def] using h2
   have hCEint : Integrable (μ[fun ω' => Complex.exp (I * ((u * X n i ω' : ℝ) : ℂ))
@@ -1349,7 +1349,7 @@ theorem norm_integral_exp_rowSum_sub_gaussian_le [IsProbabilityMeasure μ]
     filter_upwards [hae] with ω hω
     obtain ⟨hfac, -⟩ := hω
     rw [hΨ ω, Finset.abs_prod]
-    -- PORT v4.34.0: `Finset.prod_le_one` → `Finset.prod_le_one₀` (name reused upstream).
+    -- PORT v4.34.0: the original's `Finset.prod_le_one` is `Finset.prod_le_one₀` here.
     refine Finset.prod_le_one₀ (fun i _ => abs_nonneg _) fun i _ => ?_
     rw [abs_of_pos (by linarith [(hfac i).2] : (0:ℝ) <
       1 - u ^ 2 / 2 * μ[fun ω' => X n i ω' ^ 2 | F n i.castSucc] ω)]

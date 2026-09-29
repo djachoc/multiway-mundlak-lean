@@ -1,38 +1,28 @@
 /-
-PORTED FILE — NOTICE REQUIRED BY THE APACHE LICENSE, VERSION 2.0, SECTION 4.
+Notice required by Section 4 of the Apache License, Version 2.0.
 
-Upstream repository : CausalSmith (the `Causalean` library)
-Upstream path       : Causalean/Mathlib/Probability/SteinMethod/DepGraphCLT.lean
-Upstream toolchain  : leanprover/lean4:v4.33.0
-Upstream licence    : Apache License, Version 2.0
-                      http://www.apache.org/licenses/LICENSE-2.0
-Upstream copyright  : Copyright (c) 2026 Jiyuan Tan. All rights reserved. The upstream
-                      copyright block and author line are kept verbatim immediately below.
+This file is a modified copy of a file of CausalSmith, the Causalean library of Jiyuan Tan
+(https://github.com/Jiyuan-Tan/CausalSmith), Copyright (c) 2026 Jiyuan Tan, licensed under the
+Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0); see LICENSE and NOTICE.
 
-MODIFICATIONS: this file has been modified in this package to
-build against leanprover/lean4:v4.34.0 and its matching Mathlib. The changes made here,
-relative to the upstream v4.33.0 file, are:
-  * this notice was prepended;
-  * every `import` line naming a sibling module of this chain was re-rooted from
-    `Causalean.Mathlib.Probability.SteinMethod.…` to `Multiway.SteinCLT.…`, the upstream
-    file names `Bounds_Part1.lean` / `Bounds_Part2.lean` becoming `BoundsPart1.lean` /
-    `BoundsPart2.lean` so that the module names carry no underscore;
-  * ONE proof-level repair, at the two `AEMeasurable` tuple steps inside
-    `DepGraph.indep_nbhdProd`: `measurable_pi_lambda` is now only a deprecated alias of
-    `Measurable.of_eval`, which drops the old explicit function argument. The upstream call
-    `measurable_pi_lambda _ (fun k => D.meas ↑k)` therefore still RESOLVES but is over-applied,
-    and fails downstream with an application type mismatch mentioning `MeasurableSet`, not
-    with an unknown identifier. Both call sites now name `Measurable.of_eval` and drop the
-    leading `_`. No other proof text changed.
-No mathematical content, no declaration name, no namespace (the upstream namespace
-`Causalean.Mathlib.Probability.SteinMethod` is kept exactly as written), no docstring and no
-attribution of the upstream file was removed or altered.
+Original path      : Causalean/Mathlib/Probability/SteinMethod/DepGraphCLT.lean
+Original toolchain : leanprover/lean4:v4.33.0
+This toolchain     : leanprover/lean4:v4.34.0, with the matching Mathlib
 
-Lean's new module system (`module`, `public import`, `@[expose] public section`) is kept
-exactly as upstream wrote it: v4.34.0 accepts these files unchanged in that respect, so no
-`module` or `public` marker was stripped.
-
-Every repair is marked in place with a `-- PORT v4.34.0:` comment saying what changed.
+Changes made to the original:
+  * this notice was added;
+  * each import of a sibling module of this chain names `Multiway.SteinCLT.…` in place of
+    `Causalean.Mathlib.Probability.SteinMethod.…`;
+  * in the proof of `DepGraph.cov_mul_nbhd_eq_zero`, the two original calls
+    `measurable_pi_lambda _ (fun k => D.meas ↑k)` are replaced by
+    `Measurable.of_eval (fun k => D.meas ↑k)`, since at this version `measurable_pi_lambda` is a
+    deprecated alias of `Measurable.of_eval`, which takes no explicit function argument. No
+    other proof text was changed.
+No mathematical content, declaration name, docstring or attribution of the original was removed
+or altered. The namespace `Causalean.Mathlib.Probability.SteinMethod`, the module-system markers
+(`module`, `public import` and, where present, `@[expose] public section`) and the copyright block
+and author line that follow this notice are as in the original. Each change is marked in place by a comment beginning
+`PORT v4.34.0`.
 -/
 /-
 Copyright (c) 2026 Jiyuan Tan. All rights reserved.
@@ -216,8 +206,8 @@ theorem cov_mul_nbhd_eq_zero {i j : ι}
   have hψ : Measurable ψ := by fun_prop
   -- Both tuples are AEMeasurable (each coordinate `X k` is measurable).
   have hXi : AEMeasurable (fun ω => fun k : ↥(D.nbhd i) => X k ω) μ :=
-    -- PORT v4.34.0: `measurable_pi_lambda` is a deprecated alias of `Measurable.of_eval`,
-    -- which drops the explicit function argument; the leading `_` is therefore removed.
+    -- PORT v4.34.0: the original calls `measurable_pi_lambda _`; in this Mathlib it is a
+    -- deprecated alias of `Measurable.of_eval`, which takes no explicit function argument.
     (Measurable.of_eval (fun k : ↥(D.nbhd i) => D.meas (↑k))).aemeasurable
   have hXj : AEMeasurable (fun ω => fun k : ↥(D.nbhd j) => X k ω) μ :=
     -- PORT v4.34.0: as above.

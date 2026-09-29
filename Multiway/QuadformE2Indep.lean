@@ -702,10 +702,11 @@ omit [DecidableEq V] in
 `Var(ζ'Wζ ∣ 𝒟) ≤ 2 tr(WΩ'WΩ') + C(M) G_max c_max ‖W‖_F²`, with `C(M) = (2^M)^4 · 4M` times the
 per-cumulant constant `K = C + 3((C+1)/2)²`.
 
-`hq0`, `hq1` make `q` a probability law at each site; `hW` makes `W` symmetric; `hC`, `hmom`
-bound fourth moments; `hLv`, `he` describe the levels; `hG`, `hc` bound cell sizes; `hdep` makes
-each variable a function of the latents at its sites; `hdeg` is complete degeneracy; `hidio`
-gives the symbol `ε` the full dimension set, which forces `M ≥ 2`. -/
+`hq0`, `hq1` make `q` a probability law at each site; `hW` makes `W` symmetric; `hC` makes `C`
+nonnegative and `hmom` bounds fourth moments by `C`; `hLv`, `he` describe the levels; `hG`, `hc`
+bound cell sizes; `hdep` makes each variable a function of the latents at its sites; `hdeg` is
+complete degeneracy; `hidio` gives the symbol `ε` the full dimension set, which forces
+`M ≥ 2`. -/
 theorem var_quadForm_le_regime2 {idio : Γ₀ → Prop} [DecidablePred idio] (idx : D → O → L)
     (lev : Γ₀ → Finset D) (q : Site D L O → V → ℝ) (hq0 : ∀ s v, 0 ≤ q s v)
     (hq1 : ∀ s, ∑ v : V, q s v = 1) {W : Matrix O O ℝ} (hW : W.IsSymm)

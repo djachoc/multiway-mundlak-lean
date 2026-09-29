@@ -9,7 +9,7 @@ import Mathlib.Tactic.Abel
 /-!
 # Parallel images
 
-This file formalizes Lemma SM.C.1 of the paper (Parallel images): if `A, B` are linear maps with
+This file formalizes Lemma SM.C.1 of the paper (Parallel images). If `A, B` are linear maps with
 `A x ∈ span(B x)` for every `x`, then `A = λ B` for some scalar `λ`. The statement is proved for
 an arbitrary real vector space, with no finite-dimensionality or inner product, and then
 specialised to `Fin n → ℝ`.
@@ -108,7 +108,7 @@ theorem exists_smul_eq_of_forall_mem_span_singleton {A B : V →ₗ[ℝ] V}
     have hdlam : d = lam := sub_eq_zero.mp ((smul_eq_zero.mp key.symm).resolve_right hx₀)
     rw [← hc, hcd, hdlam]
 
-/-- If `T v ∈ span(v)` for every `v`, then `T = λ I`: the case `B = id` of the lemma. -/
+/-- If `T v ∈ span(v)` for every `v`, then `T = λ I`. This is the case `B = id` of the lemma. -/
 theorem eq_smul_id_of_forall_mem_span_singleton {T : V →ₗ[ℝ] V}
     (h : ∀ v, T v ∈ Submodule.span ℝ {v}) :
     ∃ lam : ℝ, T = lam • LinearMap.id :=

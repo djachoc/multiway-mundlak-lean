@@ -327,7 +327,7 @@ theorem specProj_mul_self (hD : Dp.PosDef) (hU : Upᵀ * Up = 1)
         rw [specFactor_transpose_mul_self hD hU hspec, Matrix.mul_one, specProj]
 
 omit [DecidableEq O] in
-/-- `VV'W = W`: `VV'` fixes `col(W)`. -/
+/-- `VV'W = W`, that is, `VV'` fixes `col(W)`. -/
 theorem specProj_mul_eq_self (hD : Dp.PosDef) (hU : Upᵀ * Up = 1)
     (hspec : Wᵀ * W = Up * Dp * Upᵀ) : specProj W Up Dp * W = W := by
   have h1 : specProj W Up Dp * W = specFactor W Up Dp * ((specFactor W Up Dp)ᵀ * W) := by
@@ -357,7 +357,7 @@ theorem colSpace_specProj (hD : Dp.PosDef) (hU : Upᵀ * Up = 1)
         ∈ colSpace (specProj W Up Dp) := mem_colSpace _ _
     rwa [← hfix] at hmem
 
-/-- `VV' = W(W'W)^{+}W' = P_W`: `VV'` is the orthogonal projector onto `col(W)`. -/
+/-- `VV' = W(W'W)^{+}W' = P_W`, so `VV'` is the orthogonal projector onto `col(W)`. -/
 theorem starProjection_colSpace_specFactor (hD : Dp.PosDef) (hU : Upᵀ * Up = 1)
     (hspec : Wᵀ * W = Up * Dp * Upᵀ) (x : EuclideanSpace ℝ O) :
     (colSpace W).starProjection x = Matrix.toEuclideanLin (specProj W Up Dp) x := by
@@ -713,7 +713,7 @@ theorem norm_perturbed_upper (hb : ∀ v, ‖A v‖ ≤ b * ‖v‖) (hEp : ∀ 
     _ ≤ b * ‖v‖ + τ * ‖v‖ := add_le_add (hb v) (hEp v)
     _ = (b + τ) * ‖v‖ := by ring
 
-/-- `X̃_τ'X̃_τ ≻ 0`: the perturbed Gram form is positive at every nonzero vector. -/
+/-- `X̃_τ'X̃_τ ≻ 0`, that is, the perturbed Gram form is positive at every nonzero vector. -/
 theorem inner_adjoint_perturbed_pos (hA : ∀ v, σ * ‖v‖ ≤ ‖A v‖) (hEp : ∀ v, ‖Ep v‖ ≤ τ * ‖v‖)
     (hστ : τ < σ) {v : F} (hv : v ≠ 0) :
     0 < ⟪LinearMap.adjoint (A + Ep) ((A + Ep) v), v⟫ := by

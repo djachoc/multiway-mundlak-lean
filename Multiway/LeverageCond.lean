@@ -427,8 +427,8 @@ theorem witness_cross {O : Type*} [Fintype O] [DecidableEq O] (o₀ : O) (o' o''
       simpa [h] using hmul
   rw [hconst, condExp_const bot_le]
 
-/-- A model for `condExp_meatLC_sub_meat`: `Ω = Unit`, `μ = dirac ()`, `𝒟 = ⊥`, `R = id`,
-`ε ≡ e_{o₀}`, `w ≡ 1`, with the heteroskedastic variance profile `σ²_ε(o) = 𝟙{o = o₀}`. -/
+/-- A model for `condExp_meatLC_sub_meat`, with `Ω = Unit`, `μ = dirac ()`, `𝒟 = ⊥`,
+`R = id`, `ε ≡ e_{o₀}`, `w ≡ 1` and the heteroskedastic variance profile `σ²_ε(o) = 𝟙{o = o₀}`. -/
 theorem condExp_meatLC_sub_meat_witness {O : Type*} [Fintype O] [DecidableEq O] (o₀ : O) :
     (fun ω : Unit => (Measure.dirac ())[fun _ : Unit => ∑ o : O, (1 : ℝ) *
           ((ContinuousLinearMap.id ℝ (EuclideanSpace ℝ O)) (EuclideanSpace.single o₀ (1 : ℝ)) o

@@ -1,5 +1,6 @@
 /-
-Copyright (c) 2026. All rights reserved.
+Copyright (c) 2026 Benjamin O. Harrison, Gustavo Canavire Bacarreza, David Jacho-Chavez and
+Fernando Rios-Avila.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
 import Mathlib.Data.Fintype.Pi
@@ -12,9 +13,9 @@ import Mathlib.Tactic.Ring
 /-!
 # The connected-subgraph count of Janson's Lemma 4
 
-This file formalizes the counting argument in the proof of Lemma 4 of Janson (1988): at most
-`j! (j-1)! N (M+1)^{j-1}` slot families of length `j` are connected for a relation of maximal
-degree `M` on `N` vertices. The dependency graph enters only as an abstract relation
+This file formalizes the counting argument in the proof of Lemma 4 of Janson (1988), namely
+that at most `j! (j-1)! N (M+1)^{j-1}` slot families of length `j` are connected for a relation
+of maximal degree `M` on `N` vertices. The dependency graph enters only as an abstract relation
 `R : V → V → Prop`; no measure or random variable appears.
 
 ## Main results
@@ -93,7 +94,7 @@ theorem exists_search_injection {V : Type*} {R : V → V → Prop} {j : ℕ} {φ
             rw [Fin.snoc_castSucc, Fin.snoc_last, hp]
             exact hRkl
 
-/-- **The search order**, as a permutation of the slots: after reordering, every slot but the
+/-- **The search order**, as a permutation of the slots, after which every slot but the
 first is `R`-linked to an earlier one. -/
 theorem exists_search_perm {V : Type*} {R : V → V → Prop} {j : ℕ} {φ : Fin j → V}
     (hconn : IsConnFam R φ) (hj : 0 < j) :

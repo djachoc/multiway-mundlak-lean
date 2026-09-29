@@ -1101,8 +1101,8 @@ theorem rectFrobSq_outer (a b : κ → ℝ) (t : ℝ) :
         (Finset.sum_mul Finset.univ (fun k : κ => a k ^ 2) ((∑ l : κ, b l ^ 2) * t ^ 2)).symm
 
 omit [DecidableEq κ] in
-/-- For rows with `∑_k x̃_{ok}² ≤ B²`, `‖x̃_ox̃_{o'}'t‖_F ≤ B²|t|`. The hypothesis `_hB` is
-not used in the proof. -/
+/-- For rows with `∑_k x̃_{ok}² ≤ B²`, the scaled outer product satisfies
+`‖x̃_ox̃_{o'}'t‖_F ≤ B²|t|`. -/
 theorem rectFrobNorm_outer_le {a b : κ → ℝ} {B : ℝ} (_hB : 0 ≤ B)
     (ha : ∑ k : κ, a k ^ 2 ≤ B ^ 2) (hb : ∑ k : κ, b k ^ 2 ≤ B ^ 2) (t : ℝ) :
     rectFrobNorm (Matrix.of fun k l : κ => a k * b l * t) ≤ B ^ 2 * |t| := by
@@ -1511,8 +1511,8 @@ end Bridge
 designs whose observation, cluster and coefficient types vary with the index. The lemma
 `condExp_sq_div` pulls the `𝒟`-measurable random divisor `λ_min(Ω_n)^{-2}` out of the
 conditional expectation. The first claim's bound `64K²B⁴Cδ_nλ_min(Ω_n)²` equals
-`64K²B⁴C·nD_n³`, which does not depend on `λ_min`. The
-integrability hypothesis `hdivint` is removed in `infeasibleMeat_tendstoInProb_nodiv`. -/
+`64K²B⁴C·nD_n³`, which does not depend on `λ_min`. The form
+`infeasibleMeat_tendstoInProb_nodiv` holds without the integrability hypothesis `hdivint`. -/
 
 section MeatLimit
 
@@ -2504,8 +2504,8 @@ theorem not_linked_of_not_mem_linkedQuads {p q : O × O}
   exact absurd ⟨h1, h2, h3, h4⟩ hcon
 
 omit [DecidableEq D] [Fintype κ] [DecidableEq κ] in
-/-- Regime 3 at the blocks `{o₁,o₂}` and `{o₃,o₄}`: off `𝓛_n` the products `ξ_{o₁o₂}` and
-`ξ_{o₃o₄}` are conditionally independent given `𝒟`. Disjointness of the blocks follows from the
+/-- Off `𝓛_n`, Regime 3 at the blocks `{o₁,o₂}` and `{o₃,o₄}` makes the products `ξ_{o₁o₂}`
+and `ξ_{o₃o₄}` conditionally independent given `𝒟`. Disjointness of the blocks follows from the
 separation and reflexivity of `∼`, which holds when `dims.Nonempty`. -/
 theorem condIndepFun_prod_of_not_mem_linkedQuads (hdims : dims.Nonempty)
     (hreg : Regime3 𝒟 h𝒟 c dims nu P) {p q : O × O}
@@ -2696,7 +2696,7 @@ end FourFold
 
 Two observations under a product of two standard Gaussians, `ν_o` the `o`-th coordinate, and
 singleton clusters. Then `Ω_{oo} = 1` and `Ω_n = 13` at weights `x̃ = 2, 3`, and the
-centered summands are almost surely non-zero, so the conclusions are not trivial identities. -/
+centered summands are almost surely non-zero. -/
 
 section RegimeWitness
 
@@ -2760,8 +2760,8 @@ theorem witG_centered_ne_zero (o : WitO) :
     ext ω; simp [witGNu]
   rw [hpre, ← Measure.map_apply (measurable_pi_apply o) hmeasS, witGP_map_eval o, hnull]
 
-/-- Example for `condExp_centeredSummand_mul_eq_zero`: the quadruple `(0,0,1,1)` lies outside
-`𝓛_n` while both pairs are linked. -/
+/-- Example for `condExp_centeredSummand_mul_eq_zero` at the quadruple `(0,0,1,1)`, which lies
+outside `𝓛_n` while both pairs are linked. -/
 theorem witness_condExp_centeredSummand_mul_eq_zero :
     witGP[fun ω =>
         centeredSummand witGXt witGNu (condOmegaKernel ⊥ witGP witGNu) 0 0
@@ -2857,11 +2857,11 @@ theorem infeasibleMeat_tendstoInProb_of_regime3 [IsProbabilityMeasure P] (hm : �
 
 end MeatSequenceRegime3
 
-/-! ## Moment bounds and removal of the integrability side condition
+/-! ## Moment bounds, and the second claim without the integrability side condition
 
 This part derives `hOmbd` (`|Ω_{oo'}| ≤ C^{1/2}`), `hnu` (`E[‖ν‖² ∣ 𝒟] ≤ C^{1/2}n`) and `hvp`
 (`E[‖ϖ‖² ∣ 𝒟] ≤ C^{1/2}(d+K)(D_n+1)`) from the moment assumption, using conditional Jensen for
-the square (`Integrable.norm_condExp_rpow_le`), and removes the integrability hypothesis
+the square (`Integrable.norm_condExp_rpow_le`), and dispenses with the integrability hypothesis
 `hdivint` by multiplying the divisor into the indicator in the conditional Chebyshev step. -/
 
 /-! ### Conditional Jensen for the square, and `hOmbd` -/

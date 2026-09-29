@@ -496,7 +496,7 @@ theorem frobNorm_pairForm_le (z : O → K → ℝ) (v : O → ℝ) (w : O → O 
         exact Finset.sum_congr rfl fun o _ => (Finset.mul_sum _ _ _).symm
 
 omit [DecidableEq K] in
-/-- **Step 4.** In every realization, `‖Υ̂^dim - Υ̂‖_F ≤ B² C(M,2) c^{(2)}_max ‖û‖²`, where `b`
+/-- **Step 4.** In every realization, `‖Υ̂^dim - Υ̂‖_F ≤ B² C(M,2) b ‖û‖²`, where `b`
 bounds the size of a level-two cell. -/
 theorem step4_bound (c : D → O → L) (dims : Finset D) (z : O → K → ℝ) (v : O → ℝ) {B b : ℝ}
     (hz : ∀ o, vecSqNorm (z o) ≤ B ^ 2)
@@ -618,7 +618,7 @@ omit [Fintype K] [DecidableEq K] in
 /-- **Theorem 12(c).** Given the second-moment identity `hEu`,
 (i) the mean of the union meat equals `(N_*/n²)` times the variance of the score, and
 (ii) that variance is `Υ_n + ∑_o z̃_o z̃_o' σ²_ε(o)`. The hypothesis `hdims` (`M ≥ 1`) is
-needed: at `dims = ∅` no pair is linked while the diagonal of `Eu` does not vanish. -/
+needed, since at `dims = ∅` no pair is linked while the diagonal of `Eu` does not vanish. -/
 theorem piinf_c (c : D → O → L) (dims : Finset D) (hdims : dims.Nonempty) (z : O → K → ℝ)
     (Eu : O → O → ℝ) (vr : D → ℝ) (sg : O → ℝ)
     (hEu : ∀ o o', Eu o o'
@@ -2578,10 +2578,10 @@ namespace PiWitness
 
 open scoped ENNReal
 
-/-- The category index of design `n`: `N_* = (n+1)^2` categories. -/
+/-- The category index of design `n`, with `N_* = (n+1)^2` categories. -/
 abbrev wJ (n : ℕ) : Type := Fin ((n + 1) ^ 2)
 
-/-- The observations of design `n`: `(n+1)^3` of them, so that `N_*/n = 1/(n+1) → 0`. -/
+/-- The `(n+1)^3` observations of design `n`, so that `N_*/n = 1/(n+1) → 0`. -/
 abbrev wO (n : ℕ) : Type := Fin ((n + 1) ^ 3)
 
 /-- `N_*` as a real. -/
@@ -2603,10 +2603,10 @@ noncomputable def wzt (n : ℕ) (_ : wO n) : EuclideanSpace ℝ (Fin 1) :=
 
 variable {Ω : Type*} [MeasurableSpace Ω]
 
-/-- `η̆^{(m)}_j` at design `n`: the `(2n, j)` slot of one i.i.d. Rademacher family. -/
+/-- `η̆^{(m)}_j` at design `n`, the `(2n, j)` slot of one i.i.d. Rademacher family. -/
 noncomputable def weta (ξ : ℕ × ℕ → Ω → ℝ) (n : ℕ) (j : wJ n) : Ω → ℝ := ξ (2 * n, j.val)
 
-/-- `ε_o` at design `n`: the `(2n+1, o)` slot of the same family. -/
+/-- `ε_o` at design `n`, the `(2n+1, o)` slot of the same family. -/
 noncomputable def weps (ξ : ℕ × ℕ → Ω → ℝ) (n : ℕ) (o : wO n) : Ω → ℝ := ξ (2 * n + 1, o.val)
 
 /-- `π̂_n`, defined by the solved form of Lemma SM.B.4 at `Ψ̂_n = I`. -/
@@ -2789,7 +2789,7 @@ end PiCLT
 
 `piinf_a_of_step1` proves `hproj`, `hresid` and `hscore` and gives clause (a) from `hstep1`.
 The inputs are the second-moment identity `hEu` (as in `piinf_c`), with `omegaU` the kernel `Ω_u`,
-and a symmetric idempotent matrix `Pim` with `tr(Pim) ≤ R` standing for `P_{C_1}`.
+and a symmetric idempotent matrix `Pim` with `tr(Pim) ≤ R` in place of `P_{C_1}`.
 
 * `proj_bddInProb`: `‖P_{C_1}u‖² = O_p(G_max)`, via `tr(PΩ_u) ≤ g·tr(P)`.
 * `residSq_bddInProb_of_omega`: `‖û‖² = O_p(n)`.
@@ -3632,10 +3632,11 @@ realization (`frobNorm_r1_decomp_le`)
 The leading term is controlled by its second moment (`integral_frobSq_r1Lead_le`), the remainder
 by its first (`integral_r1RemSum_le`), and `a_nS_L` has mean `a_n tr(Υ_n)` (`integral_r1LeadSum`).
 
-The disturbance array is indexed by `(D × Finset O) ⊕ O`: a site `Sum.inl (m, t)` for each
-category effect, with the category represented by its level-`{m}` cell `t`, and a site `Sum.inr o`
-for each `ε_o`. The cross-level aggregates are bounded through `sum_cells_inter`: the
-level-`A ∪ A'` cells are the nonempty intersections of a level-`A` cell with a level-`A'` cell. -/
+The disturbance array is indexed by `(D × Finset O) ⊕ O`, with a site `Sum.inl (m, t)` for each
+category effect, the category being represented by its level-`{m}` cell `t`, and a site
+`Sum.inr o` for each `ε_o`. The cross-level aggregates are bounded through `sum_cells_inter`,
+since the level-`A ∪ A'` cells are the nonempty intersections of a level-`A` cell with a
+level-`A'` cell. -/
 section CellsPair
 open Finset
 
@@ -5713,10 +5714,10 @@ namespace RectWitness
 open Matrix MeasureTheory ProbabilityTheory Filter
 open scoped Topology ENNReal
 
-/-- A rectangular restriction, `r = 1 < 2 = K`: the first coordinate. -/
+/-- A rectangular restriction to the first coordinate, `r = 1 < 2 = K`. -/
 def wR : Matrix (Fin 1) (Fin 2) ℝ := !![1, 0]
 
-/-- The identity on the unrestricted space, standing for `Ψ⁻¹`. -/
+/-- The identity on the unrestricted space, in place of `Ψ⁻¹`. -/
 noncomputable abbrev wPsi : EuclideanSpace ℝ (Fin 2) →L[ℝ] EuclideanSpace ℝ (Fin 2) :=
   ContinuousLinearMap.id ℝ (EuclideanSpace ℝ (Fin 2))
 
@@ -6018,8 +6019,8 @@ theorem frobNorm_one_fin_two : frobNorm (1 : Matrix (Fin 2) (Fin 2) ℝ) = Real.
   congr 1
   simp [frobSq, Matrix.one_apply]
 
-/-- The category index of design `n` at `K = 2`: `(n+1)²` categories along each coordinate
-direction. -/
+/-- The category index of design `n` at `K = 2`, with `(n+1)²` categories along each
+coordinate direction. -/
 abbrev rJ (n : ℕ) : Type := Fin ((n + 1) ^ 2) × Fin 2
 
 /-- The observations of design `n`. -/
@@ -6375,7 +6376,7 @@ end PiTwelve
 
 /-! ## §13 Removing the conditioning
 
-`pi_clt_unconditional_of_design_closed` is Theorem 6 with a `𝒟`-measurable random design: every
+`pi_clt_unconditional_of_design_closed` is Theorem 6 with a `𝒟`-measurable random design. Every
 hypothesis of `pi_clt` is read under the regular conditional law `ℙ_ω := condExpKernel P 𝒟 ω` at
 `P`-almost every `ω`, and the conclusion holds under `P`. The design is frozen by
 `ae_ae_eq_pi_design`, and the frozen statistic is passed to
@@ -6429,7 +6430,7 @@ theorem pi_clt_unconditional_of_frozen_stat {K : ℕ}
     (condExpKernel P 𝒟 ω)) t = condCharFunD 𝒟 P (W n) t ω
   rw [hω n, Measure.map_congr hn]
 
-/-- Freezing the design of Theorem 6: under `ℙ_ω` the category weights, the observation rows,
+/-- Freezing the design of Theorem 6. Under `ℙ_ω` the category weights, the observation rows,
 the scale `a_n` and `Ψ̂_n` are a.e. constant. Vectors are frozen whole and `Ψ̂_n` entry by
 entry. -/
 theorem ae_ae_eq_pi_design {K : ℕ} {Jc : ℕ → Type*} [∀ n, Fintype (Jc n)]
@@ -6467,10 +6468,10 @@ theorem sqrt_smul_solved {K : ℕ} {s : ℝ} (hs : 0 < s)
     Real.sqrt s • ((pi0 + (Real.sqrt s)⁻¹ • v) - pi0) = v := by
   rw [add_sub_cancel_left, smul_inv_smul₀ (ne_of_gt (Real.sqrt_pos.2 hs))]
 
-/-- **Theorem 6** under the full measure, with the design random: `a_n`, `N_*`, `max_j‖z_j‖²`,
-`z^{(m)}_j`, `z̃_o` and `Ψ̂_n` are `𝒟`-measurable, every hypothesis of `pi_clt` holds under `ℙ_ω`
-for `P`-a.e. `ω`, and the conclusion holds under `P`. The limits `Υ` and `Ψ⁻¹`, the value `π₀`
-and the constants are deterministic. -/
+/-- **Theorem 6** under the full measure, with the design random, in that `a_n`, `N_*`,
+`max_j‖z_j‖²`, `z^{(m)}_j`, `z̃_o` and `Ψ̂_n` are `𝒟`-measurable. Every hypothesis of `pi_clt`
+holds under `ℙ_ω` for `P`-a.e. `ω`, and the conclusion holds under `P`. The limits `Υ` and
+`Ψ⁻¹`, the value `π₀` and the constants are deterministic. -/
 theorem pi_clt_unconditional_of_design_closed {K : ℕ}
     {Jc : ℕ → Type*} [∀ n, Fintype (Jc n)] {Ob : ℕ → Type*} [∀ n, Fintype (Ob n)]
     (h𝒟 : 𝒟 ≤ mOm2) (P : Measure Om) [IsProbabilityMeasure P]
@@ -6753,10 +6754,10 @@ noncomputable def pzc (n : ℕ) (j : wJ n) (y : Aw) : EuclideanSpace ℝ (Fin 1)
 noncomputable def pzt (n : ℕ) (o : wO n) (y : Aw) : EuclideanSpace ℝ (Fin 1) :=
   sgnA y • wzt n o
 
-/-- The category effect: the `(2n, j)` coin. -/
+/-- The category effect, the `(2n, j)` coin. -/
 noncomputable def peta (n : ℕ) (j : wJ n) (y : Aw) : ℝ := coinSign (2 * n, j.val) y.2
 
-/-- The idiosyncratic error: the `(2n+1, o)` coin. -/
+/-- The idiosyncratic error, the `(2n+1, o)` coin. -/
 noncomputable def peps (n : ℕ) (o : wO n) (y : Aw) : ℝ := coinSign (2 * n + 1, o.val) y.2
 
 /-- `Ψ̂_n = I` at every index. -/

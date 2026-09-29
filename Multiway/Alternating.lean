@@ -7,7 +7,7 @@ import Mathlib.Analysis.SpecificLimits.Basic
 # Convergence of the alternating projection scheme
 
 This file proves the convergence clause of Proposition SM.E.1(c) (computation of the joint
-within transformation): the iterates `Γ_k` of the sweep `Q_M ⋯ Q_1` converge to `Q_[Δ]Γ_0`,
+within transformation). The iterates `Γ_k` of the sweep `Q_M ⋯ Q_1` converge to `Q_[Δ]Γ_0`,
 where `𝒮 = ∑_m 𝒮_m`. In finite dimensions the sweep is a strict contraction on `𝒮`, so the
 convergence is geometric; this is the finite-dimensional case of Halperin (1962).
 
@@ -89,7 +89,7 @@ theorem sweepList_mem (hPS : ∀ m, P m ≤ S) (l : List D) {x : E} (hx : x ∈ 
       rw [Submodule.starProjection_orthogonal_val]
       exact Submodule.sub_mem _ hx (hPS m ((P m).starProjection_apply_mem x))
 
-/-- A sweep strictly shrinks every nonzero vector of `𝒮`: otherwise `x` would be orthogonal to
+/-- A sweep strictly shrinks every nonzero vector of `𝒮`; otherwise `x` would be orthogonal to
 every `𝒮_m`, hence to `𝒮 = ∑_m 𝒮_m`, hence to itself. -/
 theorem norm_sweepList_lt (hS : S = ⨆ m, P m) {l : List D} (hfull : ∀ m : D, m ∈ l) {x : E}
     (hx : x ∈ S) (hne : x ≠ 0) : ‖sweepList P l x‖ < ‖x‖ := by
@@ -114,9 +114,9 @@ theorem norm_sweepList_lt (hS : S = ⨆ m, P m) {l : List D} (hfull : ∀ m : D,
 Compactness of the unit ball of `𝒮`, which uses finite-dimensionality, turns the pointwise
 strict inequality into a uniform bound. -/
 
-/-- The sweep is a strict contraction on `𝒮`: `y ↦ ‖(Q_M⋯Q_1)y‖` attains its maximum `c` on the
-compact set `{x ∈ 𝒮 : ‖x‖ ≤ 1}`, and `c < 1` by `norm_sweepList_lt`. Homogeneity extends the
-bound to all of `𝒮`. -/
+/-- The sweep is a strict contraction on `𝒮`, since `y ↦ ‖(Q_M⋯Q_1)y‖` attains its maximum `c`
+on the compact set `{x ∈ 𝒮 : ‖x‖ ≤ 1}`, and `c < 1` by `norm_sweepList_lt`. Homogeneity extends
+the bound to all of `𝒮`. -/
 theorem exists_contraction (hS : S = ⨆ m, P m) (l : List D) (hfull : ∀ m : D, m ∈ l) :
     ∃ c : ℝ, 0 ≤ c ∧ c < 1 ∧ ∀ x ∈ S, ‖sweepList P l x‖ ≤ c * ‖x‖ := by
   have hKc : IsCompact (Metric.closedBall (0 : E) 1 ∩ (S : Set E)) :=

@@ -394,7 +394,7 @@ theorem levelOne_eq_zero_of_not_linked (c : D → O → L) (dims : Finset D) (si
   simp [hne]
 
 omit [Fintype O] [DecidableEq D] in
-/-- The two decompositions of `Ω'` agree: under `σ²_ε(o) ≡ σ²_ε` and
+/-- The two decompositions of `Ω'` agree. Under `σ²_ε(o) ≡ σ²_ε` and
 `s̄² = σ²_ε + ∑_{e ∈ 𝓔} σ_e²`, one has
 `diag(σ²_ε(o)) + ∑_{e ∈ 𝓔} σ_e² Sh_e = s̄²I_n + ∑_{e ∈ 𝓔} σ_e² Sh^off_e`, because
 `Sh_e = Sh^off_e + I_n`. -/
@@ -426,8 +426,8 @@ theorem omegaPrime_eq_sbar_shOff (c : D → O → L) (Esets : Finset (Finset D))
     _ = sbar • (1 : Matrix O O ℝ) + ∑ e ∈ Esets, sige e • shOff c e := by rw [hsbar]
 
 /-- **Lemma SM.B.10(i), second half.** Changing the level-one variances leaves
-`nS_n = X̃'(Ω ∘ Sh)X̃` unchanged: by `unionmeat_a`, both values equal an expression in which the
-level-one variances do not occur. -/
+`nS_n = X̃'(Ω ∘ Sh)X̃` unchanged, since by `unionmeat_a` both values equal an expression in which
+the level-one variances do not occur. -/
 theorem nSn_levelOne_invariant (c : D → O → L) (dims : Finset D) (xt : O → K → ℝ)
     (levels : Finset (Finset D)) (sig1 sig1' : D → ℝ) (sige : Finset D → ℝ) (sigeps : O → ℝ)
     {Om Om' Om1 Om1' Omp : Matrix O O ℝ}
@@ -455,8 +455,8 @@ theorem nSn_levelOne_invariant (c : D → O → L) (dims : Finset D) (xt : O →
 
 /-- **Lemma SM.B.10(i).** Under one set of hypotheses on `Ω`, changing the level-one
 variances leaves both `RΩR` (`IdentE2.levelOne_variances_absent`) and `nS_n`
-(`nSn_levelOne_invariant`) unchanged. `hsbar` defines `s̄²` and `sigeps0` imposes
-`σ²_ε(o) ≡ σ²_ε`. -/
+(`nSn_levelOne_invariant`) unchanged. `hsbar` defines `s̄²`, and the constant
+`sigeps0` in `hOmp` imposes `σ²_ε(o) ≡ σ²_ε`. -/
 theorem identE2_i (c : D → O → L) (dims : Finset D) (xt : O → K → ℝ)
     (Esets : Finset (Finset D)) (sig1 sig1' : D → ℝ) (sige : Finset D → ℝ)
     (sigeps0 sbar : ℝ) {R Om Om' Om1 Om1' Omp : Matrix O O ℝ}
@@ -686,7 +686,7 @@ theorem frobSq_symmetrize_le (M : Matrix O O ℝ) :
   rw [frobSq_smul]
   nlinarith [frobSq_nonneg M]
 
-/-- `tr(W̃Ω'W̃Ω') ≤ L²‖C_s‖_F²` for `W̃ = RC_sR`: by cyclicity,
+/-- `tr(W̃Ω'W̃Ω') ≤ L²‖C_s‖_F²` for `W̃ = RC_sR`. By cyclicity,
 `tr(W̃Ω'W̃Ω') = tr(C_sΩ*C_sΩ*)` with `Ω* = RΩ'R`, then `tr(MM) ≤ ‖M‖_F²` and `‖Ω*‖ ≤ ‖Ω'‖ ≤ L`.
 No symmetry of `C_s` or `Ω'` is assumed. -/
 theorem trace_conj_le {R Omp Cs : Matrix O O ℝ} (hRs : R.IsSymm) (hRi : R * R = R)
@@ -714,8 +714,9 @@ theorem trace_conj_le {R Omp Cs : Matrix O O ℝ} (hRs : R.IsSymm) (hRi : R * R 
   exact (trace_mul_self_le_frobSq _).trans hfrob
 
 /-- **Theorem 8(c), the variance bound.**
-`Var(ζ'W̃ζ ∣ 𝒟) ≤ 2‖Ω*‖²‖C‖_F² + C(M)G_max c_max‖C‖_F²` for `W̃ = RC_sR`. The `ζ`-side
-hypotheses are those of `QuadformE2.var_quadForm_le`, and `hOpNorm` is `‖Ω'‖ ≤ L`. -/
+`Var(ζ'W̃ζ ∣ 𝒟) ≤ 2L²‖C‖_F² + #s·K_b·Λ‖C‖_F²` for `W̃ = RC_sR`, where `#s·K_b·Λ` plays the
+role of `C(M)G_max c_max`. The `ζ`-side hypotheses are those of `QuadformE2.var_quadForm_le`,
+and `hOpNorm` is `‖Ω'‖ ≤ L`. -/
 theorem unionmeat_c {Ω Γ : Type*} (E : (Ω → ℝ) →ₗ[ℝ] ℝ)
     {R Omp Cmat Cs : Matrix O O ℝ}
     (hRs : R.IsSymm) (hRi : R * R = R) (hOs : Omp.IsSymm)
@@ -947,7 +948,7 @@ section Cheb
 
 variable {Ωp : Type*} [MeasurableSpace Ωp] {P : Measure Ωp}
 
-/-- `Z_n² ⟶^p 0` implies `Z_n ⟶^p 0`: the sets `{ε ≤ |Z|}` and `{ε² ≤ |Z²|}` are equal. -/
+/-- `Z_n² ⟶^p 0` implies `Z_n ⟶^p 0`, since the sets `{ε ≤ |Z|}` and `{ε² ≤ |Z²|}` are equal. -/
 theorem tendstoInProb_zero_of_sq {Z : ℕ → Ωp → ℝ}
     (h : TendstoInMeasure P (fun j ω => Z j ω ^ 2) atTop (fun _ => (0 : ℝ))) :
     TendstoInMeasure P Z atTop (fun _ => (0 : ℝ)) := by
@@ -1123,10 +1124,11 @@ omit [∀ j, DecidableEq (D j)] in
 /-- **Theorem 8(c), first asymptotic tail.** `n^{-1}𝓜̂_[Δ] - S_n ⟶^p 0`.
 
 The bias is controlled by `unionmeat_b_bound` through `expect_wMat_quadForm`, and the
-fluctuation by the variance bound `hvar` of `unionmeat_c`; Chebyshev's inequality concludes.
-`hOmdef` defines `Ω'` as the second-moment matrix of `ζ`, `hnSn` is `X̃'(Ω'∘Sh)X̃ = nS_n`
-entrywise, `hEmean` and `hEsq` relate `E` to `∫·dP`, and `hratebias`, `hratevar` are the rate
-conditions `c_max²d_[Δ]G_max = o(n)` and `(c_max+G_max)c_maxG_max = o(n)`. -/
+fluctuation by the variance bound `hvar` (the conclusion of `unionmeat_c`); Chebyshev's
+inequality concludes. `hOmdef` defines `Ω'` as the second-moment matrix of `ζ`, `hnSn` is
+`X̃'(Ω'∘Sh)X̃ = nS_n` entrywise, `hEmean` and `hEsq` relate `E` to `∫·dP`, and `hratebias`,
+`hratevar` are the rate conditions `(#K)²L²tr(Π)Q_c/n → 0` and `(#K)²v/n² → 0`, the forms
+taken here by `c_max²d_[Δ]G_max = o(n)` and `(c_max+G_max)c_maxG_max = o(n)`. -/
 theorem tendstoInProb_frobNorm_meat_div_card {Ωp : Type*} [MeasurableSpace Ωp]
     {P : Measure Ωp} [IsProbabilityMeasure P]
     (c : ∀ j, D j → O j → L j) (dims : ∀ j, Finset (D j)) (xt : ∀ j, O j → K j → ℝ)
@@ -1271,7 +1273,7 @@ theorem witE0_mul_self (j : ℕ) (o : Fin (j + 1)) : witE0 j o * witE0 j o = wit
 theorem witE0_sum (j : ℕ) : ∑ o : Fin (j + 1), witE0 j o = 1 := by
   simp [witE0]
 
-/-- One maintained dimension with a single category: every pair is a sharing pair. -/
+/-- One maintained dimension with a single category, so that every pair is a sharing pair. -/
 def witSeqC (j : ℕ) : Fin 1 → Fin (j + 1) → Fin 1 := fun _ _ => 0
 
 theorem witSeq_linked (j : ℕ) (o o' : Fin (j + 1)) :
@@ -1524,13 +1526,13 @@ and `Ω' = I`. -/
 
 section Witness
 
-/-- One fixed-effect dimension, one category: both observations share it. -/
+/-- One fixed-effect dimension with one category, shared by both observations. -/
 def witC : Fin 1 → Fin 2 → Fin 1 := fun _ _ => 0
 
 /-- The within-transformed regressor `x̃ = (1, -1)'`, which sums to zero over the one cell. -/
 def witX : Fin 2 → Fin 1 → ℝ := fun o _ => if o = 0 then (1 : ℝ) else -1
 
-/-- `Ω = 3·Sh_{\{0\}} + I`: a level-one variance of `3` and unit idiosyncratic variance. -/
+/-- `Ω = 3·Sh_{\{0\}} + I`, with level-one variance `3` and unit idiosyncratic variance. -/
 noncomputable def witOm : Matrix (Fin 2) (Fin 2) ℝ :=
   (∑ m ∈ (Finset.univ : Finset (Fin 1)), (3 : ℝ) • shMat witC ({m} : Finset (Fin 1)))
     + (Matrix.diagonal (fun _ : Fin 2 => (1 : ℝ))
@@ -1681,7 +1683,7 @@ variable {Ωp : Type*} {mΩp : MeasurableSpace Ωp} {P : Measure Ωp}
 
 /-! ### Convergence in probability to a constant limit -/
 
-/-- `u_n ⟶^p a` is the same statement as `d(u_n, a) ⟶^p 0`: the two index sets are equal. -/
+/-- `u_n ⟶^p a` is the same statement as `d(u_n, a) ⟶^p 0`, since the two index sets are equal. -/
 theorem tendstoInProb_const_iff_dist {E : Type*} [PseudoMetricSpace E]
     {u : ℕ → Ωp → E} {a : E} :
     TendstoInMeasure P u atTop (fun _ => a)
@@ -1809,7 +1811,7 @@ theorem l2_opNorm_le_frobNorm (A : Matrix K K ℝ) : ‖A‖ ≤ frobNorm A := b
   have h := Real.sqrt_le_sqrt hsum
   rwa [Real.sqrt_sq (norm_nonneg _), Real.sqrt_sq hnn] at h
 
-/-- `‖A‖_F ≤ √(card K)‖A‖`: the columns are the images of the standard basis. -/
+/-- `‖A‖_F ≤ √(card K)‖A‖`, since the columns are the images of the standard basis. -/
 theorem frobNorm_le_sqrt_card_mul_l2_opNorm (A : Matrix K K ℝ) :
     frobNorm A ≤ Real.sqrt (Fintype.card K) * ‖A‖ := by
   have hcol : ∀ j : K, ∑ i : K, (A i j) ^ 2 ≤ ‖A‖ ^ 2 := by

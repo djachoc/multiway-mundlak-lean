@@ -1067,7 +1067,7 @@ theorem charFun_tendsto_of_errors
   classical
   have hWmeas : ∀ n, Measurable (depSum (X n)) := fun n => by
     unfold depSum; exact Finset.measurable_sum _ (fun o _ => hmeas n o)
-  -- the two test functions: bounded by `1`, derivative bounded by `|t|`
+  -- both test functions are bounded by `1`, with derivative bounded by `|t|`
   have hcos_diff : Differentiable ℝ (fun x => Real.cos (t * x)) := by fun_prop
   have hcos_b : ∀ x, |Real.cos (t * x)| ≤ 1 := fun x => Real.abs_cos_le_one _
   have hcos_d : ∀ x, |deriv (fun x => Real.cos (t * x)) x| ≤ |t| := by
@@ -1495,10 +1495,10 @@ end DesignDeconditioning
 /-! ### An example with a nontrivial design σ-field
 
 On `Ω = Bool × ℝ` the first coordinate is a fair design coin and the second an independent
-standard Gaussian disturbance, and `𝒟 = σ(coin)` is a proper sub-σ-field. The design at index `n` is `±(n+1)^{-1}` with its sign
-read off the coin, and the statistic depends on the design. The conditional law of the
-disturbance is identified as `N(0,1)` through independence (`map_snd_condExpKernel`). The frozen
-statistic has law `N(0,1)` at every `n`. -/
+standard Gaussian disturbance, and `𝒟 = σ(coin)` is a proper sub-σ-field. The design at index
+`n` is `±(n+1)^{-1}` with its sign read off the coin, and the statistic depends on the design.
+The conditional law of the disturbance is identified as `N(0,1)` through independence
+(`map_snd_condExpKernel`). The frozen statistic has law `N(0,1)` at every `n`. -/
 
 namespace DesignWitness
 
@@ -1527,13 +1527,13 @@ theorem Ddes_le : Ddes ≤ (inferInstance : MeasurableSpace DOmg) :=
 theorem meas_fst_des : Measurable[Ddes] (Prod.fst : DOmg → Bool) :=
   measurable_iff_comap_le.2 le_rfl
 
-/-- The design is random: each face has probability `1/2`. -/
+/-- The design is random, each face having probability `1/2`. -/
 theorem Pdes_fst (b : Bool) : Pdes {y : DOmg | y.1 = b} = 2⁻¹ := by
   have hset : {y : DOmg | y.1 = b} = ({b} : Set Bool) ×ˢ (Set.univ : Set ℝ) :=
     Set.ext fun y => by simp [Set.mem_prod, Set.mem_singleton_iff]
   rw [hset, Pdes, Measure.prod_prod, coin_singleton, measure_univ, mul_one]
 
-/-- `𝒟` is a proper sub-σ-field: a `𝒟`-measurable set is a preimage under the coin, so it
+/-- `𝒟` is a proper sub-σ-field, since a `𝒟`-measurable set is a preimage under the coin and so
 cannot separate `(true,1)` from `(true,-1)`. -/
 theorem Ddes_proper : ∃ B : Set DOmg, MeasurableSet B ∧ ¬ MeasurableSet[Ddes] B := by
   refine ⟨Prod.snd ⁻¹' Set.Ioi (0 : ℝ), measurable_snd measurableSet_Ioi, ?_⟩
@@ -1603,7 +1603,7 @@ noncomputable def sgnDes (ω : DOmg) : ℝ := if ω.1 then (1 : ℝ) else -1
 theorem sgnDes_sq (ω : DOmg) : (sgnDes ω) ^ 2 = 1 := by
   cases h : ω.1 <;> simp [sgnDes, h]
 
-/-- The sequence of designs: at index `n` the design is `±(n+1)^{-1}`, its sign read off the
+/-- The sequence of designs. At index `n` the design is `±(n+1)^{-1}`, its sign read off the
 coin. It is `𝒟`-measurable because it factors through the coin. -/
 noncomputable def ddes (n : ℕ) (ω : DOmg) : ℝ := ((n : ℝ) + 1)⁻¹ * sgnDes ω
 
@@ -1616,7 +1616,7 @@ theorem meas_ddes (n : ℕ) : Measurable[Ddes] (ddes n) := by
   rw [h]
   exact Measurable.of_discrete.comp meas_fst_des
 
-/-- The statistic as a measurable function of the design and the disturbance: at `g` it is
+/-- The statistic as a measurable function of the design and the disturbance, equal at `g` to
 `(n+1)g` times the disturbance. -/
 noncomputable def Fdes (n : ℕ) (g : ℝ) (y : DOmg) : ℝ := ((n : ℝ) + 1) * g * y.2
 
@@ -1651,8 +1651,8 @@ theorem map_Fdes_frozen {ω : DOmg}
     refine NNReal.coe_injective ?_
     simpa using sgnDes_sq ω
 
-/-- `hfrozen` for this model: the frozen statistic converges in distribution to `N(0,1)` under
-`ℙ_ω` for almost every realization, since it has that law at every `n`. -/
+/-- `hfrozen` for this model, that is, the frozen statistic converges in distribution to
+`N(0,1)` under `ℙ_ω` for almost every realization, since it has that law at every `n`. -/
 theorem hfrozen_des : ∀ᵐ ω ∂Pdes,
     TendstoInDistribution (m := fun _ : ℕ => (inferInstance : MeasurableSpace DOmg))
       (fun (n : ℕ) (y : DOmg) => Fdes n (ddes n ω) y) atTop (id : ℝ → ℝ)
@@ -1671,8 +1671,8 @@ theorem hfrozen_des : ∀ᵐ ω ∂Pdes,
   simp only [hconst]
   exact tendsto_const_nhds
 
-/-- `ℙ_ω` is not `P`: freezing forces `ℙ_ω` onto the half of the space where the coin agrees
-with `ω`, which has `P`-measure `1/2`. -/
+/-- `ℙ_ω` is not `P`, since freezing forces `ℙ_ω` onto the half of the space where the coin
+agrees with `ω`, which has `P`-measure `1/2`. -/
 theorem condExpKernel_ne_Pdes : ¬ (∀ᵐ ω ∂Pdes, condExpKernel Pdes Ddes ω = Pdes) := by
   intro h
   have hfz := ae_ae_eq_condExpKernel Ddes_le Pdes meas_fst_des
@@ -1840,7 +1840,7 @@ theorem firstError_le_general (D : DepGraph X μ) {φ : ℝ} (hφ0 : 0 ≤ φ)
       funext ω; rw [hWapp]; simp [hq]
     rw [ep, eq'] at hcomp
     exact hcomp.covariance_eq_zero (hWmem p) (hWmem q)
-  -- the partners of an edge: those with a vertex in its two-step neighbourhood
+  -- the partners of an edge are those with a vertex in its two-step neighbourhood
   set S : O × O → Finset O := fun p => D.nbhd p.1 ∪ D.nbhd p.2 with hSdef
   set T : O × O → Finset (O × O) := fun p =>
     (S p).biUnion (fun a => {a} ×ˢ D.nbhd a) ∪ (S p).biUnion (fun a => D.nbhd a ×ˢ {a})
@@ -4114,8 +4114,8 @@ open Matrix
 /-- **Theorem 5(b) at general `J`, for `β̂_JM`, under `(n/D_n)^{1/3}δ_n → 0`.** The bound
 `sup_o|ν_o| ≤ C_ν` of part (a) is replaced by the fourth-moment bound `∫ν_o⁴ ≤ C`, written
 `C = C₄⁴`. The truncation does not enter the rate, since both Stein error terms are controlled by
-the fourth moment of the truncated array, which is at most `(2ψ_n)⁴` with `ψ_n = BC₄λ_min(Ω_n)^{-1/2}`. The conditions
-`0 < B` and `0 < C₄` make `ψ_n > 0`. -/
+the fourth moment of the truncated array, which is at most `(2ψ_n)⁴` with
+`ψ_n = BC₄λ_min(Ω_n)^{-1/2}`. The conditions `0 < B` and `0 < C₄` make `ψ_n > 0`. -/
 theorem cltcluster_b_general_betaJM
     {O : ℕ → Type*} [∀ n, Fintype (O n)] [∀ n, DecidableEq (O n)]
     {K : Type*} [Fintype K] [DecidableEq K]
@@ -4190,8 +4190,7 @@ open Multiway.Multilinear
 
 /-- The hypotheses of `cltcluster_b_general_betaJM` hold on the `J = 2` design of
 `cltcluster_a_general_betaJM_witness`. The total variance is `1` at every `n` by the
-fourth-moment standardization, `ψ_n = (n+3)^{-1/2} → 0` and `D_n = 2`. The disturbance is
-bounded, as is every variable on a finite probability space. -/
+fourth-moment standardization, `ψ_n = (n+3)^{-1/2} → 0` and `D_n = 2`. -/
 theorem cltcluster_b_general_betaJM_witness (s : ℝ) :
     Tendsto (fun n => ((coins (n + 3)).map (fun ω =>
         (fun _ : Fin 1 => (1 : ℝ)) ⬝ᵥ
@@ -5265,12 +5264,12 @@ end FrozenDesign
 /-! ### An example with a random design and a growing array
 
 On `Ω = Bool × ((ℕ × ℕ) → Bool)` the first coordinate is a fair design coin and the second an
-independent i.i.d. fair coin for every `(n, o)`; `𝒟 = σ(design coin)` is a proper sub-σ-field and `ℙ_ω ≠ P`. The conditional law
-of the disturbance coordinate is identified as the product measure through
-`Measure.eq_infinitePi`, checking the countably many measurable boxes with `ae_all_iff` and
-`condExp_indep_eq`. At index `n` there are `n+1` singleton clusters, one regressor
-`X̃_n(ω) = ±ι_{n+1}` with the sign read off the design coin, `𝓡_n = I_1`, `Ω_n = I` and
-`φ_n = (n+1)^{-1/2}`; the total conditional variance is `1` at every `n`. -/
+independent i.i.d. fair coin for every `(n, o)`; `𝒟 = σ(design coin)` is a proper sub-σ-field
+and `ℙ_ω ≠ P`. The conditional law of the disturbance coordinate is identified as the product
+measure through `Measure.eq_infinitePi`, checking the countably many measurable boxes with
+`ae_all_iff` and `condExp_indep_eq`. At index `n` there are `n+1` singleton clusters, one
+regressor `X̃_n(ω) = ±ι_{n+1}` with the sign read off the design coin, `𝓡_n = I_1`, `Ω_n = I`
+and `φ_n = (n+1)^{-1/2}`; the total conditional variance is `1` at every `n`. -/
 
 section FrozenDesignWitness
 
@@ -6313,9 +6312,10 @@ end CoinSignLayer
 
 The `J = 2` design is placed on the product space of `FrozenDesignWitness`, with its nontrivial
 `𝒟`. It has `n+3` observations and the sharing relation `|o − o'| ≤ 1`, which is the union of two
-clustering maps and is not transitive, and `D_n = 2`. The design `X̃_n(ω) = ±ι_{n+3}` has its sign read off the
-design coin, `λ_min(Ω_n) = n+3`, and `(n/D_n)^{1/3}δ_n ≤ 8(n+3)^{-1/2} → 0`. The total
-conditional variance is `1` at every `n`. The disturbance is a fair sign, so it is bounded. -/
+clustering maps and is not transitive, and `D_n = 2`. The design `X̃_n(ω) = ±ι_{n+3}` has its
+sign read off the design coin, `λ_min(Ω_n) = n+3`, and
+`(n/D_n)^{1/3}δ_n ≤ 8(n+3)^{-1/2} → 0`. The total conditional variance is `1` at every `n`. The
+disturbance is a fair sign, so it is bounded. -/
 
 section FrozenGeneralWitness
 

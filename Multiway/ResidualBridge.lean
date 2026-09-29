@@ -336,8 +336,8 @@ theorem residualMatrix_cell_sum_eq_zero_dims (c : D → O → L) (dims : Finset 
       ∑ o' ∈ t, residualMatrix (fixedEffectSpace c dims) x o o' = 0 :=
   fun _ hm => residualMatrix_cell_sum_eq_zero c dims x hm
 
-/-- Proposition SM.E.2(c) for the residual maker, `T_{{m}}(R) = -tr(R)`. Both hypotheses of
-`GroupCompute.superAgg_residual_singleton` are verified for `R`. -/
+/-- Proposition SM.E.2(c) for the residual maker, `T_{{m}}(R) = -tr(R)`. The hypothesis
+`hRD` of `GroupCompute.superAgg_residual_singleton` is verified for `R`. -/
 theorem superAgg_residualMatrix_singleton (c : D → O → L) (dims : Finset D)
     (x : ι → EuclideanSpace ℝ O) {m : D} (hm : m ∈ dims) :
     superAgg c ({m} : Finset D)

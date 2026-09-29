@@ -567,7 +567,7 @@ theorem abs_csNu_le (n : ℕ) (o : WsO n) (z : Cw) : |csNu n o z| ≤ 2 := by
   have h2 := abs_coinSign_le (esIdx n o) z
   linarith
 
-/-- The coins the observations in `A` read. -/
+/-- The coins on which the observations in `A` depend. -/
 def csIdxSet (n : ℕ) (A : Finset (WsO n)) : Finset (ℕ × ℕ) :=
   A.image (fun o => csIdx n o.1) ∪ A.image (esIdx n)
 
@@ -1096,7 +1096,7 @@ theorem integral_shockSum_mul {idx : O → κ → Fin m}
     exact ite_eq_right fun heq => hk' (hinj o o' k k' heq).symm
   rw [hsingle, Multiway.SteinCluster.integral_sign2_mul]
 
-/-- The coins the observations in `A` read. -/
+/-- The coins on which the observations in `A` depend. -/
 def shockIdxSet (idx : O → κ → Fin m) (A : Finset O) : Finset (Fin m) :=
   A.biUnion fun o => Finset.univ.image (idx o)
 

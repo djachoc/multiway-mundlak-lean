@@ -7,7 +7,7 @@ import Mathlib.Analysis.SpecificLimits.Basic
 
 This file formalizes the final clause of Lemma SM.B.8(b) of the paper (the multiway
 cluster-robust estimator under absorbed clustering): `‖Ξ_n‖/n → 0` whenever
-`(d_[Δ] - N_m + K) G^{(m)}_max = o(n)` and `d_[Δ]/n → 0`.
+`(d_[Δ] - N_m + K) G^{(m)}_max = o(n)` and `(d_[Δ]+K)/n → 0`.
 
 The finite-sample bound `Cgm.xiMat_opNorm_le`, read at sample size `k`, is an inequality between
 real numbers, so the limit statement is proved for arbitrary real sequences satisfying it, with

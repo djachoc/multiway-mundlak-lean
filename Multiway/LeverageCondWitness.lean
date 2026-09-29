@@ -12,9 +12,9 @@ The sample space is `Option 𝒪 → ℝ` with independent fair signs, one per o
 (indexed by `none`) for the design; `𝒟` is the σ-field of the design coordinate, a proper
 sub-σ-field. The innovations are `ε_o = c_o · sign_o`, so `σ²_ε(o) = c_o²` may be
 heteroskedastic, and their mutual conditional independence given `𝒟` is derived. The design
-`R` is the identity on one half of the design and the grand-mean projector `P_0` on the other,
-so it is random, symmetric idempotent, and has nonzero off-diagonal entries. The signs are
-independent of `𝒟`, while the design `rW` and the weights `wW` depend on `𝒟`.
+`R` is the identity where the design coordinate is positive and the grand-mean projector `P_0`
+where it is not, so it is random, symmetric idempotent, and has nonzero off-diagonal entries.
+The signs are independent of `𝒟`, while the design `rW` and the weights `wW` depend on `𝒟`.
 
 ## Main results
 
@@ -136,7 +136,7 @@ theorem epsC_var (c : O → ℝ) (o : O) :
 
 /-! ### The random design `R`
 
-The identity on one half of the design and the grand-mean projector `P_0` on the other. -/
+`R` is the identity where the design coordinate is positive and `P_0` where it is not. -/
 
 /-- The entries `R_{oo'}` of the random design, `𝟙{o = o'}` where the design coordinate is
 positive and `1/n` where it is not. Both matrices are symmetric idempotent projectors. -/
@@ -171,7 +171,7 @@ theorem abs_rW_le (o₀ o o' : O) (ω : Option O → ℝ) : |rW O o o' ω| ≤ 1
     rw [inv_le_one_iff₀]
     exact Or.inr hc
 
-/-- The diagonal of the random design, with the inner branch resolved, is `1` where the design
+/-- The diagonal of the random design, with the inner `if` evaluated, is `1` where the design
 coordinate is positive and `1/n` where it is not. -/
 theorem rW_diag (o : O) (ω : Option O → ℝ) :
     rW O o o ω = if 0 < ω none then (1 : ℝ) else (Fintype.card O : ℝ)⁻¹ := by
@@ -191,7 +191,7 @@ theorem inv_rW_diag_le (o₀ o : O) (ω : Option O → ℝ) :
   · simpa using one_le_card_real O o₀
   · rw [inv_inv]
 
-/-- `∑_{o'} R²_{oo'} = R_oo` in every realization, for both branches of the design. -/
+/-- `∑_{o'} R²_{oo'} = R_oo` in every realization, in both cases of the design. -/
 theorem sum_rW_sq (o₀ o : O) (ω : Option O → ℝ) :
     ∑ o' : O, rW O o o' ω ^ 2 = rW O o o ω := by
   classical

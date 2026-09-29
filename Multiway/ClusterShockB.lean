@@ -1,5 +1,6 @@
 /-
-Copyright (c) 2026. All rights reserved.
+Copyright (c) 2026 Benjamin O. Harrison, Gustavo Canavire Bacarreza, David Jacho-Chavez and
+Fernando Rios-Avila.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
 import Multiway.ClusterJansonB
@@ -34,7 +35,7 @@ open Causalean.Mathlib.Probability.SteinMethod
 open Multiway.SteinCluster
 open Multiway.ClusterShock
 
-/-! ### Section C1. Arbitrary `ε > 0`
+/-! ### Arbitrary `ε > 0`
 
 For `ε > 3` the rate hypothesis of the second sentence cannot hold when `1 ≤ Ḡ_n ≤ n`. -/
 
@@ -128,7 +129,7 @@ theorem clustershock_b_general_janson_anyEps
 
 end AnyEps
 
-/-! ### Section C2. The second sentence unconditionally and in vector form -/
+/-! ### The second sentence unconditionally and in vector form -/
 
 section PartBUnconditional
 
@@ -331,7 +332,7 @@ theorem clustershock_b_general_janson_unconditional_vector
 
 end PartBUnconditional
 
-/-! ### Section C2b. The unconditional forms at arbitrary `ε` -/
+/-! ### The unconditional forms at arbitrary `ε` -/
 
 section AnyEpsUnconditional
 
@@ -462,7 +463,7 @@ theorem clustershock_b_general_janson_unconditional_vector_anyEps
 
 end AnyEpsUnconditional
 
-/-! ### Section C3. A weighted cluster-shock representation
+/-! ### A weighted cluster-shock representation
 
 `ν_o = w∑_{k∈κ}s_{idx(o,k)}` with a scalar weight `w`. With `κ` enlarged to kind-and-replicate
 pairs and `w = (n+1)^{-1/2}`, the second moments match the unweighted model while the supremum
@@ -563,7 +564,7 @@ noncomputable def wShockDep (idx : O → κ → Fin m) (w : ℝ) (G : O → O �
 
 end WeightedShockSum
 
-/-! ### Section C4. An example for the second sentence with an unbounded disturbance
+/-! ### An example for the second sentence with an unbounded disturbance
 
 The `J = 2` cluster-shock design of `ClusterShock.GeneralWitness` (`n+3` observations,
 clustering maps `⌊o/2⌋` and `⌊(o+1)/2⌋`, `Ḡ_n = 2`), with each of the three shock components
@@ -834,11 +835,11 @@ theorem clustershock_b_general_janson_unbounded_witness (s : ℝ) :
 
 end UnboundedShockWitness
 
-/-! ### Section C5. Part (c) with the limit law derived
+/-! ### Part (c) with the limit law derived
 
 The theorems below assume the hypotheses of the Theorem 5 half and prove the limit law `hclt`
 used by `ClusterShock.clustershock_rateagnostic_c`, from either sentence of the corollary. The
-ratio input `hratio` remains a hypothesis; Section C7 derives it. -/
+ratio input `hratio` remains a hypothesis; `clustershock_wald_both_halves` derives it. -/
 
 section WaldDischarged
 
@@ -996,7 +997,7 @@ theorem clustershock_rateagnostic_c_janson_b
 
 end WaldDischarged
 
-/-! ### Section C5b. An example for part (c) -/
+/-! ### An example for part (c) -/
 
 section WaldDischargedWitness
 
@@ -1008,7 +1009,7 @@ open Multiway.ClusterShock.FrozenGeneralShockWitness
 
 /-- The hypotheses of `clustershock_rateagnostic_c_janson` hold on the `J = 2` cluster-shock
 design of `ClusterShock.FrozenGeneralShockWitness`, which has a nontrivial `𝒟`, a random
-`𝒟`-measurable design, `Ω` not diagonal, `Ḡ_n = 2` and `Ḡ_n³/n = 8/(n+3) → 0`. The variance
+`𝒟`-measurable design, `Ω` not diagonal, `Ḡ_n = 2` and `Ḡ_n³/N_n = 8/(n+3) → 0`. The variance
 estimator `𝒱̂_n` is `𝒱_n` inflated by `1 + 1/(n+1)`. -/
 theorem clustershock_rateagnostic_c_janson_witness :
     Pw {y : Aw | y.1 = true} = 2⁻¹
@@ -1123,7 +1124,7 @@ theorem clustershock_rateagnostic_c_janson_witness :
 
 end WaldDischargedWitness
 
-/-! ### Section C6. An example at `r = 2`
+/-! ### An example at `r = 2`
 
 The observation set is `{0,…,n+2} × {0,1}` and the regressors are the side indicators scaled by
 `1` and `2`, so `X̃'X̃ = diag(n+3, 4(n+3))`. The clustering maps are those of `ClusterShock.wtC`
@@ -1629,7 +1630,7 @@ theorem clustershock_b_general_janson_rank2_witness (s : ℝ) :
 
 end ShockRank2Witness
 
-/-! ### Section C7. Both hypothesis sets at once
+/-! ### Both hypothesis sets at once
 
 One theorem assumes the hypotheses of the Theorem 5 half and of the Theorem 11 half. Both
 halves run at `Ω_n(ω) := 𝔼[ν_oν_{o'} ∣ 𝒟](ω)` (`condOmegaMat`); the identification with the
@@ -1852,7 +1853,7 @@ theorem clustershock_wald_both_halves
 end BothHalves
 
 
-/-! ### Section C8. Fourth moments of `ν` from fourth moments of the shocks
+/-! ### Fourth moments of `ν` from fourth moments of the shocks
 
 Under the representation `ν_o = ∑_jc^{(j)}_{g^{(j)}(o)} + ε_o`, with no bound on the shocks,
 the power-mean inequality `(∑_{j∈dims}a_j + b)⁴ ≤ (J+1)³(∑_{j∈dims}a_j⁴ + b⁴)` gives
@@ -1865,7 +1866,7 @@ section RepresentationStep
 
 variable {D O L : Type*}
 
-/-- `(∑_{i∈s}a_i)⁴ ≤ |s|³∑_{i∈s}a_i⁴`. The same statement as
+/-- `(∑_{i∈s}a_i)⁴ ≤ |s|³∑_{i∈s}a_i⁴`. This restates
 `Multiway.CLT.pow_four_sum_le_card_pow_three`. -/
 theorem pow_four_sum_le_card_pow_three {κ : Type*} (s : Finset κ) (f : κ → ℝ) :
     (∑ i ∈ s, f i) ^ 4 ≤ (s.card : ℝ) ^ 3 * ∑ i ∈ s, f i ^ 4 := by

@@ -210,8 +210,8 @@ theorem Sand2_posDef : Sand2.PosDef := by
     · have hpos : 0 < x 1 * x 1 := mul_self_pos.2 h1
       nlinarith [sq_nonneg (x 0 - 2 * x 1), sq_nonneg (x 0 - x 1)]
 
-/-- The limit map mixes the coordinates: `matCLM Ψ⁻¹` sends `(0,1)` to a vector whose first
-coordinate is `−6`. -/
+/-- The limit map mixes the coordinates, in that `matCLM Ψ⁻¹` sends `(0,1)` to a vector whose
+first coordinate is `−6`. -/
 theorem matCLM_Psi2inv_mixes :
     (matCLM Psi2inv (WithLp.toLp 2 ![(0 : ℝ), 1])) 0 = -6 := by
   rw [matCLM_apply]

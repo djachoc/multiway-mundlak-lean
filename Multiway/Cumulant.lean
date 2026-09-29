@@ -1,31 +1,31 @@
 /-
-DERIVED FILE — NOTICE REQUIRED BY THE APACHE LICENSE, VERSION 2.0, SECTION 4.
+Notice required by Section 4 of the Apache License, Version 2.0.
 
-Upstream repository : CausalSmith (the `Causalean` library), https://github.com/Jiyuan-Tan/CausalSmith
-Upstream path       : Causalean/Stat/MomentProblems/Cumulant.lean
-Upstream toolchain  : leanprover/lean4:v4.33.0
-Upstream licence    : Apache License, Version 2.0
-                      http://www.apache.org/licenses/LICENSE-2.0
-Upstream copyright  : Copyright (c) 2026 Jiyuan Tan. All rights reserved.
+The definition `mixedCumulant` below is derived from a file of CausalSmith, the Causalean library
+of Jiyuan Tan (https://github.com/Jiyuan-Tan/CausalSmith), Copyright (c) 2026 Jiyuan Tan, licensed
+under the Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0); see LICENSE
+and NOTICE.
 
-WHAT WAS TAKEN: the definitional shape only — the classical set-partition (Möbius) formula for
-a joint cumulant, which upstream writes, at bidegree `(p, q)` in two variables, as
+Original path      : Causalean/Stat/MomentProblems/Cumulant.lean
+Original toolchain : leanprover/lean4:v4.33.0
+
+What is taken from the original is the form of one definition, the set-partition (Möbius)
+formula for a joint cumulant, which the original writes for two variables at bidegree `(p, q)` as
 
     jointCumulant μ X Y p q :=
       ∑ π : Finpartition (Finset.univ : Finset (Fin (p + q))),
         (-1) ^ (π.parts.card - 1) * (π.parts.card - 1)! * ∏ B ∈ π.parts, ∫ …
 
-MODIFICATIONS AND ADDITIONS BY THIS PROJECT: the definition is
-generalized from a pair of variables at a bidegree to an arbitrary finite family `X : ι → Ω → ℝ`
-indexed by an arbitrary `s : Finset ι`, which is what Janson's definition of the mixed
-semiinvariants (1988, p. 306) requires; no upstream declaration name, statement or proof is
-reproduced here, and no upstream lemma is used (upstream carries two, `jointCumulant_zero_zero`
-and `sourceCumulant_zero`, both trivial). Everything below the definition — the partition
-toolkit, the moment–cumulant inversion, the vanishing under independent splitting, additivity,
-scaling, the Hölder bound and the witnesses — is written here.
+Here it is stated, through `mobius`, for a finite family `X : ι → Ω → ℝ` indexed by a `Finset ι`,
+as Janson's definition of the mixed semiinvariants (1988, p. 306) requires. No declaration name,
+statement or proof of the original is reproduced, and none of its lemmas is used. The rest of the
+file, namely the partition lemmas, the moment-cumulant inversion, the vanishing under independent
+splitting, additivity, scaling, the bound of Janson (4.4) for bounded variables and the examples,
+is written here.
 -/
 /-
-Copyright (c) 2026. All rights reserved.
+Copyright (c) 2026 Benjamin O. Harrison, Gustavo Canavire Bacarreza, David Jacho-Chavez and
+Fernando Rios-Avila.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
 import Mathlib.Order.Partition.Finpartition
@@ -1252,7 +1252,7 @@ end Probability
 /-! ### Section 4.  Examples
 
 The results above are evaluated on a skewed two-point law with `κ_1 = 1`, `κ_2 = 3` and
-`κ_3 = 6`, whose cumulant of order three is non-zero.
+`κ_3 = 6`.
 -/
 
 section Witness

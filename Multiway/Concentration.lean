@@ -2216,7 +2216,7 @@ theorem sq_sum_of_subsingleton {A : Type*} (F : Finset A) (g : A → ℝ)
   · have hs : F = {a} := Finset.eq_singleton_iff_unique_mem.2 ⟨ha, fun x hx => hF x hx a ha⟩
     rw [hs]; simp
 
-/-- The matched-part bound when every site set is a singleton: the fibre sums are the
+/-- The matched-part bound when every site set is a singleton, where the fibre sums are the
 diagonal Gram entries `G_{ss}`, so `sum_sq_diag_le_rectFrobSq` applies. -/
 theorem variance_matchedPart_le_of_singleton_ofCard (h : IsBasisSystem μ U ψ Rpos B₀)
     {M : ℕ} (hlev : ∀ (g : Γ) (x : S g), (sites g x).card ≤ M)
@@ -2629,7 +2629,7 @@ theorem integrable_basisProd_four (h : IsBasisSystem μ U ψ Rpos B₀) (γ γ' 
 
 /-! #### Coordinates and patterns -/
 
-/-- The pattern of a quadruple at coordinate `k`, read exclusively: `0`, `1`, `2` are
+/-- The pattern of a quadruple at coordinate `k`, read exclusively, so that `0`, `1`, `2` are
 (A), (B), (C) without (D), and `3` covers (D) and the configurations with vanishing moment. -/
 def patAt (pt : ∀ γ, S γ → K → V) (γ γ' : Γ) (s : S γ) (s' : S γ') (u : S γ) (u' : S γ')
     (k : K) : Fin 4 :=
@@ -4486,7 +4486,7 @@ theorem multiMoment_split (h : IsBasisSystem μ U ψ Rpos B₀)
 
 /-! ### The involution on column keys -/
 
-/-- The involution `τ` on column keys: it swaps the two arguments at the pattern-(C)
+/-- The involution `τ` on column keys, which swaps the two arguments at the pattern-(C)
 coordinates. -/
 def sigKey (D : Finset K) (x y : K -> Option V) : (K -> Option V) × (K -> Option V) :=
   (fun k => if k ∈ D then y k else x k, fun k => if k ∈ D then x k else y k)
@@ -6321,7 +6321,7 @@ instance : IsProbabilityMeasure bμ := by
 
 def bU (v : Fin 1) (ω : Fin 1 → ℝ) : ℝ := ω v
 
-/-- The orthonormal system on the biased law: the constant and the function with
+/-- The orthonormal system on the biased law, namely the constant and the function with
 `ψ_1(2) = 2`, `ψ_1(-1/2) = -1/2`, whose square is not constant. -/
 noncomputable def bψ (r : Fin 2) (x : ℝ) : ℝ :=
   if r = 0 then 1 else if 1 ≤ x then 2 else -1/2

@@ -439,7 +439,7 @@ end Main
 section Witness
 
 /-- A model with one observation, one regressor and innovation equal to `1`, so that
-`Sigma_xi = 1`. -/
+`Σ_ξ = 1`. -/
 def witnessXi : Fin 1 -> Fin 1 -> Unit -> Real := fun _ _ _ => 1
 
 theorem witnessXi_int (o o' : Fin 1) (a b : Fin 1) :
@@ -454,7 +454,7 @@ theorem witnessXi_cov (o o' : Fin 1) (a b : Fin 1) :
   subst ho; subst hab
   simp [witnessXi]
 
-/-- `integral_quad` applied to this model, with right-hand side `tr(A)(Sigma_xi)_{00} = 1`. -/
+/-- `integral_quad` applied to this model, with right-hand side `tr(A)(Σ_ξ)_{00} = 1`. -/
 theorem integral_quad_witness :
     (integral (Measure.dirac ()) fun u =>
         ((theta witnessXi u)ᵀ * (1 : Matrix (Fin 1) (Fin 1) Real) * theta witnessXi u) 0 0)
@@ -476,7 +476,7 @@ theorem integral_linForm_sq_witness :
   norm_num
 
 /-- A design with `n` observations, one regressor identically `1` and the trivial fixed-effects
-space, so that `d_{[Delta]} = 0` and `H_mu = 1`. -/
+space, so that `d_[Δ] = 0` and `H_μ = 1`. -/
 def witnessMu (n : Nat) : Matrix (Fin n) (Fin 1) Real := fun _ _ => 1
 
 theorem witnessMu_gram (n : Nat) :
@@ -489,7 +489,7 @@ theorem witnessXi0_cov (n : Nat) (o o' : Fin n) (a b : Fin 1) :
       = if o = o' then (0 : Matrix (Fin 1) (Fin 1) Real) a b else 0 := by
   by_cases h : o = o' <;> simp [h]
 
-/-- On this design with degenerate innovations, `n⁻¹X'Q_[Δ]X ⟶^p H_mu + (1-kappa) Sigma_xi = 1`,
+/-- On this design with degenerate innovations, `n⁻¹X'Q_[Δ]X ⟶^p H_μ + (1-κ)Σ_ξ = 1`,
 as `designcond_tendstoInProb` and `designcond_design_ii` state. -/
 theorem designcond_witness :
     TendstoInMeasure (Measure.dirac ())
@@ -2112,7 +2112,7 @@ and `E[ξ_0ξ_1] = 0`, and `P_[Δ] = ιι'/2`, so that `Q_{oo} = 1/2`. On two ob
 `hquad4` holds trivially, since every off-diagonal pair `q` is `p` or `pᵀ`.
 -/
 
-/-- A fair coin, the smallest space on which two observations can have zero covariance. -/
+/-- A fair coin, the smallest space carrying a non-degenerate centred sign. -/
 noncomputable def fourthCoin : Measure Bool :=
   (2 : ℝ≥0∞)⁻¹ • (Measure.dirac true + Measure.dirac false)
 
@@ -2903,9 +2903,9 @@ The identities `hcov`, `hfour`, `hpair4`, `hmixed4`, `hmixed4'` and `hquad4` are
 * `hSig`: `Var(ξ_o) = Σ_ξ`, the diagonal half of `hcov`;
 * `hmom`: `∫ (∑_a ξ²_{oa})² ≤ C`.
 
-`hfour` does not use independence, since `ξ²_{oj}ξ²_{o'k} ≤ (‖ξ_o‖⁴ + ‖ξ_{o'}‖⁴)/2`. The others follow from
-the three-against-one grouping `integral_mul_triple`. The integrability hypotheses are kept.
-The theorems `designcond_tendstoInProb_of_primitive`, `quadvar_compl_le_of_primitive` and
+`hfour` does not use independence, since `ξ²_{oj}ξ²_{o'k} ≤ (‖ξ_o‖⁴ + ‖ξ_{o'}‖⁴)/2`. The
+others follow from the three-against-one grouping `integral_mul_triple`. Integrability is
+assumed. `designcond_tendstoInProb_of_primitive`, `quadvar_compl_le_of_primitive` and
 `integral_rectFrobSq_xiSharp_le_of_primitive` have no moment-identity hypothesis.
 -/
 

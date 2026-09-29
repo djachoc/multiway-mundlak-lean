@@ -13,8 +13,9 @@ measurable alphabet `V`. The law is `P := Measure.pi μ` on `Ω := Site D L O �
 measure per site; `V = ℝ` with the uniform law on `[0,1]` is the model of the paper. The site
 bookkeeping and Young's inequalities come from `Multiway/QuadformE2Indep.lean`. The expectation
 `E` in `var_quadForm_le_levels` is `expLM P`, a linear extension of the Bochner integral to
-all of `Ω → ℝ`; it agrees with `∫ · ∂P` on integrable functions and does not appear in any
-statement. `P` is read as the conditional law given `𝒟` along a realization, with `W` fixed.
+all of `Ω → ℝ`; it agrees with `∫ · ∂P` on integrable functions and does not appear in the
+statement of `var_quadForm_le_regime2_cont`. `P` is read as the conditional law given `𝒟`
+along a realization, with `W` fixed.
 
 ## Main results
 
@@ -684,12 +685,12 @@ theorem integrable_quadForm_sq {Lv : Finset Γ₀} {xi : Γ₀ → O → (Site D
 
 /-- **Lemma SM.C.6 under Regime 2, with a continuum latent alphabet.**
 
-`Var(ζ'Wζ ∣ 𝒟) ≤ 2 tr(WΩ'WΩ') + C(M) G_max c_max ‖W‖_F²`, with `C(M) = (2^M)⁴ · 4M` and the
-per-cumulant constant `K = C + 3((C+1)/2)²`, for latents with an arbitrary probability law at
-each site. The hypothesis `hW` makes `W` symmetric; `hC`, `hmom` bound the fourth moments; `hmem` makes
-each `ξ^γ_o` a.e.-measurable with a finite fourth moment; `hLv`, `he` describe the levels;
-`hG`, `hc` bound the category and cell sizes; `hdep` is `ξ^e_o := h^{(e)}(U_{o⊙e})`; `hdeg` is
-complete degeneracy; and `hidio` gives the symbol `ε` the full dimension set. -/
+`Var(ζ'Wζ ∣ 𝒟) ≤ 2 tr(WΩ'WΩ') + C(M) G_max c_max ‖W‖_F²`, with `C(M) = (2^M)⁴ · K · 4M` and
+the per-cumulant constant `K = C + 3((C+1)/2)²`, for latents with an arbitrary probability law
+at each site. The hypothesis `hW` makes `W` symmetric; `hC` makes `C` nonnegative and `hmom`
+bounds the fourth moments by `C`; `hmem` makes each `ξ^γ_o` a.e.-measurable with a finite fourth
+moment; `hLv`, `he` describe the levels; `hG`, `hc` bound the category and cell sizes; `hdep`
+is `ξ^e_o := h^{(e)}(U_{o⊙e})`; `hdeg` is complete degeneracy; and `hidio` gives the symbol `ε` the full dimension set. -/
 theorem var_quadForm_le_regime2_cont {idio : Γ₀ → Prop} [DecidablePred idio] (idx : D → O → L)
     (lev : Γ₀ → Finset D) (μ : Site D L O → Measure V) [∀ s, IsProbabilityMeasure (μ s)]
     {W : Matrix O O ℝ} (hW : W.IsSymm)

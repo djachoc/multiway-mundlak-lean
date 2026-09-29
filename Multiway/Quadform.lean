@@ -153,7 +153,7 @@ theorem condExp_sum_mul {κ : Type*} (s : Finset κ) {a Z : κ → Ω → ℝ}
 
 /-! ### The two moment facts about a single observation -/
 
-/-- `σ²_ε(o) ≥ 0`: a conditional second moment is nonnegative. -/
+/-- `σ²_ε(o) ≥ 0`, since a conditional second moment is nonnegative. -/
 theorem sig_nonneg {e s : Ω → ℝ} (hvar : μ[fun ω => e ω * e ω | 𝒟] =ᵐ[μ] s) :
     0 ≤ᵐ[μ] s := by
   have h : (0 : Ω → ℝ) ≤ᵐ[μ] μ[fun ω => e ω * e ω | 𝒟] :=
@@ -200,7 +200,7 @@ theorem condExp_sq_le_sqrt [IsFiniteMeasure μ] (h𝒟 : 𝒟 ≤ mΩ) {e s : Ω
 
 /-! ### The conditional mean of `ε'Wε` -/
 
-/-- `E[ε'Wε | 𝒟] = ∑_o W_{oo} σ²_ε(o)`: the off-diagonal part vanishes by `hcross`. -/
+/-- `E[ε'Wε | 𝒟] = ∑_o W_{oo} σ²_ε(o)`, since the off-diagonal part vanishes by `hcross`. -/
 theorem condExp_quadForm {W : Ω → Matrix O O ℝ} {eps sig : O → Ω → ℝ}
     (hW : ∀ o o', StronglyMeasurable[𝒟] fun ω => W ω o o')
     (hi2 : ∀ p : O × O, Integrable (fun ω => eps p.1 ω * eps p.2 ω) μ)
@@ -862,7 +862,7 @@ section Model
 
 variable (O : Type*) [Fintype O] [DecidableEq O]
 
-/-- The sample space: one fair sign per observation, plus a design coordinate indexed by
+/-- The sample space, with one fair sign per observation and a design coordinate indexed by
 `none`. -/
 noncomputable def wP : Measure (Option O → ℝ) := gmu (Option O)
 
@@ -882,7 +882,7 @@ theorem wD_le : wD O ≤ (inferInstance : MeasurableSpace (Option O → ℝ)) :=
 /-- The innovations. -/
 def wEps (o : O) (ω : Option O → ℝ) : ℝ := clamp (ω (some o))
 
-/-- The coefficient matrix: every entry is `1 + (design coordinate)`, a `𝒟`-measurable
+/-- The coefficient matrix, every entry of which is `1 + (design coordinate)`, a `𝒟`-measurable
 random variable taking the values `2` and `0`. -/
 def wMat (ω : Option O → ℝ) : Matrix O O ℝ := fun _ _ => 1 + clamp (ω none)
 

@@ -1,5 +1,6 @@
 /-
-Copyright (c) 2026. All rights reserved.
+Copyright (c) 2026 Benjamin O. Harrison, Gustavo Canavire Bacarreza, David Jacho-Chavez and
+Fernando Rios-Avila.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
 import Multiway.SteinCluster
@@ -170,7 +171,7 @@ theorem cltcluster_a_general_janson_charFun
     intro j hj
     simp only [div_one]
     exact tendsto_janson_rate_of_first hφ0 hN1 hmN hrate' hj
-  -- Janson `Theorem 2`
+  -- Janson (1988, Theorem 2)
   have hJ := Janson.tendsto_gaussPM_of_depGraph (μ := μ) (X := X) D hdegJ
     (A := φ) hφ0 (fun n i => Filter.Eventually.of_forall fun ω => hφ n i ω)
     (σ := fun _ => (1 : ℝ)) (fun _ => one_pos) hσsq (m := 4) (by norm_num) hrateJ
@@ -858,8 +859,8 @@ theorem tendsto_accumRate_witness :
     tendsto_natCast_atTop_atTop.atTop_add tendsto_const_nhds
   simpa using (tendsto_const_nhds (x := (8 : ℝ)) (f := atTop (α := ℕ))).div_atTop hd
 
-/-- A model satisfying the hypotheses of `cltcluster_a_general_betaJM_janson`: `n+3`
-observations, one regressor `x̃_o = 1`, `𝓡_n = I_1`, one fair sign per observation, sharing
+/-- A model satisfying the hypotheses of `cltcluster_a_general_betaJM_janson`, with
+`n+3` observations, one regressor `x̃_o = 1`, `𝓡_n = I_1`, one fair sign per observation, sharing
 along `SteinCluster.pathG`. -/
 theorem cltcluster_a_general_betaJM_janson_witness (s : ℝ) :
     Tendsto (fun n => ((coins (n + 3)).map (fun ω =>

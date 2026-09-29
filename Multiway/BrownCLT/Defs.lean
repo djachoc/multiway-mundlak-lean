@@ -1,20 +1,18 @@
 /-
-PORTED FILE — NOTICE REQUIRED BY THE APACHE LICENSE, VERSION 2.0, SECTION 4.
+Notice required by Section 4 of the Apache License, Version 2.0.
 
-Upstream repository : Stat-Lean (StatLean)
-Upstream path       : StatLean/TimeSeries/ForMathlib/Probability/MartingaleCLT/Defs.lean
-Upstream toolchain  : leanprover/lean4:v4.29.1
-Upstream licence    : Apache License, Version 2.0
-                      http://www.apache.org/licenses/LICENSE-2.0
+This file is a modified copy of a file of Stat-Lean, the Lean 4 formalization of statistical
+theory (https://github.com/StatLean/Stat-Lean), Copyright 2024 Junwei Lu, licensed under the
+Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0); see LICENSE and NOTICE.
 
-MODIFICATIONS: this file has been modified in this package to
-build against leanprover/lean4:v4.34.0 and its matching Mathlib. The changes made here,
-relative to the upstream v4.29.1 file, are:
-  * this notice was prepended;
-  * the module path in the `import` lines was changed from `StatLean.TimeSeries.…` to
-    `Multiway.BrownCLT.…`, the modules being re-rooted under this package;
+Original path      : StatLean/TimeSeries/ForMathlib/Probability/MartingaleCLT/Defs.lean
+Original toolchain : leanprover/lean4:v4.29.1
+This toolchain     : leanprover/lean4:v4.34.0, with the matching Mathlib
+
+Changes made to the original:
+  * this notice was added;
   * the module and field docstrings were shortened.
-No mathematical content or attribution of the upstream file was removed.
+No mathematical content or attribution of the original was removed.
 -/
 import Mathlib.MeasureTheory.Function.ConditionalExpectation.Basic
 import Mathlib.MeasureTheory.Function.L2Space

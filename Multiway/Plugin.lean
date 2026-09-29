@@ -369,7 +369,7 @@ theorem plugTarget_eq_targetplug (c : D → O → L) (xt : O → K → ℝ)
   simp only [Finset.sum_image hinj]
 
 omit [DecidableEq D] [DecidableEq K] in
-/-- **Theorem 9(b)**, positive semidefiniteness: both Gram matrices are positive
+/-- **Theorem 9(b)**, positive semidefiniteness. Both Gram matrices are positive
 semidefinite and both coefficients are nonnegative after truncation. -/
 theorem plugMeat_posSemidef (c : D → O → L) (xt : O → K → ℝ) (lev : Es → Finset D)
     (sh2 : ℝ) (sg : Es → ℝ) : (plugMeat c xt lev sh2 sg).PosSemidef :=
@@ -785,9 +785,9 @@ end OpToolkit
 /-! ## 7. Clause (b), first claim: `θ̂ − θ = O_p(ϱ_n/c_max)`
 
 The claim is proved over a sequence of designs whose row and column index types vary with `n`.
-`b n` is `ϱ_n/c_max`, the square root of the common bound on the two variance displays. The
-hypotheses `hNrow`, `hNcol` (`|𝓕| + 1 ≤ 2^M`, `|𝓔| + 1 ≤ 2^M`) express that `M` is fixed, and
-`hLam` bounds `(𝒜'𝒜)^{-1}𝒜'` entrywise. -/
+`b n` is `ϱ_n/c_max`, the square root of the common bound on the two variance displays.
+`hNrow`, `hNcol` bound the numbers of rows and columns uniformly in `n` (in the paper
+`|𝓕| + 1, |𝓔| + 1 ≤ 2^M` with `M` fixed), and `hLam` bounds `(𝒜'𝒜)^{-1}𝒜'` entrywise. -/
 
 section ClauseBOp
 

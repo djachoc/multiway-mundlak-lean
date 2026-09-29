@@ -8,8 +8,8 @@ import Mathlib.Analysis.InnerProductSpace.PiL2
 
 The hypotheses of Lemma SM.C.1 (parallel images), Lemma SM.B.1 (incremental projector),
 Lemma SM.B.2 (global spanning implies local spanning) and the minimality part of Theorem 3 hold
-jointly on the concrete models below, and the conclusions are non-trivial there. Each example
-applies the result to its model and proves that the model is not degenerate.
+jointly on the concrete models below. Each example applies the result to its model and proves
+that the model is not degenerate.
 
 The inner-product models live in `EuclideanSpace ℝ (Fin 2)` and `EuclideanSpace ℝ (Fin 3)`,
 and every geometric step reduces to `⟪e_i, e_j⟫ = 𝟙{i = j}`. The parallel-images model lives
@@ -42,7 +42,7 @@ theorem parA_apply (x : Fin 2 → ℝ) : parA x = (3 : ℝ) • x := rfl
 
 theorem parB_apply (x : Fin 2 → ℝ) : parB x = x := rfl
 
-/-- The lemma's hypothesis holds: `Ax = 3x` is on the line through `Bx = x`. -/
+/-- The lemma's hypothesis holds, since `Ax = 3x` lies on the line through `Bx = x`. -/
 theorem par_hyp (x : Fin 2 → ℝ) : parA x ∈ Submodule.span ℝ {parB x} := by
   rw [parA_apply, parB_apply]
   exact Submodule.mem_span_singleton.mpr ⟨3, rfl⟩
@@ -364,8 +364,7 @@ end LocalWitness
 
 Consider `ℝ³` with `𝒮 = span{e_0, e_1}`, `K = 1` and `X a = a(e_0 + e_2)`. Then
 `X'Q_[Δ]X ≻ 0` because `e_0 + e_2 ∉ 𝒮`, and `col(P_[Δ]X) = span{e_0}`. The least element lies
-strictly between `⊥` and `𝒮`, and `𝒮` itself belongs to the set, so the minimality claim is
-non-trivial. -/
+strictly between `⊥` and `𝒮`, and `𝒮` itself belongs to the set. -/
 
 section JmWitness
 
@@ -393,7 +392,7 @@ theorem jm_regressor_notMem : (ev 0 : E3) + ev 2 ∉ jmS := by
   rw [inner_ev_self] at h0
   norm_num at h0
 
-/-- The identification condition holds: `Xa ∈ 𝒮` forces `a = 0`, because
+/-- The identification condition holds, since `Xa ∈ 𝒮` forces `a = 0` because
 `e_0 + e_2 ∉ 𝒮`. -/
 theorem jm_identified : Identified jmS jmX := by
   intro a ha

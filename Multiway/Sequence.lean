@@ -476,8 +476,7 @@ end CgmLimit
 
 `𝒪_j = {1,…,j+1} × {1,2}` with a single cluster, `K = 1`, `x̃_{(o,s)} = ±1` according to `s`,
 `P_m = (2(j+1))^{-1}ιι'`, `Π = P_m`, `A^{(m)} = Λ = 0`, `R = I − P_m`, `B = 1` and
-`G^{(m)}_max = 2(j+1)`. Since `tr(Π_n) = 1`, the rate `tr(Π_n)/n → 0` holds because the design
-grows.
+`G^{(m)}_max = 2(j+1)`. Since `tr(Π_n) = 1` at every index, `tr(Π_n)/n → 0`.
 -/
 
 section Witness

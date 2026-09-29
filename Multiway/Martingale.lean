@@ -9,7 +9,7 @@ This file formalizes Lemma SM.C.2 of the paper (Martingale representation of a d
 multilinear sum). For independent latent variables revealed in an arbitrary order, the
 increments `D_κ` of `𝔼[T ∣ ℱ_κ]` of a completely degenerate multilinear sum `T` form a
 martingale-difference sequence with `T = ∑_κ D_κ`, and `D_κ` is the sum of the terms whose
-last coordinate is revealed at step `κ`. Indices are zero-based: `degenDiff … κ` is `D_{κ+1}`.
+last coordinate is revealed at step `κ`. Indices are zero-based, so `degenDiff … κ` is `D_{κ+1}`.
 
 ## Main results
 
@@ -389,8 +389,8 @@ theorem condExp_degenDiff_eq_zero (hU : ∀ v, Measurable (U v)) (κ : ℕ) :
   filter_upwards [h2] with ω hω2
   simp only [Pi.sub_apply, hω2, sub_self, Pi.zero_apply]
 
-/-- `T = ∑_κ D_κ`: the sum telescopes, `𝔼[T ∣ ℱ_0] = 𝔼[T] = 0` and `T` is measurable with
-respect to the final σ-field. `N` is any step by which every latent variable is revealed. -/
+/-- `T = ∑_κ D_κ`, since the sum telescopes, `𝔼[T ∣ ℱ_0] = 𝔼[T] = 0` and `T` is measurable
+with respect to the final σ-field. `N` is any step by which every latent variable is revealed. -/
 theorem degenSum_eq_sum_degenDiff [Nonempty ι] (hU : ∀ v, Measurable (U v))
     (hindep : iIndepFun U μ) (hg : Measurable g)
     (hint : ∀ t, Integrable (degenTerm U coord g t) μ)

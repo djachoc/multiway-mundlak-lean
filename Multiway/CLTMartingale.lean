@@ -301,7 +301,7 @@ theorem ae_ae_eq_condExpKernel (h𝒟 : 𝒟 ≤ mΩ) (P : Measure Ω) [IsFinite
   exact ae_of_ae_trim h𝒟 (Measure.ae_ae_of_ae_compProd hcp)
 
 omit [StandardBorelSpace Ω] [SecondCountableTopology E] in
-/-- `exp(i⟪Y,t⟫)` is integrable: it has modulus one and `P` is finite. -/
+/-- `exp(i⟪Y,t⟫)` is integrable, since it has modulus one and `P` is finite. -/
 theorem integrable_cexp_inner (P : Measure Ω) [IsFiniteMeasure P] {Y : Ω → E}
     (hY : AEMeasurable Y P) (t : E) :
     Integrable (fun ω => Complex.exp ((⟪Y ω, t⟫ : ℝ) * Complex.I)) P := by
@@ -455,7 +455,7 @@ theorem Pw_fst (b : Bool) : Pw {y : Omg | y.1 = b} = 2⁻¹ := by
     Set.ext fun y => by simp [Set.mem_prod, Set.mem_singleton_iff]
   rw [hset, Pw, Measure.prod_prod, coin_singleton, measure_univ, mul_one]
 
-/-- `𝒟` is a proper sub-σ-field: the second coin is not `𝒟`-measurable. -/
+/-- `𝒟` is a proper sub-σ-field, since the second coin is not `𝒟`-measurable. -/
 theorem Dsig_proper : ∃ B : Set Omg, MeasurableSet B ∧ ¬ MeasurableSet[Dsig] B := by
   refine ⟨{y : Omg | y.2 = true}, measurable_snd (measurableSet_singleton true), ?_⟩
   rintro ⟨t, -, ht⟩
@@ -1344,8 +1344,8 @@ theorem rate_of_contraction {B₀ : ℝ} {cΓ cK : ℕ}
   tendsto_cut_tot_div_sq (clauseBConst_nonneg B₀ cΓ cK) hCtot ha hcutnn htotnn hcut htot hs2
 
 /-- With `B_0 = 2` and site count `|V_n| = n + 1`, the factor `max(B_0,1)^{4|V_n|}` times
-`1/(n+1)⁴` is at least `1` for every `n`: a constant growing with the site count would prevent
-the rate from tending to `0`. -/
+`1/(n+1)⁴` is at least `1` for every `n`, so a constant growing with the site count would
+prevent the rate from tending to `0`. -/
 theorem weak_constant_bounded_below (n : ℕ) :
     (1:ℝ) ≤ max (2:ℝ) 1 ^ (4 * (n + 1)) *
       (1 / ((n:ℝ) + 1) ^ 2 * (1 / ((n:ℝ) + 1) ^ 2)) := by
@@ -1748,8 +1748,9 @@ section Norm2
 variable {Γ : Type*} [Fintype Γ] {Ix : Type*} [Fintype Ix]
   {Sg : Γ → Type*} [∀ γ, Fintype (Sg γ)]
 
-/-- `hnorm` from the definition of `s_n²(L)`: dividing the statistic by `s_n(L)` divides every
-coefficient array by `√(s_n²(L))` and the cell term by `s_n²(L)`. The hypothesis `0 < s_n²(L)` is required. -/
+/-- `hnorm` from the definition of `s_n²(L)`, since dividing the statistic by `s_n(L)` divides
+every coefficient array by `√(s_n²(L))` and the cell term by `s_n²(L)`. The hypothesis
+`0 < s_n²(L)` is required. -/
 theorem hnorm_of_scaling (lam : Γ → ℝ) (arrRaw : ∀ γ, Sg γ → Ix → ℝ) (cellRaw s2 : ℝ)
     (hs2 : s2 = (∑ γ, lam γ ^ 2 * rectFrobSq (arrRaw γ)) + cellRaw) (hpos : 0 < s2) :
     (∑ γ, lam γ ^ 2 * rectFrobSq (fun s i => arrRaw γ s i / Real.sqrt s2))
@@ -1912,7 +1913,7 @@ variable {Ω : Type*} {m0 : MeasurableSpace Ω} {μ : Measure Ω} [IsProbability
   {U : V → Ω → ℝ} {coord : T → ι → V} {g : (ι → ℝ) → ℝ} {c : T → ℝ} {step : V → ℕ}
 
 omit [IsProbabilityMeasure μ] [Fintype ι] [DecidableEq T] in
-/-- `D_κ` is measurable: it is a difference of conditional expectations. -/
+/-- `D_κ` is measurable, being a difference of conditional expectations. -/
 theorem measurable_degenDiff (hU : ∀ v, Measurable (U v)) (κ : ℕ) :
     Measurable (degenDiff μ U coord g c step κ) :=
   ((stronglyMeasurable_condExp.mono (latentSigma_le hU _)).measurable).sub
@@ -2477,8 +2478,8 @@ theorem integral_degenTerm_sub_kernelTrunc_sq (hU : ∀ v, Measurable (U v))
   simp only [Pi.sub_apply, h1, h2]
 
 omit [DecidableEq R] [IsProbabilityMeasure P] in
-/-- `σ_e² = (σ_e² - τ_e²(L)) + τ_e²(L)` on the moments: Pythagoras against the truncated
-span. -/
+/-- `σ_e² = (σ_e² - τ_e²(L)) + τ_e²(L)` on the moments, by Pythagoras' theorem for the
+truncated span. -/
 theorem integral_degenTerm_pythagoras (hU : ∀ v, Measurable (U v))
     (hindep : iIndepFun U P) (hlaw : ∀ v, P.map (U v) = ν)
     {coord : T → ι → V} {t : T} (hinj : Function.Injective (coord t))
@@ -2907,8 +2908,8 @@ section Match
 variable [Fintype V] [DecidableEq V]
 
 omit [DecidableEq R] [Fintype Γ] [DecidableEq Γ] [Fintype V] in
-/-- The block `A^γ_i` of `Multiway.Concentration` is the martingale's block: the site set of a
-sub-tuple is the image of its coordinates other than `k⋆`, the basis index at a site is the
+/-- The block `A^γ_i` of `Multiway.Concentration` is the martingale's block, in that the site set
+of a sub-tuple is the image of its coordinates other than `k⋆`, the basis index at a site is the
 component's index at that coordinate, and the coefficient array is `c` restricted to the
 sub-tuples completed at that step and extended by zero. -/
 theorem blockSum_eq_blockA {I : Type*} [Fintype I]
@@ -3544,7 +3545,7 @@ theorem mdsRowSum_total_ae [Nonempty ι] [IsProbabilityMeasure μ]
   rfl
 
 omit [Fintype ι] [DecidableEq T] in
-/-- `halg` for the total array from `halg` for the latent part (`hlat`, at `cellc = 0`): the
+/-- `halg` for the total array from `halg` for the latent part (`hlat`, at `cellc = 0`); the
 cell steps contribute `∑_o(c'x̃_o)²σ²_ε(o)`. -/
 theorem condVar_total_of_latent [IsProbabilityMeasure μ]
     (hc : IsCellModel (m0 := m0) μ (latentBase U step k) eps sg m) {Q : Ω → ℝ} {cc : ℝ} {n : ℕ}
@@ -3855,7 +3856,7 @@ theorem memLp_total {U : ℕ → V → Ω → ℝ} {coord : ℕ → T → ι →
   hlat.add (memLp_cellSum hcm n)
 
 omit [DecidableEq T] [DecidableEq Γ] in
-/-- `hstep5` for the full statistic: the cell parts of `n^{-1/2}c'X̃'ν` and of
+/-- `hstep5` for the full statistic. The cell parts of `n^{-1/2}c'X̃'ν` and of
 `σ_{n,L}T_n(L)/s_n(L)` cancel (`hscalecell`), so the `L²` gap is that of the latent tail and
 `Alg.hstep5_of_tail` applies. -/
 theorem hstep5_total_of_tail {U : V → Ω → ℝ} {coord : T → ι → V} {G g : (ι → ℝ) → ℝ}

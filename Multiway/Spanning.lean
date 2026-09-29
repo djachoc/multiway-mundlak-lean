@@ -104,8 +104,8 @@ lemma inner_jointWithin_comp' (S : Submodule ℝ E) (u v : E) :
 
 /-! ### The rank condition -/
 
-/-- The rank condition `X'Q_[Δ]X ≻ 0`: no nonzero linear combination of the regressors lies
-in the fixed-effects space. -/
+/-- The rank condition `X'Q_[Δ]X ≻ 0`, that is, no nonzero linear combination of the regressors
+lies in the fixed-effects space. -/
 def Identified (S : Submodule ℝ E) (X : F →ₗ[ℝ] E) : Prop := ∀ a : F, X a ∈ S → a = 0
 
 /-- `Identified` is equivalent to `a'X'Q_[Δ]Xa > 0` for every `a ≠ 0`, since the quadratic

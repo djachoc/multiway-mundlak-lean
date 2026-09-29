@@ -170,8 +170,8 @@ theorem inv_le_of_smul_one_le {M : Matrix n n ℝ} (hM : M.PosDef) {a : ℝ} (ha
   rw [e2]
   exact key.smul (le_of_lt (inv_pos.mpr ha))
 
-/-- The other half of operator inversion reversing the Loewner order: if `M ⪯ a I` with `a > 0`
-and `M` positive definite, then `a^{-1} I ⪯ M^{-1}`. The proof is the same identity
+/-- If `M ⪯ a I` with `a > 0` and `M` positive definite, then `a^{-1} I ⪯ M^{-1}`, the other
+half of operator inversion reversing the Loewner order. The proof is the same identity
 `M^{-1} - a^{-1}I = a^{-1} M^{-1/2}(aI - M)M^{-1/2}` read the other way. -/
 theorem smul_one_le_inv_of_le_smul_one {M : Matrix n n ℝ} (hM : M.PosDef) {a : ℝ} (ha : 0 < a)
     (h : M ≤ a • (1 : Matrix n n ℝ)) : a⁻¹ • (1 : Matrix n n ℝ) ≤ M⁻¹ := by
@@ -389,8 +389,8 @@ theorem dot_mulVec_le (H : Matrix n n ℝ) (x : n → ℝ) :
         exact Matrix.l2_opNorm_mulVec H y
     _ = ‖H‖ * ‖y‖ ^ 2 := by ring
 
-/-- The spectral norm bounds the Loewner order: a Hermitian `H` with `‖H‖ ≤ b` satisfies
-`H ⪯ b I`. -/
+/-- A Hermitian `H` with `‖H‖ ≤ b` satisfies `H ⪯ b I`, that is, the spectral norm bounds the
+Loewner order. -/
 theorem le_smul_one_of_norm_le {H : Matrix n n ℝ} (hH : H.IsHermitian) {b : ℝ}
     (hb : ‖H‖ ≤ b) : H ≤ b • (1 : Matrix n n ℝ) := by
   rw [Matrix.le_iff]
