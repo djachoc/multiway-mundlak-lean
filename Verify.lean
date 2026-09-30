@@ -757,7 +757,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.Plugin.weightGram_le_cmax_witness
 #print axioms Multiway.Plugin.plugin_wald_witness
 
--- Theorem 12, feasible inference for the diagnostic coefficient.
+-- Theorem 12, feasible inference for the correlated-effects coefficient.
 #print axioms Multiway.PiInf.vecSqNorm_nonneg
 #print axioms Multiway.PiInf.vecSqNorm_mul_right
 #print axioms Multiway.PiInf.frobSq_vecMulVec
@@ -876,7 +876,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.Absorbed.condVar_normalizedMeatEntry_le_witness
 #print axioms Multiway.Absorbed.rectFrobSq_conj_linkW_le_witness_sharp
 
--- Lemma SM.B.4, the diagnostic coefficient.
+-- Lemma SM.B.4, the correlated-effects coefficient.
 #print axioms Multiway.PiHat.ext_of_mulVec
 #print axioms Multiway.PiHat.gram_eq
 #print axioms Multiway.PiHat.transpose_zTilde_mulVec
@@ -2493,7 +2493,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.RateAgnostic.wm_proj_l2Norm_sq
 #print axioms Multiway.RateAgnostic.condExp_sq_l2Norm_proj_le_witness
 
--- Theorem 6, asymptotic normality of the diagnostic coefficient.
+-- Theorem 6, asymptotic normality of the correlated-effects coefficient.
 #print axioms Multiway.PiInf.scalar_clt_gen
 #print axioms Multiway.PiInf.score_clt_gen
 #print axioms Multiway.PiInf.tendstoInProb_zero_of_lintegral_enorm_sq_le
@@ -4764,7 +4764,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.CgmLimit.xiW_tendsto_atTop
 #print axioms Multiway.CgmLimit.xi_div_card_tendsto_zero_witness
 
--- Lemma SM.B.4, conditional mean of the diagnostic coefficient.
+-- Lemma SM.B.4, conditional mean of the correlated-effects coefficient.
 #print axioms Multiway.PiHatCre.condExp_add_eq_zero
 #print axioms Multiway.PiHatCre.condExp_piHat_sub_eq_zero_of_components
 #print axioms Multiway.PiHatCre.detaW

@@ -2,9 +2,9 @@ import Multiway.ResidualBridge
 import Mathlib.LinearAlgebra.Matrix.PosDef
 
 /-!
-# The diagnostic coefficient
+# The correlated-effects coefficient
 
-This file formalizes Lemma SM.B.4 (The diagnostic coefficient). With `Z := P_[Δ]X`,
+This file formalizes Lemma SM.B.4 (The correlated-effects coefficient). With `Z := P_[Δ]X`,
 `C₀ := [X, ι_n]`, `Z̃ := M_{C₀}Z` and `Z̃'Z̃ ≻ 0`, the OLS coefficient `π̂` on `Z` in the
 regression of `y` on `(X, Z, ι_n)` satisfies `π̂ = (Z'M_{C₀}Z)⁻¹ Z'M_{C₀}y`,
 `π̂ - π = (Z̃'Z̃)⁻¹ Z̃'u` and `Var(π̂ | X, 𝒪) = (Z̃'Z̃)⁻¹ Z̃'Ω_u Z̃ (Z̃'Z̃)⁻¹`. The Frisch–Waugh–Lovell

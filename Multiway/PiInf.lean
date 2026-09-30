@@ -8,10 +8,10 @@ import Multiway.SteinCluster
 import Mathlib.Data.Finset.Powerset
 
 /-!
-# Feasible inference for the diagnostic coefficient
+# Feasible inference for the correlated-effects coefficient
 
-This file formalizes Theorem 12 of the paper (feasible inference for the diagnostic
-coefficient) together with Theorem 6 (asymptotic normality of the diagnostic coefficient).
+This file formalizes Theorem 12 of the paper (feasible inference for the correlated-effects
+coefficient) together with Theorem 6 (asymptotic normality of the correlated-effects coefficient).
 Clause (c) is an exact identity for the mean of the union meat; clause (a) is the consistency
 `Υ̂ - Υ_n ⟶^p 0`, assembled from the deterministic bounds of Steps 1–4 over a sequence of designs;
 clause (b) is the Wald limit, obtained from `wald_of_clt`.
@@ -1708,7 +1708,7 @@ end SeqWitness
 
 end Witnesses
 
-/-! ## §7 Theorem 6: asymptotic normality of the diagnostic coefficient
+/-! ## §7 Theorem 6: asymptotic normality of the correlated-effects coefficient
 
 Along a realization of `(X,𝒪)`, `pi_clt` gives `√N_*(π̂ - π) ⟶^d Ψ⁻¹Z` with `Z ∼ N(0,Υ)`, and
 `pi_clt_std` gives `√N_*(π̂ - π) ⟶^d N(0, Ψ⁻¹ΥΨ⁻¹)` under the quadratic-form identity `hsand`.

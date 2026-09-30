@@ -2,10 +2,10 @@ import Multiway.PiHat
 import Multiway.Quadform
 
 /-!
-# The conditional mean of the diagnostic coefficient
+# The conditional mean of the correlated-effects coefficient
 
-This file derives the conditional mean-zero condition used in Lemma SM.B.4 (the diagnostic
-coefficient) from its two components: the composite error `u = Δη + ν` has
+This file derives the conditional mean-zero condition used in Lemma SM.B.4 (the
+correlated-effects coefficient) from its two components. The composite error `u = Δη + ν` has
 `E[u_o | 𝒟] = 0` whenever `E[Δη_o | 𝒟] = 0` (the correlated-random-effects assumption) and
 `E[ν_o | 𝒟] = 0` (the exogeneity assumption). Both conditions are taken with respect to `𝒟`.
 
@@ -49,7 +49,7 @@ theorem condExp_add_eq_zero {u deta nu : Ω → O → ℝ}
 
 end Step
 
-/-! ## The conditional mean of the diagnostic coefficient -/
+/-! ## The conditional mean of the correlated-effects coefficient -/
 
 section Sibling
 
