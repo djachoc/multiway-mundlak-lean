@@ -1111,7 +1111,7 @@ theorem tendstoInMeasure_slope
     A Hinv hAsolve hAlim b hbmeas hb
 
 
-/-- **Theorem 4(a)**, consistency: `β̂_JM ⟶^p β` and `β̂_MFE ⟶^p β`. -/
+/-- Consistency under the hypotheses of Theorem 4(a): `β̂_JM ⟶^p β` and `β̂_MFE ⟶^p β`. -/
 theorem clt_a_consistency
     {O : ℕ → Type} [∀ n, Fintype (O n)]
     {M : ℕ} (Sm : ∀ n, Fin M → Submodule ℝ (EuclideanSpace ℝ (O n)))
@@ -2366,7 +2366,7 @@ theorem integral_norm_score_sq_E2 (haa : ∀ m ω, aa m ω ∈ Sm m)
 
 end E2Moments
 
-/-- **Theorem 4(b)**, consistency: `β̂_JM ⟶^p β` and `β̂_MFE ⟶^p β`. -/
+/-- Consistency under the hypotheses of Theorem 4(b): `β̂_JM ⟶^p β` and `β̂_MFE ⟶^p β`. -/
 theorem clt_b_consistency
     {O : ℕ → Type} [∀ n, Fintype (O n)] {G : ℕ → Type} [∀ n, Fintype (G n)]
     {M : ℕ} (Sm : ∀ n, Fin M → Submodule ℝ (EuclideanSpace ℝ (O n)))

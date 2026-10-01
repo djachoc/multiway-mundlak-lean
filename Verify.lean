@@ -2943,10 +2943,10 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.CLTMartingale.Orth.integral_degenTerm_mul_eq_zero_of_or
 #print axioms Multiway.CLTMartingale.variance_sum_of_uncorrelated
 
--- Theorem 4, consistency of the slope.
+-- Consistency of the slope under the hypotheses of Theorem 4.
 #print axioms Multiway.CLT.tendstoInMeasure_slope_of_score_L2
 
--- Theorem 4(b), Step 1 and consistency.
+-- Step 1 of the proof of Theorem 4(b), and consistency.
 #print axioms Multiway.CLT.score_finsetSum
 #print axioms Multiway.CLT.inner_score_eq_sum_E2
 #print axioms Multiway.CLT.variance_score_eq_E2
@@ -4701,7 +4701,7 @@ Run with `lake env lean Verify.lean` from the package root.
 #print axioms Multiway.CLT.Rank2Witness.clt_a_rank2_witness
 #print axioms Multiway.CLT.Rank2Witness.clt_b_rank2_witness
 
--- Lemma SM.B.6(ii),(iii) and Proposition SM.D.4 under Regime 1.
+-- The moment identities of Lemma SM.B.6, and Proposition SM.D.4, under Regime 1.
 #print axioms Multiway.LeverageCondRegime1.condExp_mul_self_eq_condVar
 #print axioms Multiway.LeverageCondRegime1.condExp_cross_of_regimeOne
 #print axioms Multiway.LeverageCondRegime1.condExp_feResidual_sq_regimeOne

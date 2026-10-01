@@ -10,8 +10,8 @@ import Multiway.ClusterJansonB
 
 This file completes the formalization of Corollary SM.D.3 of the paper (feasible inference
 under the cluster-shock model). It extends the second sentence (bounded conditional fourth
-moments) to every `ε > 0` and to unconditional and vector form, derives the limit law in
-part (c), states part (c) under the Theorem 5 and Theorem 11 hypothesis sets in one theorem, and
+moments) to every `ε > 0` and to unconditional and vector form, derives the limit law in the
+conclusion of Theorem 11(c), states it under the Theorem 5 and Theorem 11 hypotheses at once, and
 derives the moment assumption on `ν` from fourth moments of the shocks. The examples include a
 weighted cluster-shock representation with an unbounded disturbance and a design with `r = 2`.
 
@@ -20,8 +20,8 @@ weighted cluster-shock representation with an unbounded disturbance and a design
 * `clustershock_b_general_janson_anyEps`: the second sentence at arbitrary `ε > 0`.
 * `clustershock_b_general_janson_unconditional_vector`: its unconditional vector form.
 * `clustershock_b_general_janson_unbounded_witness`: an example with an unbounded disturbance.
-* `clustershock_rateagnostic_c_janson`: part (c) with the limit law derived.
-* `clustershock_wald_both_halves`: part (c) under both hypothesis sets at once.
+* `clustershock_rateagnostic_c_janson`: the Theorem 11(c) conclusion with the limit law derived.
+* `clustershock_wald_both_halves`: that conclusion under both hypothesis sets at once.
 * `condExp_nuRV_pow_four_le`: the fourth-moment bound on `ν` from the shocks'.
 * `clustershock_wald_both_halves_shockmoments`: the end-to-end form under shock moments.
 -/
@@ -835,7 +835,7 @@ theorem clustershock_b_general_janson_unbounded_witness (s : ℝ) :
 
 end UnboundedShockWitness
 
-/-! ### Part (c) with the limit law derived
+/-! ### The Theorem 11(c) conclusion with the limit law derived
 
 The theorems below assume the hypotheses of the Theorem 5 half and prove the limit law `hclt`
 used by `ClusterShock.clustershock_rateagnostic_c`, from either sentence of the corollary. The
@@ -852,9 +852,9 @@ variable {L : ℕ → Type*} [∀ n, Fintype (L n)] [∀ n, DecidableEq (L n)]
 variable {K : Type*} [Fintype K] [DecidableEq K]
 variable {Ω : Type*} {𝒟 : MeasurableSpace Ω} [mΩ : MeasurableSpace Ω] [StandardBorelSpace Ω]
 
-/-- **Corollary SM.D.3**, part (c), with the limit law derived from the first sentence:
-
-> (c) `P(𝒱̂_n ≻ 0) → 1`, `𝟙{𝒱̂_n ≻ 0}𝒱̂_n^{-1/2}𝓡_n(β̂ − β) ⟶ᵈ N(0, I_r)`, and `𝒲 ⟶ᵈ χ²_r`.
+/-- **Corollary SM.D.3**, conclusions of Theorem 11(b) and (c), with the limit law derived
+from the first sentence:
+> `P(𝒱̂_n ≻ 0) → 1`, `𝟙{𝒱̂_n ≻ 0}𝒱̂_n^{-1/2}𝓡_n(β̂ − β) ⟶ᵈ N(0, I_r)`, and `𝒲 ⟶ᵈ χ²_r`.
 
 The matrix `𝒱_n` is `restrictedVar X̃_n Ω_n 𝓡_n` with `Ω_n = Sharing.clusterOmega`. -/
 theorem clustershock_rateagnostic_c_janson
@@ -923,8 +923,8 @@ theorem clustershock_rateagnostic_c_janson
       hXtD hOmD hscore s2 hs2 θ hθ Gb B Cnu hB0 hCnu0 hnu hWvm hdep hA hsc hve hOm hmean hB
       hdesign hne hGb hGrate)
 
-/-- Part (c) with the limit law derived from the second sentence (bounded conditional
-fourth moments), at arbitrary `ε > 0`. -/
+/-- The same conclusions with the limit law derived from the second sentence (bounded
+conditional fourth moments), at arbitrary `ε > 0`. -/
 theorem clustershock_rateagnostic_c_janson_b
     {rr : Type*} [Fintype rr] [DecidableEq rr]
     (h𝒟 : 𝒟 ≤ mΩ) (P : Measure Ω) [IsProbabilityMeasure P]
@@ -997,7 +997,7 @@ theorem clustershock_rateagnostic_c_janson_b
 
 end WaldDischarged
 
-/-! ### An example for part (c) -/
+/-! ### An example for the Theorem 11(c) conclusion -/
 
 section WaldDischargedWitness
 
@@ -1648,9 +1648,9 @@ open Matrix
 
 variable {Ω : Type*} {𝒟 : MeasurableSpace Ω} [mΩ : MeasurableSpace Ω] [StandardBorelSpace Ω]
 
-/-- **Corollary SM.D.3**, part (c), under both hypothesis sets:
+/-- **Corollary SM.D.3**, conclusions of Theorem 11(b) and (c), under both hypothesis sets:
 
-> (c) `P(𝒱̂_n ≻ 0) → 1`, `𝟙{𝒱̂_n ≻ 0}𝒱̂_n^{-1/2}𝓡_n(β̂ − β) ⟶ᵈ N(0, I_r)`, and `𝒲 ⟶ᵈ χ²_r`,
+> `P(𝒱̂_n ≻ 0) → 1`, `𝟙{𝒱̂_n ≻ 0}𝒱̂_n^{-1/2}𝓡_n(β̂ − β) ⟶ᵈ N(0, I_r)`, and `𝒲 ⟶ᵈ χ²_r`,
 
 with `𝒱̂_n := A_n'𝓜̃_n A_n` the union meat at `A_n = scoreMap X̃_n 𝓡_n`; the fourth conclusion
 identifies `Ω_n` with the cluster-shock matrix. -/
@@ -2063,7 +2063,7 @@ open Matrix
 variable {Ω : Type*} {𝒟 mΩ : MeasurableSpace Ω} [StandardBorelSpace Ω]
 variable {P : Measure Ω} [IsProbabilityMeasure P]
 
-/-- **Corollary SM.D.3**, part (a) of the Theorem 11 half, with the fourth-moment hypothesis
+/-- **Corollary SM.D.3**, conclusion of Theorem 11(a), with the fourth-moment hypothesis
 stated on the shocks `{c^{(j)}_g} ∪ {ε_o}`; the bound on `ν` follows with
 constant `(J+1)⁴C_Z` from `condExp_nuRV_pow_four_le`. -/
 theorem clustershock_rateagnostic_a_shockmoments (hm : 𝒟 ≤ mΩ) [SigmaFinite (P.trim hm)]
@@ -2114,7 +2114,7 @@ theorem clustershock_rateagnostic_a_shockmoments (hm : 𝒟 ≤ mΩ) [SigmaFinit
     (fun n o => condExp_nuRV_pow_four_le (hZ4 n) (hmomZ n) o)
     Xt hB0 hB hθ hdesign hne Gb hGb hGrate A hA
 
-/-- The same for part (b). -/
+/-- The same for the conclusion of Theorem 11(b). -/
 theorem clustershock_rateagnostic_b_shockmoments (hm : 𝒟 ≤ mΩ) [SigmaFinite (P.trim hm)]
     {O L : ℕ → Type*} [∀ n, Fintype (O n)] [∀ n, DecidableEq (O n)] [∀ n, DecidableEq (L n)]
     {Dm : Type*} [DecidableEq Dm] {K : Type*} [Fintype K] [DecidableEq K] [Nonempty K]
@@ -2184,9 +2184,9 @@ open Matrix
 variable {Ω : Type*} {𝒟 : MeasurableSpace Ω} [mΩ : MeasurableSpace Ω]
   [StandardBorelSpace Ω]
 
-/-- **Corollary SM.D.3**, part (c), under both hypothesis sets, with the fourth-moment
-hypotheses stated on the shocks. The bounds on `ν` follow with constants `C = (J+1)⁴C_Z` and
-`C₄ = (J+1)C_{4Z}`, where `J = dims.card`. -/
+/-- **Corollary SM.D.3**, conclusions of Theorem 11(b) and (c), under both hypothesis sets, with
+the fourth-moment hypotheses stated on the shocks. The bounds on `ν` follow with constants
+`C = (J+1)⁴C_Z` and `C₄ = (J+1)C_{4Z}`, where `J = dims.card`. -/
 theorem clustershock_wald_both_halves_shockmoments
     {O L : ℕ → Type*} [∀ n, Fintype (O n)] [∀ n, DecidableEq (O n)] [∀ n, DecidableEq (L n)]
     {Dm : Type*} [DecidableEq Dm] {K : Type*} [Fintype K] [DecidableEq K] [Nonempty K]

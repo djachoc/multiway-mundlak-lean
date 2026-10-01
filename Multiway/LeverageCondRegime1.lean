@@ -5,7 +5,7 @@ import Mathlib.Probability.CondVar
 /-!
 # Leverage identity and leverage correction under Regime 1
 
-This file formalizes clauses (ii) and (iii) of Lemma SM.B.6 (Residual representation and exact
+This file formalizes the moment identities of Lemma SM.B.6 (Residual representation and exact
 leverage identity) and Proposition SM.D.4 (Exact leverage correction) under Regime 1 of the
 dependence assumption, in which the innovations `ε_o` are mutually conditionally independent given
 `𝒟`, with conditional mean zero and conditional variances `σ²_ε(o)`. Under Regime 1 the identity

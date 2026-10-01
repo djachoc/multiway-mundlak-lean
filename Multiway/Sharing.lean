@@ -1196,7 +1196,7 @@ theorem posSemidef_sum {γ : Type*} (s : Finset γ) (f : γ → Matrix O O ℝ)
   Finset.sum_induction f Matrix.PosSemidef (fun _ _ ha hb => ha.add hb)
     Matrix.PosSemidef.zero h
 
-/-- **Proposition SM.D.3(c)(iv).** Each sharing matrix `Sh_e` is positive semidefinite, by the
+/-- Each sharing matrix `Sh_e` is positive semidefinite (proof of Proposition SM.D.3(c)), by the
 Gram factorization `Sh_e = Δ_eΔ_e'` (`shMat_apply_eq_sum_cells`). -/
 theorem shMat_posSemidef (c : D → O → L) (e : Finset D) : (Multiway.shMat c e).PosSemidef := by
   classical
@@ -1213,8 +1213,8 @@ theorem shMat_posSemidef (c : D → O → L) (e : Finset D) : (Multiway.shMat c 
   rw [h]
   exact Matrix.posSemidef_conjTranspose_mul_self _
 
-/-- **Proposition SM.D.3(c)(iii)**: `Ω = ∑_j σ²_{c,j}Sh^{(j)} + diag(Var(ε_o ∣ 𝒟))`. That this is
-the conditional covariance matrix is proved in `condOmega_eq_clusterOmega`. -/
+/-- `Ω = ∑_j σ²_{c,j}Sh^{(j)} + diag(Var(ε_o ∣ 𝒟))`, as in the proof of Proposition SM.D.3(c).
+That it is the conditional covariance matrix is `condOmega_eq_clusterOmega`. -/
 def clusterOmega (c : D → O → L) (dims : Finset D) (sc : D → ℝ) (ve : O → ℝ) :
     Matrix O O ℝ :=
   (∑ j ∈ dims, sc j • Multiway.shMat c {j}) + Matrix.diagonal ve
